@@ -30,7 +30,7 @@ public class LEDTester
         final GpioPinDigitalOutput pin3 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "MyLED", PinState.LOW);
         final GpioPinDigitalOutput pin4 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "MyLED", PinState.LOW);
         final GpioPinDigitalOutput pin5 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05, "MyLED", PinState.LOW);
-        final GpioPinDigitalOutput pin6 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, "MyLED", PinState.LOW);
+        final GpioPinDigitalOutput pin14 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_14, "MyLED", PinState.LOW);
         final GpioPinDigitalOutput pin7 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, "MyLED", PinState.LOW);
         final GpioPinDigitalOutput pin8 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_08, "MyLED", PinState.LOW);
 
@@ -40,7 +40,7 @@ public class LEDTester
         pin3.setShutdownOptions(true, PinState.LOW);
         pin4.setShutdownOptions(true, PinState.LOW);
         pin5.setShutdownOptions(true, PinState.LOW);
-        pin6.setShutdownOptions(true, PinState.LOW);
+        pin14.setShutdownOptions(true, PinState.LOW);
         pin7.setShutdownOptions(true, PinState.LOW);
         pin8.setShutdownOptions(true, PinState.LOW);
 
@@ -57,7 +57,7 @@ public class LEDTester
         Thread.sleep(5000);
         pin5.toggle();
         Thread.sleep(5000);
-        pin6.toggle();
+        pin14.toggle();
         Thread.sleep(5000);
         pin7.toggle();
         Thread.sleep(5000);
@@ -77,7 +77,7 @@ public class LEDTester
         Thread.sleep(5000);
         pin5.toggle();
         Thread.sleep(5000);
-        pin6.toggle();
+        pin14.toggle();
         Thread.sleep(5000);
         pin7.toggle();
         Thread.sleep(5000);
@@ -92,7 +92,7 @@ public class LEDTester
         pin3.blink(1);
         pin4.blink(1);
         pin5.blink(1);
-        pin6.blink(1);
+        pin14.blink(1);
         pin7.blink(1);
         pin8.blink(1);
 
