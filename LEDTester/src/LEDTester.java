@@ -24,40 +24,83 @@ public class LEDTester
         // create gpio controller
         final GpioController gpio = GpioFactory.getInstance();
 
-        // provision gpio pin #01 as an output pin and turn on
-        final GpioPinDigitalOutput pin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "MyLED", PinState.HIGH);
+        // provision gpio pins as an output pins and turn off
+        final GpioPinDigitalOutput pin1 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "MyLED", PinState.LOW);
+        final GpioPinDigitalOutput pin2 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, "MyLED", PinState.LOW);
+        final GpioPinDigitalOutput pin3 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "MyLED", PinState.LOW);
+        final GpioPinDigitalOutput pin4 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "MyLED", PinState.LOW);
+        final GpioPinDigitalOutput pin5 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05, "MyLED", PinState.LOW);
+        final GpioPinDigitalOutput pin6 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, "MyLED", PinState.LOW);
+        final GpioPinDigitalOutput pin7 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, "MyLED", PinState.LOW);
+        final GpioPinDigitalOutput pin8 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_08, "MyLED", PinState.LOW);
 
-        // set shutdown state for this pin
-        pin.setShutdownOptions(true, PinState.LOW);
+        // set shutdown state for pins
+        pin1.setShutdownOptions(true, PinState.LOW);
+        pin2.setShutdownOptions(true, PinState.LOW);
+        pin3.setShutdownOptions(true, PinState.LOW);
+        pin4.setShutdownOptions(true, PinState.LOW);
+        pin5.setShutdownOptions(true, PinState.LOW);
+        pin6.setShutdownOptions(true, PinState.LOW);
+        pin7.setShutdownOptions(true, PinState.LOW);
+        pin8.setShutdownOptions(true, PinState.LOW);
 
-        System.out.println("--> GPIO state should be: ON");
+        System.out.println("Turning on pins, one by one.");
 
+        // turn pins on
+        pin1.toggle();
+        Thread.sleep(5000);
+        pin2.toggle();
+        Thread.sleep(5000);
+        pin3.toggle();
+        Thread.sleep(5000);
+        pin4.toggle();
+        Thread.sleep(5000);
+        pin5.toggle();
+        Thread.sleep(5000);
+        pin6.toggle();
+        Thread.sleep(5000);
+        pin7.toggle();
+        Thread.sleep(5000);
+        pin8.toggle();
         Thread.sleep(5000);
 
-        // turn off gpio pin #01
-        pin.low();
-        System.out.println("--> GPIO state should be: OFF");
+        System.out.println("Turning off pins, one by one.");
 
+        // turn pins off
+        pin1.toggle();
         Thread.sleep(5000);
-
-        // toggle the current state of gpio pin #01 (should turn on)
-        pin.toggle();
-        System.out.println("--> GPIO state should be: ON");
-
+        pin2.toggle();
         Thread.sleep(5000);
-
-        // toggle the current state of gpio pin #01  (should turn off)
-        pin.toggle();
-        System.out.println("--> GPIO state should be: OFF");
-
+        pin3.toggle();
         Thread.sleep(5000);
+        pin4.toggle();
+        Thread.sleep(5000);
+        pin5.toggle();
+        Thread.sleep(5000);
+        pin6.toggle();
+        Thread.sleep(5000);
+        pin7.toggle();
+        Thread.sleep(5000);
+        pin8.toggle();
+        Thread.sleep(20000);
 
-        // turn on gpio pin #01 for 1 second and then off
-        System.out.println("--> GPIO state should be: ON for only 1 second");
-        pin.pulse(1000, true); // set second argument to 'true' use a blocking call
+        System.out.println("Blinky blinky.");
 
-        // stop all GPIO activity/threads by shutting down the GPIO controller
-        // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
+        // blink pins
+        pin1.blink(1);
+        pin2.blink(1);
+        pin3.blink(1);
+        pin4.blink(1);
+        pin5.blink(1);
+        pin6.blink(1);
+        pin7.blink(1);
+        pin8.blink(1);
+
+        Thread.sleep(200000);
+
+        System.out.println("Shuttin er down.");
+
+        // shut er down
         gpio.shutdown();
 
         System.out.println("Exiting ControlGpioExample");
