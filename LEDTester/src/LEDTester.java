@@ -19,7 +19,7 @@ public class LEDTester
 {
     public static void main(String[] args) throws InterruptedException
     {
-        System.out.println("<--Pi4J--> GPIO Control Example ... started.");
+        System.out.println("<--Pi4J--> LEDTester ... started.");
 
         // create gpio controller
         final GpioController gpio = GpioFactory.getInstance();
@@ -87,14 +87,14 @@ public class LEDTester
         System.out.println("Blinky blinky.");
 
         // blink pins
-        pin1.blink(1);
-        pin2.blink(1);
-        pin3.blink(1);
-        pin4.blink(1);
-        pin5.blink(1);
-        pin14.blink(1);
-        pin7.blink(1);
-        pin8.blink(1);
+        pin1.blink(100);
+        pin2.blink(100);
+        pin3.blink(100);
+        pin4.blink(100);
+        pin5.blink(100);
+        pin14.blink(100);
+        pin7.blink(100);
+        pin8.blink(100);
 
         Thread.sleep(200000);
 
@@ -103,7 +103,7 @@ public class LEDTester
         // shut er down
         gpio.shutdown();
 
-        System.out.println("Exiting ControlGpioExample");
+        System.out.println("Exiting LEDTester");
     }
 }
 
