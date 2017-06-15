@@ -1,6 +1,7 @@
 package Networking;
 
 import Database.DBHelper;
+import Main.Main;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -22,7 +23,7 @@ public class ServerManager extends Thread
     {
         clientConnections = new ClientManager[MAX_CLIENTS];
         this.serverSocket = new ServerSocket(0);
-        System.out.println("> [DATE] Listening on: " + serverSocket.getLocalPort());
+        System.out.println("> [" + Main.getDate() + "] Listening on: " + serverSocket.getLocalPort());
         start(); // Start manager on a new thread
     }
 
@@ -30,7 +31,7 @@ public class ServerManager extends Thread
     public void run()
     {
         DBHelper.createDB(); // Create a new resource database if one does not already exist
-        System.out.println("> [DATE] Total connected clients: 0/" + this.MAX_CLIENTS);
+        System.out.println("> [" + Main.getDate() + "] Total connected clients: 0/" + this.MAX_CLIENTS);
 
         Socket socket = null;
 
@@ -72,7 +73,7 @@ public class ServerManager extends Thread
         {
             if(i == this.MAX_CLIENTS)
             {
-                System.out.println("> [DATE] WARNING: Maximum client connections reached");
+                System.out.println("> [" + Main.getDate() + "] WARNING: Maximum client connections reached");
                 break;
             }
             else if(clientConnections[i] == null)
