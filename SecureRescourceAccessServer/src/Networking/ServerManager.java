@@ -23,7 +23,7 @@ public class ServerManager extends Thread
     {
         clientConnections = new ClientManager[MAX_CLIENTS];
         this.serverSocket = new ServerSocket(0);
-        System.out.println("> [" + Main.getDate() + "] Listening on: " + serverSocket.getLocalPort());
+
         start(); // Start manager on a new thread
     }
 
@@ -31,6 +31,7 @@ public class ServerManager extends Thread
     public void run()
     {
         DBHelper.createDB(); // Create a new resource database if one does not already exist
+        System.out.println("> [" + Main.getDate() + "] Listening on: " + serverSocket.getLocalPort());
         System.out.println("> [" + Main.getDate() + "] Total connected clients: 0/" + this.MAX_CLIENTS);
 
         Socket socket = null;

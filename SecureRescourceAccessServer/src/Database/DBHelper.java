@@ -1,5 +1,7 @@
 package Database;
 
+import Main.Main;
+
 import java.sql.*;
 
 public class DBHelper
@@ -16,32 +18,32 @@ public class DBHelper
                 ResultSet tables = dbm.getTables(null, null, "Users", null);
                 if (tables.next())
                 {
-                    System.out.println("> [DATE] Connected to resources.db");
+                    System.out.println("> [" + Main.getDate() + "] Connected to resources.db");
                 }
                 else
                 {
-                    System.out.println("> [DATE] Created resources.db");
+                    System.out.println("> [" + Main.getDate() + "] Created resources.db");
 
                     executeStatement(DBQueries.getRolesTableCreationQuery());
-                    System.out.println("> [DATE] Roles table created");
+                    System.out.println("> [" + Main.getDate() + "] Roles table created");
 
                     executeStatement(DBQueries.getDevicesTableCreationQuery());
-                    System.out.println("> [DATE] Devices table created");
+                    System.out.println("> [" + Main.getDate() + "] Devices table created");
 
                     executeStatement(DBQueries.getPermissionsTableCreationQuery());
-                    System.out.println("> [DATE] Permissions table created");
+                    System.out.println("> [" + Main.getDate() + "] Permissions table created");
 
                     executeStatement(DBQueries.getUsersTableCreationQuery());
-                    System.out.println("> [DATE] Users table created");
+                    System.out.println("> [" + Main.getDate() + "] Users table created");
 
                     executeStatement(DBQueries.getRolePermissionsTableCreationQuery());
-                    System.out.println("> [DATE] Role-permissions linking table created");
+                    System.out.println("> [" + Main.getDate() + "] Role-permissions linking table created");
                 }
             }
         }
         catch (SQLException e)
         {
-            System.out.println("> [DATE] " + e.getMessage());
+            System.out.println("> [" + Main.getDate() + "] " + e.getMessage());
         }
     }
 
@@ -57,7 +59,7 @@ public class DBHelper
         }
         catch (SQLException e)
         {
-            System.out.println("> [DATE] " + e.getMessage());
+            System.out.println("> [" + Main.getDate() + "] " + e.getMessage());
         }
     }
 }
