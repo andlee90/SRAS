@@ -50,7 +50,8 @@ class DBQueries
         return "CREATE TABLE IF NOT EXISTS devices (\n"
                 + "device_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,\n"
                 + "device_name TEXT NOT NULL UNIQUE,\n"
-                + "device_type TEXT NOT NULL UNIQUE\n"
+                + "device_type TEXT NOT NULL UNIQUE,\n"
+                + "device_status TEXT NOT NULL UNIQUE\n"
                 + ");";
     }
 }

@@ -36,12 +36,6 @@ public class DBHelper
 
                     executeStatement(DBQueries.getRolePermissionsTableCreationQuery());
                     System.out.println("> [DATE] Role-permissions linking table created");
-
-                    //insertSchedules();
-                    //System.out.println("> [DATE] User Default schedules added");
-
-                    //insertUser("admin", "password", "Guy", "Buddy", 1);
-                    //System.out.println("> [DATE] User Default user admin added");
                 }
             }
         }
