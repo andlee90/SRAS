@@ -1,5 +1,7 @@
 package Networking;
 
+import Main.Main;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -30,8 +32,11 @@ public class ClientManager extends Thread
         {
             ObjectInputStream serverInputStream = new ObjectInputStream(socket.getInputStream());
             ObjectOutputStream serverOutputStream = new ObjectOutputStream(socket.getOutputStream());
+
+            Message message = (Message)serverInputStream.readObject(); // Get test message from client
+            System.out.println("> [" + Main.getDate() + "] " + message.getMessage());
         }
-        catch (IOException e)
+        catch (IOException | ClassNotFoundException e)
         {
             e.printStackTrace();
         }
