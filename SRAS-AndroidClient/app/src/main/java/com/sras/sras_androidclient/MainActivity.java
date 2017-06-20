@@ -14,8 +14,6 @@ public class MainActivity extends AppCompatActivity
     private String mUser;
     private String mPass;
 
-    //public ConnectionManager mConnectionManager;
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -27,7 +25,13 @@ public class MainActivity extends AppCompatActivity
         mUser = settings.getString("user", "");
         mPass = settings.getString("pass", "");
 
-        if (mHost.contains("host") && mUser.contains("host") && mPass.contains("host"))
+        /**
+         * Eventually, the user will be prompted to login at first use. After this, their info
+         * will be stored w/ shared preferences and they will skip the login activity and default
+         * to their available resource list instead.
+         */
+
+        /*if (mHost.contains("host") && mUser.contains("host") && mPass.contains("host"))
         {
             Intent intent = new Intent(getApplicationContext(), ResourceListActivity.class);
             startActivity(intent);
@@ -36,6 +40,9 @@ public class MainActivity extends AppCompatActivity
         {
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
-        }
+        }*/
+
+        Intent intent = new Intent(getApplicationContext(), ResourceListActivity.class);
+        startActivity(intent);
     }
 }
