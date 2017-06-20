@@ -22,7 +22,7 @@ public class ServerManager extends Thread
     public ServerManager() throws IOException
     {
         clientConnections = new ClientManager[MAX_CLIENTS];
-        this.serverSocket = new ServerSocket(0);
+        this.serverSocket = new ServerSocket(50873);
 
         start(); // Start manager on a new thread
     }

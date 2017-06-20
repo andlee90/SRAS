@@ -1,11 +1,13 @@
 package Networking;
 
+import CommModels.Message;
 import Main.Main;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+
 
 /**
  * Manages a single client connection by first comparing the incoming
@@ -35,6 +37,9 @@ public class ClientManager extends Thread
 
             Message message = (Message)serverInputStream.readObject(); // Get test message from client
             System.out.println("> [" + Main.getDate() + "] " + message.getMessage());
+
+            message.setMessage("And a hello to you too");
+            serverOutputStream.writeObject(message);
         }
         catch (IOException | ClassNotFoundException e)
         {
