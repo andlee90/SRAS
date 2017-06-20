@@ -8,10 +8,13 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 import CommModels.Message;
+import CommModels.User;
 
 public class ServerConnectionManager extends AsyncTask<String, Void, String>
 {
     private AsyncResponse mDelegate = null;
+    private ObjectOutputStream mOutputStream;
+    private ObjectInputStream mInputStream;
 
     ServerConnectionManager(AsyncResponse delegate)
     {
@@ -29,17 +32,23 @@ public class ServerConnectionManager extends AsyncTask<String, Void, String>
         Message message = new Message("Hello");
         try
         {
-            Socket socket = new Socket("192.168.1.6", 50873);
+            Socket socket = new Socket("192.168.1.2", 50873);
 
-            ObjectOutputStream clientOutputStream = new ObjectOutputStream(socket.getOutputStream());
-            ObjectInputStream clientInputStream = new ObjectInputStream(socket.getInputStream());
-            clientOutputStream.writeObject(message); // Send message to server
-            message = (Message) clientInputStream.readObject();
+            mOutputStream = new ObjectOutputStream(socket.getOutputStream());
+            mInputStream = new ObjectInputStream(socket.getInputStream());
 
-            clientInputStream.close();
-            clientOutputStream.close();
+            if (isAuthenticated("admin", "drowssap"))
+            {
+                mOutputStream.writeObject(message); // Send message to server
+                message = (Message) mInputStream.readObject();
+            }
+
+            mOutputStream.close();
+            mInputStream.close();
             socket.close();
-        } catch (ClassNotFoundException | IOException e) {
+        }
+        catch (ClassNotFoundException | IOException e)
+        {
             e.printStackTrace();
         }
         return message.getMessage();
@@ -49,5 +58,15 @@ public class ServerConnectionManager extends AsyncTask<String, Void, String>
     protected void onPostExecute(String status)
     {
         mDelegate.processFinish(status);
+    }
+
+    private boolean isAuthenticated(String un, String p) throws IOException, ClassNotFoundException
+    {
+        User user = new User(un, p, "", "", "", "");
+
+        mOutputStream.writeObject(user);
+        user = (User)mInputStream.readObject();
+
+        return user.getValidity();
     }
 }
