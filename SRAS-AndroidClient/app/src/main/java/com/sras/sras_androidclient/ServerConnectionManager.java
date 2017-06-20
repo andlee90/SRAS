@@ -32,7 +32,7 @@ public class ServerConnectionManager extends AsyncTask<String, Void, String>
         Message message = new Message("Hello");
         try
         {
-            Socket socket = new Socket("192.168.1.2", 50873);
+            Socket socket = new Socket("192.168.1.127", 50873);
 
             mOutputStream = new ObjectOutputStream(socket.getOutputStream());
             mInputStream = new ObjectInputStream(socket.getInputStream());
