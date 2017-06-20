@@ -38,7 +38,14 @@ public class DBHelper
 
                     executeStatement(DBQueries.getRolePermissionsTableCreationQuery());
                     System.out.println("> [" + Main.getDate() + "] Role-permissions linking table created");
+
+                    insertRole("admin");
+                    System.out.println("> [" + Main.getDate() + "] Default admin role added to roles table");
+
+                    insertUser("admin", "drowssap", "admin@admin.com", "admin", "admin", 1);
+                    System.out.println("> [" + Main.getDate() + "] Default admin user added to users table");
                 }
+
             }
         }
         catch (SQLException e)
@@ -48,14 +55,80 @@ public class DBHelper
     }
 
     /**
+     * Creates a connection to resources.db.
+     */
+    private static Connection connect()
+    {
+        Connection conn = null;
+        try
+        {
+            conn = DriverManager.getConnection(dbUrl);
+        }
+        catch (SQLException e)
+        {
+            System.out.println("> [" + Main.getDate() + "] " + e.getMessage());
+        }
+        return conn;
+    }
+
+    /**
      * Default SQL execution method.
      */
     private static void executeStatement(String sql)
     {
-        try (Connection conn = DriverManager.getConnection(dbUrl);
+        try (Connection conn = connect();
              Statement stmt = conn.createStatement())
         {
             stmt.execute(sql);
+        }
+        catch (SQLException e)
+        {
+            System.out.println("> [" + Main.getDate() + "] " + e.getMessage());
+        }
+    }
+
+    /**
+     * Insert a new row into the users table
+     *
+     * @param user username of the user to be inserted.
+     * @param pass password of the user to be inserted.
+     * @param email email of the user to be inserted.
+     * @param fn first name of the user to be inserted.
+     * @param ln last name of the user to be inserted.
+     * @param r_id role id of the user to be inserted.
+     */
+    //TODO: r_id should be role name and should perform a query for the name's id
+    static void insertUser(String user, String pass, String email, String fn, String ln, int r_id)
+    {
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(DBQueries.getInsertUserQuery()))
+        {
+            pstmt.setString(1, user);
+            pstmt.setString(2, pass);
+            pstmt.setString(3, email);
+            pstmt.setString(4, fn);
+            pstmt.setString(5, ln);
+            pstmt.setInt(6, r_id);
+            pstmt.executeUpdate();
+        }
+        catch (SQLException e)
+        {
+            System.out.println("> [" + Main.getDate() + "] " + e.getMessage());
+        }
+    }
+
+    /**
+     * Insert a new row into the roles table
+     * @param name role name of the role to be inserted.
+     */
+    //TODO: r_id should be role name and should perform a query for the name's id
+    static void insertRole(String name)
+    {
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(DBQueries.getInsertRoleQuery()))
+        {
+            pstmt.setString(1, name);
+            pstmt.executeUpdate();
         }
         catch (SQLException e)
         {

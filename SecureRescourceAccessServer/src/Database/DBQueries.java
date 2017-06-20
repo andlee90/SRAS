@@ -54,4 +54,15 @@ class DBQueries
                 + "device_status TEXT NOT NULL UNIQUE\n"
                 + ");";
     }
+
+    static String getInsertUserQuery()
+    {
+        return "INSERT INTO users(user_username,user_password,user_email," +
+                "user_first_name,user_last_name,role_id) VALUES(?,?,?,?,?,?)";
+    }
+
+    static String getInsertRoleQuery()
+    {
+        return "INSERT INTO roles(role_name) VALUES(?)";
+    }
 }
