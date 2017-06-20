@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Class-Path: NetCommToolsLib.jar sqlite-jdbc-3.18.0.jar pi4j-core-1.1.j
+ ar
+Main-Class: Main.Main
+
