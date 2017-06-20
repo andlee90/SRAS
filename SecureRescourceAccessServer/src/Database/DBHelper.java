@@ -4,6 +4,8 @@ import Main.Main;
 
 import java.sql.*;
 
+import static Database.DBQueries.getSelectUserByUsernameAndPassword;
+
 public class DBHelper
 {
     private static String dbUrl = "jdbc:sqlite:sqlite/db/resources.db";
@@ -121,7 +123,6 @@ public class DBHelper
      * Insert a new row into the roles table
      * @param name role name of the role to be inserted.
      */
-    //TODO: r_id should be role name and should perform a query for the name's id
     static void insertRole(String name)
     {
         try (Connection conn = connect();
@@ -134,5 +135,31 @@ public class DBHelper
         {
             System.out.println("> [" + Main.getDate() + "] " + e.getMessage());
         }
+    }
+
+    /**
+     * Returns an user id for the corresponding username and password from the users table.
+     *
+     * @param username the username of the user to select.
+     * @param password the password of the user to select.
+     */
+    public static int selectUserIdByUsernameAndPassword(String username, String password)
+    {
+        int userId = 0;
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(getSelectUserByUsernameAndPassword()))
+        {
+            pstmt.setString(1,username);
+            pstmt.setString(2,password);
+            ResultSet rs    = pstmt.executeQuery();
+
+            userId = rs.getInt("user_id");
+        }
+        catch (SQLException e)
+        {
+            System.out.println("> [" + Main.getDate() + "] DB: No such user found: " + e.getMessage());
+        }
+
+        return userId;
     }
 }

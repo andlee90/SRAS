@@ -65,4 +65,9 @@ class DBQueries
     {
         return "INSERT INTO roles(role_name) VALUES(?)";
     }
+
+    static String getSelectUserByUsernameAndPassword()
+    {
+        return "SELECT user_id FROM users WHERE user_username = ? AND user_password = ?";
+    }
 }

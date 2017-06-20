@@ -1,6 +1,8 @@
 package Networking;
 
 import CommModels.Message;
+import CommModels.User;
+import Database.DBHelper;
 import Main.Main;
 
 import java.io.IOException;
@@ -35,11 +37,20 @@ public class ClientManager extends Thread
             ObjectInputStream serverInputStream = new ObjectInputStream(socket.getInputStream());
             ObjectOutputStream serverOutputStream = new ObjectOutputStream(socket.getOutputStream());
 
-            Message message = (Message)serverInputStream.readObject(); // Get test message from client
-            System.out.println("> [" + Main.getDate() + "] " + message.getMessage());
+            User user = (User)serverInputStream.readObject();
+            int userId = authenticateUser(user);
+            serverOutputStream.writeObject(user);
 
-            message.setMessage("And a hello to you too");
-            serverOutputStream.writeObject(message);
+            if (userId != 0)
+            {
+                Message message = (Message)serverInputStream.readObject(); // Get test message from client
+                System.out.println("> [" + Main.getDate() + "] " + message.getMessage());
+
+                message.setMessage("And a hello to you too");
+                serverOutputStream.writeObject(message);
+            }
+            serverOutputStream.writeObject(user);
+            close();
         }
         catch (IOException | ClassNotFoundException e)
         {
@@ -53,5 +64,17 @@ public class ClientManager extends Thread
     void close() throws IOException
     {
         this.socket.close();
+    }
+
+    private int authenticateUser(User u)
+    {
+        int userId = 0;
+        userId = DBHelper.selectUserIdByUsernameAndPassword(u.getUserName(), u.getPassword());
+
+        if (userId != 0)
+        {
+            u.setValidity(true);
+        }
+        return userId;
     }
 }
