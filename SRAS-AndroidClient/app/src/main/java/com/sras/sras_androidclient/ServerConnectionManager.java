@@ -13,11 +13,18 @@ import CommModels.User;
 public class ServerConnectionManager extends AsyncTask<String, Void, String>
 {
     private AsyncResponse mDelegate = null;
+    private String mHost;
+    private String mUser;
+    private String mPass;
+
     private ObjectOutputStream mOutputStream;
     private ObjectInputStream mInputStream;
 
-    ServerConnectionManager(AsyncResponse delegate)
+    ServerConnectionManager(String h, String u, String p, AsyncResponse delegate)
     {
+        this.mHost = h;
+        this.mUser = u;
+        this.mPass = p;
         this.mDelegate = delegate;
     }
 
@@ -32,12 +39,12 @@ public class ServerConnectionManager extends AsyncTask<String, Void, String>
         Message message = new Message("Hello");
         try
         {
-            Socket socket = new Socket("192.168.1.127", 50873);
+            Socket socket = new Socket(mHost, 50873);
 
             mOutputStream = new ObjectOutputStream(socket.getOutputStream());
             mInputStream = new ObjectInputStream(socket.getInputStream());
 
-            if (isAuthenticated("admin", "drowssap"))
+            if (isAuthenticated(mUser, mPass))
             {
                 mOutputStream.writeObject(message); // Send message to server
                 message = (Message) mInputStream.readObject();

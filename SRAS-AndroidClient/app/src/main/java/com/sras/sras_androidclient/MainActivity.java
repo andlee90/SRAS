@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity
          * to their available resource list instead.
          */
 
-        /*if (mHost.contains("host") && mUser.contains("host") && mPass.contains("host"))
+        if (settings.contains("host") && settings.contains("user") && settings.contains("pass"))
         {
             Intent intent = new Intent(getApplicationContext(), ResourceListActivity.class);
             startActivity(intent);
@@ -40,9 +40,30 @@ public class MainActivity extends AppCompatActivity
         {
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
-        }*/
+        }
 
-        Intent intent = new Intent(getApplicationContext(), ResourceListActivity.class);
-        startActivity(intent);
+        //Intent intent = new Intent(getApplicationContext(), ResourceListActivity.class);
+        //startActivity(intent);
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        SharedPreferences settings = getSharedPreferences(PREFERENCES, 0);
+        mHost = settings.getString("host", "");
+        mUser = settings.getString("user", "");
+        mPass = settings.getString("pass", "");
+
+        if (settings.contains("host") && settings.contains("user") && settings.contains("pass"))
+        {
+            Intent intent = new Intent(getApplicationContext(), ResourceListActivity.class);
+            startActivity(intent);
+        }
+        else
+        {
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+        }
     }
 }

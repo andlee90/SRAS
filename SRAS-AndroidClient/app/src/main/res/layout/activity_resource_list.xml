@@ -4,7 +4,23 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/message"
+        android:id="@+id/host_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:maxLength="16"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/user_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:maxLength="16"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/pass_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=""
