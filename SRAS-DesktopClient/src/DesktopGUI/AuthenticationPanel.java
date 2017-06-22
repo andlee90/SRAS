@@ -1,9 +1,10 @@
+package DesktopGUI;
 
 import CommModels.Message;
 
 import javax.swing.*;
 
-public class SRAS_Desktop_Client
+public class MainFrame
 {
     JFrame AuthenticationFrame;
 
@@ -12,13 +13,15 @@ public class SRAS_Desktop_Client
     JButton AuthenticationLogin;
     JButton AuthenticationCancel;
 
+    JLabel usernameLabel;
+    JLabel passwordLabel;
+
     JTextField username;
     JTextField password;
 
 
-    public SRAS_Desktop_Client(){
-
-        Message m = new Message("Hi");
+    public MainFrame()
+    {
         createAuthenticationFrame();
     }
 
