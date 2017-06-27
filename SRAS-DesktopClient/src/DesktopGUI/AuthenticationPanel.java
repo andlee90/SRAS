@@ -1,12 +1,13 @@
 package DesktopGUI;
 
-import CommModels.Message;
-
+import Controller.DesktopClientController;
+import DesktopGUI.*;
 import javax.swing.*;
-
-public class MainFrame
+import java.awt.event.ActionListener;
+import java.awt.event.*;
+public class AuthenticationPanel
 {
-    JFrame AuthenticationFrame;
+    //JFrame AuthenticationFrame;
 
     JPanel AuthenticationPanel;
 
@@ -20,28 +21,20 @@ public class MainFrame
     JTextField password;
 
 
-    public MainFrame()
-    {
-        createAuthenticationFrame();
-    }
-
-    public void createAuthenticationFrame()
-    {
-        AuthenticationFrame = new JFrame();
-        AuthenticationFrame.setSize(350,250);
-        AuthenticationFrame .setTitle("SRAS Authentication");
-        createAuthenticationPanel();
-        AuthenticationFrame.add(AuthenticationPanel);
-        AuthenticationFrame.setVisible(true);
-    }
-
-    public void createAuthenticationPanel()
+    public AuthenticationPanel()
     {
         AuthenticationPanel = new JPanel();
         AuthenticationPanel.setSize(350,350);
         AuthenticationPanel.setLayout(null);
         createAuthenticationButtons();
         createTextFields();
+    }
+
+
+
+    public JPanel getAuthenticationPanel()
+    {
+        return AuthenticationPanel;
 
     }
 
@@ -57,14 +50,39 @@ public class MainFrame
 
     }
 
+    public void createJlabels()
+    {
+        usernameLabel = new JLabel("Username:");
+        passwordLabel = new JLabel("Password:");
+    }
+
     public void createAuthenticationButtons()
     {
         AuthenticationLogin = new JButton("Login");
         AuthenticationLogin.setBounds(50,150,100,30);
-        AuthenticationPanel.add(AuthenticationLogin);
+        AuthenticationLogin.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(DesktopClientController.isValidUser()){
+                    DesktopClientController.replacePanel(new DeviceControlPanel().getPanel());
+                }
+                else
+                    System.out.println("Username or Password are incorrect");
+            }
+        });
 
-        AuthenticationCancel= new JButton("Cancel");
+
+
+        AuthenticationCancel= new JButton("Close");
         AuthenticationCancel.setBounds(200,150,100,30);
+        AuthenticationCancel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+
+        AuthenticationPanel.add(AuthenticationLogin);
         AuthenticationPanel.add(AuthenticationCancel);
 
     }
