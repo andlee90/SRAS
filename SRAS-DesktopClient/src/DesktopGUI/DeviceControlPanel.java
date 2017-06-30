@@ -22,19 +22,6 @@ public class DeviceControlPanel
     JButton Button4;
     JButton Button5;
 
-    /*final int width = 30;
-    final int height = 20;
-
-    final int yLayer1 = 75;
-    final int yLayer2 = 150;
-    final int yLayer3 = 225;
-    final int yLayer4 = 300;
-    final int yLayer5 = 375;
-
-
-    final int xLabel = 50;
-    final int xButton = 50;*/
-
 
     public DeviceControlPanel(){
         createButtons();
@@ -120,7 +107,7 @@ public class DeviceControlPanel
         ButtonPanel.add(Button4);
         ButtonPanel.add(Button5);
 
-        //MainPanel.add(LabelPanel, BorderLayout.WEST);
+
         MainPanel.add(ButtonPanel, BorderLayout.EAST);
 
 

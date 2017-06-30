@@ -1,5 +1,6 @@
 package DesktopGUI;
 
+import CommModels.*;
 import Controller.DesktopClientController;
 
 import javax.swing.*;
@@ -97,11 +98,14 @@ public class AuthenticationPanel
 
     public void createAuthenticationButtons()
     {
+
+        Message messageBack = new Message("");
         AuthenticationLogin = new JButton("Login");
         AuthenticationLogin.setBounds(50,150,100,30);
         AuthenticationLogin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                User userIn = new User(username.getText(),password.getText(),"","","","");
                 if(DesktopClientController.isValidUser()){
                     DesktopClientController.replacePanel(new DeviceControlPanel().getPanel());
                 }
