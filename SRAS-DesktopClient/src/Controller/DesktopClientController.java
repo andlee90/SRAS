@@ -11,7 +11,7 @@ public class DesktopClientController {
     {
         new AuthenticationPanel();
         frame1 = new MainFrame(new AuthenticationPanel().getAuthenticationPanel());
-        frame1.renameFrame("SRAS Device Controller");
+        frame1.renameFrame("SRAS Server List");
     }
 
     public static void replacePanel(JPanel panelInput){

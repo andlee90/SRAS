@@ -71,6 +71,21 @@ public class DeviceControlPanel
 
     }
 
+    //this is for when we make the client side capable of adapting to new devices
+    public JPanel createNewDevicePanel(String device)
+    {
+        JPanel newDevice = new JPanel();
+        newDevice.setSize(350,100);
+
+        JButton deviceButton = new JButton("Off");
+        JLabel deviceLabel = new JLabel(device);
+
+        deviceButton.setBounds(200,30,25,10);
+        deviceLabel.setBounds(50,30,25,10);
+
+        return newDevice;
+    }
+
     public void createPanels(){
 
         LabelPanel = new JPanel();

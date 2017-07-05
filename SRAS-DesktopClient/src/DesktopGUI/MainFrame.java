@@ -1,4 +1,5 @@
 package DesktopGUI;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -24,6 +25,7 @@ public class MainFrame {
         MainFrame.setSize(350,500);
         MainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         MainFrame.add(CurrentPanel);
+        MainFrame.setLocationRelativeTo(null);
         MainFrame.setVisible(true);
     }
 

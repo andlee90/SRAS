@@ -67,14 +67,16 @@ public class AuthenticationPanel
     public JPanel getAuthenticationPanel()
     {
         return GridAuthentication;
-
     }
 
     public void createTextFields()
     {
+
         username = new JTextField();
         username.setBounds(100,25,150,30);
         AuthenticationPanel.add(username);
+
+
 
         password = new JTextField();
         password.setBounds(100,75,150,30);
@@ -107,7 +109,7 @@ public class AuthenticationPanel
             public void actionPerformed(ActionEvent e) {
                 User userIn = new User(username.getText(),password.getText(),"","","","");
                 if(DesktopClientController.isValidUser()){
-                    DesktopClientController.replacePanel(new DeviceControlPanel().getPanel());
+                    DesktopClientController.replacePanel(new ServerListPanel().getServerListPanel());
                 }
                 else
                     System.out.println("Username or Password are incorrect");
