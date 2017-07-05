@@ -1,8 +1,13 @@
 package DesktopGUI;
+import CommModels.*;
+import CommModels.User;
+import Controller.DesktopClientController;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Created by Tim on 7/5/2017.
@@ -92,6 +97,17 @@ public class ServerListPanel
         cancelButton = new JButton("Cancel");
         connectButton = new JButton("Connect");
         addServerButton = new JButton("Add Server");
+
+        connectButton.addActionListener(new ActionListener() {
+            @Override public void actionPerformed(ActionEvent e) {
+                DesktopClientController.replacePanel(new DeviceControlPanel().getPanel());
+            }});
+
+       addServerButton.addActionListener(new ActionListener() {
+           @Override public void actionPerformed(ActionEvent e) {
+               DesktopClientController.replacePanel(new AddServerPanel().getAddServerPanel());
+           }});
+
         serverListButtonPanel.add(connectButton);
         serverListButtonPanel.add(addServerButton);
         serverListButtonPanel.add(cancelButton);
