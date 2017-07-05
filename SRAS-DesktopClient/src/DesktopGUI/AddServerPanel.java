@@ -14,42 +14,42 @@ public class AddServerPanel
     JLabel imageLabel;
     JPanel picturePanel;
 
-    JPanel AuthenticationPanel;
-    JPanel GridAuthentication;
-    JButton AuthenticationLogin;
+    JPanel AddServerPanel;
+    JPanel GridAddServer;
+    JButton AddServerButton;
     JButton AuthenticationCancel;
 
-    JLabel usernameLabel;
-    JLabel passwordLabel;
+    JLabel HostnameLabel;
+    JLabel PortNumberLabel;
 
-    JTextField username;
-    JTextField password;
+    JTextField hostName;
+    JTextField portNumber;
 
 
 
     public AddServerPanel()
     {
         GridLayout layout = new GridLayout(2,1,100,0);
-        GridAuthentication = new JPanel();
+        GridAddServer = new JPanel();
 
-        AuthenticationPanel = new JPanel();
-        AuthenticationPanel.setSize(350,350);
-        AuthenticationPanel.setLayout(null);
-        AuthenticationPanel.setBackground(Color.WHITE);
+        AddServerPanel = new JPanel();
+        AddServerPanel.setSize(350,350);
+        AddServerPanel.setLayout(null);
+        AddServerPanel.setBackground(Color.WHITE);
 
-        AuthenticationPanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
+        AddServerPanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
         createAuthenticationButtons();
         createTextFields();
         createJLabels();
         createPicturePanel();
 
-        AuthenticationPanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
+        AddServerPanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
 
 
-        GridAuthentication.setLayout(layout);
+        GridAddServer.setLayout(layout);
 
-        GridAuthentication.add(AuthenticationPanel);
-        GridAuthentication.add(picturePanel);
+        GridAddServer.add(AddServerPanel);
+        GridAddServer.add(picturePanel);
     }
 
     public void createPicturePanel()
@@ -66,53 +66,50 @@ public class AddServerPanel
 
     public JPanel getAddServerPanel()
     {
-        return GridAuthentication;
+        return GridAddServer;
     }
 
     public void createTextFields()
     {
 
-        username = new JTextField();
-        username.setBounds(100,25,150,30);
-        AuthenticationPanel.add(username);
+        hostName = new JTextField();
+        hostName.setBounds(100,25,150,30);
+        AddServerPanel.add(hostName);
 
 
 
-        password = new JTextField();
-        password.setBounds(100,75,150,30);
-        AuthenticationPanel.add(password);
+        portNumber = new JTextField();
+        portNumber.setBounds(100,75,150,30);
+        AddServerPanel.add(portNumber);
 
     }
 
     public void createJLabels()
     {
-        usernameLabel = new JLabel("Host Name: ");
-        usernameLabel.setBounds(100,5,150,20);
-        usernameLabel.setVisible(true);
+        HostnameLabel = new JLabel("Host Name: ");
+        HostnameLabel.setBounds(100,5,150,20);
+        HostnameLabel.setVisible(true);
 
-        passwordLabel = new JLabel("Port Number");
-        passwordLabel.setBounds(100,55,150,20);
-        passwordLabel.setVisible(true);
+        PortNumberLabel = new JLabel("Port Number");
+        PortNumberLabel.setBounds(100,55,150,20);
+        PortNumberLabel.setVisible(true);
 
-        AuthenticationPanel.add(usernameLabel);
-        AuthenticationPanel.add(passwordLabel);
+        AddServerPanel.add(HostnameLabel);
+        AddServerPanel.add(PortNumberLabel);
     }
 
     public void createAuthenticationButtons()
     {
 
         Message messageBack = new Message("");
-        AuthenticationLogin = new JButton("Add Server");
-        AuthenticationLogin.setBounds(50,150,100,30);
-        AuthenticationLogin.addActionListener(new ActionListener() {
+        AddServerButton = new JButton("Add Server");
+        AddServerButton.setBounds(50,150,100,30);
+        AddServerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                User userIn = new User(username.getText(),password.getText(),"","","","");
-                if(DesktopClientController.isValidUser()){
-                    DesktopClientController.replacePanel(new ServerListPanel().getServerListPanel());
-                }
-                else
-                    System.out.println("Username or Password are incorrect");
+                User userIn = new User(hostName.getText(), portNumber.getText(),"","","","");
+
+                DesktopClientController.replacePanel(new ServerListPanel().getServerListPanel());
             }
         });
 
@@ -123,12 +120,12 @@ public class AddServerPanel
         AuthenticationCancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.exit(0);
+                DesktopClientController.replacePanel(new ServerListPanel().getServerListPanel());
             }
         });
 
-        AuthenticationPanel.add(AuthenticationLogin);
-        AuthenticationPanel.add(AuthenticationCancel);
+        AddServerPanel.add(AddServerButton);
+        AddServerPanel.add(AuthenticationCancel);
 
     }
 

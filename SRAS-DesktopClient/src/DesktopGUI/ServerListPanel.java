@@ -75,6 +75,18 @@ public class ServerListPanel
                         {"SERVER", "PORT"},
                         {"SERVER", "PORT"},
                         {"SERVER", "PORT"},
+                        {"SERVER", "PORT"},
+                        {"SERVER", "PORT"},
+                        {"SERVER", "PORT"},
+                        {"SERVER", "PORT"},
+                        {"SERVER", "PORT"},
+                        {"SERVER", "PORT"},
+                        {"SERVER", "PORT"},
+                        {"SERVER", "PORT"},
+                        {"SERVER", "PORT"},
+                        {"SERVER", "PORT"},
+                        {"SERVER", "PORT"},
+                        {"SERVER", "PORT"},
 
                 };
         DefaultTableModel model = new DefaultTableModel(data, columnNames);
@@ -97,6 +109,11 @@ public class ServerListPanel
         cancelButton = new JButton("Cancel");
         connectButton = new JButton("Connect");
         addServerButton = new JButton("Add Server");
+
+        cancelButton.addActionListener(new ActionListener() {
+            @Override public void actionPerformed(ActionEvent e) {
+                DesktopClientController.replacePanel(new AuthenticationPanel().getAuthenticationPanel());
+            }});
 
         connectButton.addActionListener(new ActionListener() {
             @Override public void actionPerformed(ActionEvent e) {
