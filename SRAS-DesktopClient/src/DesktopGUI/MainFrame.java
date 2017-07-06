@@ -34,10 +34,11 @@ public class MainFrame {
         MainFrame.setTitle(name);
     }
 
-    public void replacePanel(JPanel panelInput)
+    public void replacePanel(JPanel panelInput, String title)
     {
         MainFrame.getContentPane().removeAll();
         MainFrame.add(panelInput);
+        MainFrame.setTitle(title);
         panelInput.setVisible(true);
         MainFrame.getContentPane().repaint();
         MainFrame.setSize(351,500);

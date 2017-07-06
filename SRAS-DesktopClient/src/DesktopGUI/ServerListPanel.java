@@ -1,8 +1,13 @@
 package DesktopGUI;
+import CommModels.*;
+import CommModels.User;
+import Controller.DesktopClientController;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Created by Tim on 7/5/2017.
@@ -20,6 +25,40 @@ public class ServerListPanel
     FlowLayout flow = new FlowLayout(10,22,10);
     GridLayout grid = new GridLayout(2,1,25,25);
     GridLayout grid2 = new GridLayout(1,1,25,25);
+
+
+
+
+
+
+            /*{
+                    {"SERVER", "PORT"},
+                    {"SERVER", "PORT"},
+                    {"SERVER", "PORT"},
+                    {"SERVER", "PORT"},
+                    {"SERVER", "PORT"},
+                    {"SERVER", "PORT"},
+                    {"SERVER", "PORT"},
+                    {"SERVER", "PORT"},
+                    {"SERVER", "PORT"},
+                    {"SERVER", "PORT"},
+                    {"SERVER", "PORT"},
+                    {"SERVER", "PORT"},
+                    {"SERVER", "PORT"},
+                    {"SERVER", "PORT"},
+                    {"SERVER", "PORT"},
+                    {"SERVER", "PORT"},
+                    {"SERVER", "PORT"},
+                    {"SERVER", "PORT"},
+                    {"SERVER", "PORT"},
+                    {"SERVER", "PORT"},
+                    {"SERVER", "PORT"},
+
+            };*/
+
+
+
+
     public ServerListPanel()
     {
         ImageIcon image = new ImageIcon("Images/pi_logo2.png");
@@ -59,20 +98,8 @@ public class ServerListPanel
     public void createJTable()
     {
         String[] columnNames = {"SERVER NAME: ", "PORT NUMBER: "};
-        Object[][] data =
-                {
-                        {"SERVER", "PORT"},
-                        {"SERVER", "PORT"},
-                        {"SERVER", "PORT"},
-                        {"SERVER", "PORT"},
-                        {"SERVER", "PORT"},
-                        {"SERVER", "PORT"},
-                        {"SERVER", "PORT"},
-                        {"SERVER", "PORT"},
-                        {"SERVER", "PORT"},
 
-                };
-        DefaultTableModel model = new DefaultTableModel(data, columnNames);
+        DefaultTableModel model = new DefaultTableModel(DesktopClientController.data, columnNames);
         JTable table = new JTable( model )
         {
             public Class getColumnClass(int column)
@@ -92,6 +119,22 @@ public class ServerListPanel
         cancelButton = new JButton("Cancel");
         connectButton = new JButton("Connect");
         addServerButton = new JButton("Add Server");
+
+        cancelButton.addActionListener(new ActionListener() {
+            @Override public void actionPerformed(ActionEvent e) {
+                DesktopClientController.replacePanel(new AuthenticationPanel().getAuthenticationPanel(),"SRAS - Login");
+            }});
+
+        connectButton.addActionListener(new ActionListener() {
+            @Override public void actionPerformed(ActionEvent e) {
+                DesktopClientController.replacePanel(new DeviceControlPanel().getPanel(), "SRAS - Device Control Panel");
+            }});
+
+       addServerButton.addActionListener(new ActionListener() {
+           @Override public void actionPerformed(ActionEvent e) {
+               DesktopClientController.replacePanel(new AddServerPanel().getAddServerPanel(),"SRAS - Add Server");
+           }});
+
         serverListButtonPanel.add(connectButton);
         serverListButtonPanel.add(addServerButton);
         serverListButtonPanel.add(cancelButton);
