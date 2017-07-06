@@ -25,40 +25,6 @@ public class ServerListPanel
     FlowLayout flow = new FlowLayout(10,22,10);
     GridLayout grid = new GridLayout(2,1,25,25);
     GridLayout grid2 = new GridLayout(1,1,25,25);
-
-
-
-
-
-
-            /*{
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-
-            };*/
-
-
-
-
     public ServerListPanel()
     {
         ImageIcon image = new ImageIcon("Images/pi_logo2.png");
@@ -98,8 +64,32 @@ public class ServerListPanel
     public void createJTable()
     {
         String[] columnNames = {"SERVER NAME: ", "PORT NUMBER: "};
+        Object[][] data =
+                {
+                        {"SERVER", "PORT"},
+                        {"SERVER", "PORT"},
+                        {"SERVER", "PORT"},
+                        {"SERVER", "PORT"},
+                        {"SERVER", "PORT"},
+                        {"SERVER", "PORT"},
+                        {"SERVER", "PORT"},
+                        {"SERVER", "PORT"},
+                        {"SERVER", "PORT"},
+                        {"SERVER", "PORT"},
+                        {"SERVER", "PORT"},
+                        {"SERVER", "PORT"},
+                        {"SERVER", "PORT"},
+                        {"SERVER", "PORT"},
+                        {"SERVER", "PORT"},
+                        {"SERVER", "PORT"},
+                        {"SERVER", "PORT"},
+                        {"SERVER", "PORT"},
+                        {"SERVER", "PORT"},
+                        {"SERVER", "PORT"},
+                        {"SERVER", "PORT"},
 
-        DefaultTableModel model = new DefaultTableModel(DesktopClientController.data, columnNames);
+                };
+        DefaultTableModel model = new DefaultTableModel(data, columnNames);
         JTable table = new JTable( model )
         {
             public Class getColumnClass(int column)
@@ -122,17 +112,17 @@ public class ServerListPanel
 
         cancelButton.addActionListener(new ActionListener() {
             @Override public void actionPerformed(ActionEvent e) {
-                DesktopClientController.replacePanel(new AuthenticationPanel().getAuthenticationPanel(),"SRAS - Login");
+                DesktopClientController.replacePanel(new AuthenticationPanel().getAuthenticationPanel());
             }});
 
         connectButton.addActionListener(new ActionListener() {
             @Override public void actionPerformed(ActionEvent e) {
-                DesktopClientController.replacePanel(new DeviceControlPanel().getPanel(), "SRAS - Device Control Panel");
+                DesktopClientController.replacePanel(new DeviceControlPanel().getPanel());
             }});
 
        addServerButton.addActionListener(new ActionListener() {
            @Override public void actionPerformed(ActionEvent e) {
-               DesktopClientController.replacePanel(new AddServerPanel().getAddServerPanel(),"SRAS - Add Server");
+               DesktopClientController.replacePanel(new AddServerPanel().getAddServerPanel());
            }});
 
         serverListButtonPanel.add(connectButton);

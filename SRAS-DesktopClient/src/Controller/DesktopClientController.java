@@ -7,26 +7,16 @@ import DesktopGUI.*;
 public class DesktopClientController {
     static MainFrame frame1;
     static JPanel DevicePanel;
-
-    public static Object[][] data = new Object[10][2];
-    public static int currentRow = 0;
-
     public static void main(String [] args)
     {
-
         new AuthenticationPanel();
-        data[0][0] = "";
-        data[0][1]="";
         frame1 = new MainFrame(new AuthenticationPanel().getAuthenticationPanel());
-        frame1.renameFrame("SRAS - Server List");
+        frame1.renameFrame("SRAS Server List");
     }
 
-
-    public static void replacePanel(JPanel panelInput, String title)
-    {
-        frame1.replacePanel(panelInput,title);
+    public static void replacePanel(JPanel panelInput){
+        frame1.replacePanel(panelInput);
     }
-
     public static boolean isValidUser(){
         boolean isValid = true;
         if (isValid){

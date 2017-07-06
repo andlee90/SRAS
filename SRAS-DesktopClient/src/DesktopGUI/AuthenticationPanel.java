@@ -109,7 +109,7 @@ public class AuthenticationPanel
             public void actionPerformed(ActionEvent e) {
                 User userIn = new User(username.getText(),password.getText(),"","","","");
                 if(DesktopClientController.isValidUser()){
-                    DesktopClientController.replacePanel(new ServerListPanel().getServerListPanel(),"SRAS - Server List");
+                    DesktopClientController.replacePanel(new ServerListPanel().getServerListPanel());
                 }
                 else
                     System.out.println("Username or Password are incorrect");

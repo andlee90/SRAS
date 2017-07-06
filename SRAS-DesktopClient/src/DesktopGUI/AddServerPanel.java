@@ -2,7 +2,6 @@ package DesktopGUI;
 
 import CommModels.*;
 import Controller.DesktopClientController;
-import com.sun.security.ntlm.Server;
 
 import javax.swing.*;
 import java.awt.*;
@@ -105,15 +104,12 @@ public class AddServerPanel
         Message messageBack = new Message("");
         AddServerButton = new JButton("Add Server");
         AddServerButton.setBounds(50,150,100,30);
-        AddServerButton.addActionListener(new ActionListener()
-        {
+        AddServerButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                DesktopClientController.data[DesktopClientController.currentRow][0]=hostName.getText();
-                DesktopClientController.data[DesktopClientController.currentRow][1] = portNumber.getText();
-                DesktopClientController.currentRow++;
-                DesktopClientController.replacePanel(new ServerListPanel().getServerListPanel(), "SRAS - Server List");
+            public void actionPerformed(ActionEvent e) {
+                User userIn = new User(hostName.getText(), portNumber.getText(),"","","","");
+
+                DesktopClientController.replacePanel(new ServerListPanel().getServerListPanel());
             }
         });
 
@@ -124,7 +120,7 @@ public class AddServerPanel
         AuthenticationCancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DesktopClientController.replacePanel(new ServerListPanel().getServerListPanel(), "SRAS - Server List");
+                DesktopClientController.replacePanel(new ServerListPanel().getServerListPanel());
             }
         });
 
