@@ -1,8 +1,11 @@
 package Database;
 
+import CommModels.Device;
+import CommModels.Devices;
 import Main.Main;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 import static Database.DBQueries.getSelectUserByUsernameAndPassword;
 
@@ -46,8 +49,10 @@ public class DBHelper
 
                     insertUser("admin", "drowssap", "admin@admin.com", "admin", "admin", 1);
                     System.out.println("> [" + Main.getDate() + "] Default admin user added to users table");
-                }
 
+                    insertDevice(1, "LED1", "LED", "AVAILABLE");
+                    System.out.println("> [" + Main.getDate() + "] Default device added to devices table");
+                }
             }
         }
         catch (SQLException e)
@@ -138,6 +143,30 @@ public class DBHelper
     }
 
     /**
+     * Insert a new row into the devices table
+     * @param pin device pin of the device to be inserted.
+     * @param name device name of the device to be inserted.
+     * @param type device type of the device to be inserted.
+     * @param status device status of the device to be inserted.
+     */
+    static void insertDevice(int pin, String name, String type, String status)
+    {
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(DBQueries.getInsertDeviceQuery()))
+        {
+            pstmt.setInt(1, pin);
+            pstmt.setString(2, name);
+            pstmt.setString(3, type);
+            pstmt.setString(4, status);
+            pstmt.executeUpdate();
+        }
+        catch (SQLException e)
+        {
+            System.out.println("> [" + Main.getDate() + "] " + e.getMessage());
+        }
+    }
+
+    /**
      * Returns an user id for the corresponding username and password from the users table.
      *
      * @param username the username of the user to select.
@@ -145,7 +174,7 @@ public class DBHelper
      */
     public static int selectUserIdByUsernameAndPassword(String username, String password)
     {
-        int userId = 0;
+        int userId;
         try (Connection conn = connect();
              PreparedStatement pstmt = conn.prepareStatement(getSelectUserByUsernameAndPassword()))
         {
@@ -158,8 +187,35 @@ public class DBHelper
         catch (SQLException e)
         {
             System.out.println("> [" + Main.getDate() + "] DB: No such user found: " + e.getMessage());
+            return 0;
         }
 
         return userId;
+    }
+
+    public static Devices selectAllDevices()
+    {
+        String sql = "SELECT device_pin,device_name,device_type,device_status FROM devices";
+        Devices devices = new Devices();
+
+        try (Connection conn = connect();
+             Statement stmt  = conn.createStatement();
+             ResultSet rs    = stmt.executeQuery(sql))
+        {
+            while (rs.next())
+            {
+                Device device = new Device(rs.getInt("device_pin"),
+                        rs.getString("device_name"),
+                        rs.getString("device_type"),
+                        rs.getString("device_status"));
+                devices.addDevice(device);
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println("> [" + Main.getDate() + "] " + e.getMessage());
+        }
+
+        return devices;
     }
 }

@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import CommModels.Devices;
 import CommModels.Message;
 import CommModels.User;
 
@@ -37,6 +38,9 @@ public class ServerConnectionManager extends AsyncTask<String, Void, String>
     protected String doInBackground(String... strings)
     {
         Message message = new Message("Hello");
+        Devices devices = new Devices();
+        //Device d = new Device(2, "Thing", null, null);
+
         try
         {
             Socket socket = new Socket(mHost, 50873);
@@ -48,6 +52,9 @@ public class ServerConnectionManager extends AsyncTask<String, Void, String>
             {
                 mOutputStream.writeObject(message); // Send message to server
                 message = (Message) mInputStream.readObject();
+                devices = (Devices) mInputStream.readObject();
+
+                //devices.addDevice(d);
             }
 
             mOutputStream.close();
@@ -58,7 +65,9 @@ public class ServerConnectionManager extends AsyncTask<String, Void, String>
         {
             e.printStackTrace();
         }
-        return message.getMessage();
+        //return message.getMessage();
+
+        return devices.getDeviceById(0).getDeviceName();
     }
 
     @Override

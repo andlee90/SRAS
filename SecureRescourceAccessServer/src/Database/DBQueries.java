@@ -49,6 +49,7 @@ class DBQueries
     {
         return "CREATE TABLE IF NOT EXISTS devices (\n"
                 + "device_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,\n"
+                + "device_pin INTEGER NOT NULL UNIQUE,\n"
                 + "device_name TEXT NOT NULL UNIQUE,\n"
                 + "device_type TEXT NOT NULL UNIQUE,\n"
                 + "device_status TEXT NOT NULL UNIQUE\n"
@@ -64,6 +65,11 @@ class DBQueries
     static String getInsertRoleQuery()
     {
         return "INSERT INTO roles(role_name) VALUES(?)";
+    }
+
+    static String getInsertDeviceQuery()
+    {
+        return "INSERT INTO devices(device_pin,device_name,device_type,device_status) VALUES(?,?,?,?)";
     }
 
     static String getSelectUserByUsernameAndPassword()

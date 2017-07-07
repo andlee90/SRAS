@@ -1,5 +1,6 @@
 package Networking;
 
+import CommModels.Devices;
 import CommModels.Message;
 import CommModels.User;
 import Database.DBHelper;
@@ -38,16 +39,17 @@ public class ClientManager extends Thread
             ObjectOutputStream serverOutputStream = new ObjectOutputStream(socket.getOutputStream());
 
             User user = (User)serverInputStream.readObject();
-            int userId = authenticateUser(user);
-            serverOutputStream.writeObject(user);
 
-            if (userId != 0)
+            if (authenticateUser(user))
             {
+                serverOutputStream.writeObject(user);
                 Message message = (Message)serverInputStream.readObject(); // Get test message from client
                 System.out.println("> [" + Main.getDate() + "] " + message.getMessage());
 
                 message.setMessage("And a hello to you too");
                 serverOutputStream.writeObject(message);
+
+                serverOutputStream.writeObject(getDevices());
             }
             serverOutputStream.writeObject(user);
             close();
@@ -66,15 +68,20 @@ public class ClientManager extends Thread
         this.socket.close();
     }
 
-    private int authenticateUser(User u)
+    private boolean authenticateUser(User u)
     {
-        int userId = 0;
-        userId = DBHelper.selectUserIdByUsernameAndPassword(u.getUserName(), u.getPassword());
+        int userId = DBHelper.selectUserIdByUsernameAndPassword(u.getUserName(), u.getPassword());
 
         if (userId != 0)
         {
             u.setValidity(true);
         }
-        return userId;
+
+        return u.getValidity();
+    }
+
+    private Devices getDevices()
+    {
+        return DBHelper.selectAllDevices();
     }
 }
