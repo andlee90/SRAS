@@ -23,6 +23,8 @@
         </activity>
         <activity android:name=".ResourceListActivity" >
         </activity>
+        <activity android:name=".AddServerActivity" >
+        </activity>
     </application>
 
 </manifest>

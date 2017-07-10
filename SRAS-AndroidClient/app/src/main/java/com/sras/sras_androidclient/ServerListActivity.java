@@ -1,6 +1,7 @@
 package com.sras.sras_androidclient;
 
 import android.app.LoaderManager;
+import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -68,7 +69,8 @@ public class ServerListActivity extends AppCompatActivity implements LoaderManag
     {
         if(item.getItemId() == R.id.add_server)
         {
-            // Add new server activity
+            Intent intent = new Intent(getApplicationContext(), AddServerActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
