@@ -1,7 +1,6 @@
 package com.sras.sras_androidclient;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
@@ -12,7 +11,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import static com.sras.sras_androidclient.MainActivity.PREFERENCES;
 import static com.sras.sras_androidclient.R.id.button_accept;
 import static com.sras.sras_androidclient.R.id.edit_host;
 import static com.sras.sras_androidclient.R.id.edit_pass;
@@ -35,10 +33,10 @@ public class LoginActivity extends AppCompatActivity implements TextView.OnEdito
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        SharedPreferences settings = getSharedPreferences(PREFERENCES, 0);
+        /*SharedPreferences settings = getSharedPreferences(PREFERENCES, 0);
         mHost = settings.getString("host", "");
         mUser = settings.getString("user", "");
-        mPass = settings.getString("pass", "");
+        mPass = settings.getString("pass", "");*/
 
         mHostField = (EditText) findViewById(edit_host);
         mHostField.setText(mHost);
@@ -62,12 +60,12 @@ public class LoginActivity extends AppCompatActivity implements TextView.OnEdito
         {
             if (mHost != null && mUser != null && mPass != null)
             {
-                SharedPreferences settings = getSharedPreferences(PREFERENCES, 0);
+                /*SharedPreferences settings = getSharedPreferences(PREFERENCES, 0);
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putString("host", mHost);
                 editor.putString("user", mUser);
                 editor.putString("pass", mPass);
-                editor.apply();
+                editor.apply();*/
 
                 Intent intent = new Intent(getApplicationContext(), ResourceListActivity.class);
                 startActivity(intent);
@@ -89,33 +87,33 @@ public class LoginActivity extends AppCompatActivity implements TextView.OnEdito
         {
             if (mHost != null)
             {
-                SharedPreferences settings = getSharedPreferences(PREFERENCES, 0);
+                /*SharedPreferences settings = getSharedPreferences(PREFERENCES, 0);
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putString("host", mHost);
                 editor.apply();
-                finish();
+                finish();*/
             }
         }
         else if (view.getId() == R.id.edit_user)
         {
             if (mUser != null)
             {
-                SharedPreferences settings = getSharedPreferences(PREFERENCES, 0);
+                /*SharedPreferences settings = getSharedPreferences(PREFERENCES, 0);
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putString("host", mUser);
                 editor.apply();
-                finish();
+                finish();*/
             }
         }
         else if (view.getId() == R.id.edit_pass)
         {
             if (mPass != null)
             {
-                SharedPreferences settings = getSharedPreferences(PREFERENCES, 0);
+                /*SharedPreferences settings = getSharedPreferences(PREFERENCES, 0);
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putString("host", mPass);
                 editor.apply();
-                finish();
+                finish();*/
             }
         }
     }

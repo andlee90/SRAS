@@ -1,7 +1,6 @@
 package com.sras.sras_androidclient;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -12,7 +11,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import static com.sras.sras_androidclient.MainActivity.PREFERENCES;
 
 public class ResourceListActivity extends AppCompatActivity implements View.OnClickListener
 {
@@ -30,10 +28,10 @@ public class ResourceListActivity extends AppCompatActivity implements View.OnCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_resource_list);
 
-        SharedPreferences settings = getSharedPreferences(PREFERENCES, 0);
+        /*SharedPreferences settings = getSharedPreferences(PREFERENCES, 0);
         mHost = settings.getString("host", "");
         mUser = settings.getString("user", "");
-        mPass = settings.getString("pass", "");
+        mPass = settings.getString("pass", "");*/
 
         mHostView = (TextView) findViewById(R.id.host_view);
         mHostView.setText(mHost);
