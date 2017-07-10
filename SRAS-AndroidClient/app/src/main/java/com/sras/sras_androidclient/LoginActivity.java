@@ -12,18 +12,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import static com.sras.sras_androidclient.R.id.button_accept;
-import static com.sras.sras_androidclient.R.id.edit_host;
+import static com.sras.sras_androidclient.R.id.button_cancel;
 import static com.sras.sras_androidclient.R.id.edit_pass;
 import static com.sras.sras_androidclient.R.id.edit_user;
 
 public class LoginActivity extends AppCompatActivity implements TextView.OnEditorActionListener,
         View.OnClickListener, View.OnFocusChangeListener
 {
-    private String mHost;
+    private int mServerId;
+
     private String mUser;
     private String mPass;
 
-    private EditText mHostField;
     private EditText mUserField;
     private EditText mPassField;
 
@@ -33,17 +33,10 @@ public class LoginActivity extends AppCompatActivity implements TextView.OnEdito
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        /*SharedPreferences settings = getSharedPreferences(PREFERENCES, 0);
-        mHost = settings.getString("host", "");
-        mUser = settings.getString("user", "");
-        mPass = settings.getString("pass", "");*/
-
-        mHostField = (EditText) findViewById(edit_host);
-        mHostField.setText(mHost);
-        mHostField.setOnEditorActionListener(this);
+        Intent intent = getIntent();
+        mServerId = intent.getIntExtra(Intent.EXTRA_KEY_EVENT, 0);
 
         mUserField = (EditText) findViewById(edit_user);
-        mUserField.setText(mUser);
         mUserField.setOnEditorActionListener(this);
 
         mPassField = (EditText) findViewById(edit_pass);
@@ -51,6 +44,9 @@ public class LoginActivity extends AppCompatActivity implements TextView.OnEdito
 
         Button acceptButton = (Button) findViewById(button_accept);
         acceptButton.setOnClickListener(this);
+
+        Button cancelButton = (Button) findViewById(button_cancel);
+        cancelButton.setOnClickListener(this);
     }
 
     @Override
@@ -58,17 +54,15 @@ public class LoginActivity extends AppCompatActivity implements TextView.OnEdito
     {
         if (view.getId() == R.id.button_accept)
         {
-            if (mHost != null && mUser != null && mPass != null)
+            if (mUser != null && mPass != null)
             {
-                /*SharedPreferences settings = getSharedPreferences(PREFERENCES, 0);
-                SharedPreferences.Editor editor = settings.edit();
-                editor.putString("host", mHost);
-                editor.putString("user", mUser);
-                editor.putString("pass", mPass);
-                editor.apply();*/
+                // Start new Service
 
-                Intent intent = new Intent(getApplicationContext(), ResourceListActivity.class);
-                startActivity(intent);
+                /*Intent intent = new Intent(getApplicationContext(), ResourceListActivity.class);
+                startActivity(intent);*/
+                ServerDBHelper serverDBHelper = new ServerDBHelper(getApplicationContext());
+                serverDBHelper.updateServerWithUserAndPass(mServerId, mUser, mPass);
+                finish();
 
             }
             else
@@ -78,42 +72,27 @@ public class LoginActivity extends AppCompatActivity implements TextView.OnEdito
                 toast.show();
             }
         }
+        else if (view.getId() == R.id.button_cancel)
+        {
+            finish();
+        }
     }
 
     @Override
     public void onFocusChange(View view, boolean b)
     {
-        if (view.getId() == R.id.edit_host)
-        {
-            if (mHost != null)
-            {
-                /*SharedPreferences settings = getSharedPreferences(PREFERENCES, 0);
-                SharedPreferences.Editor editor = settings.edit();
-                editor.putString("host", mHost);
-                editor.apply();
-                finish();*/
-            }
-        }
-        else if (view.getId() == R.id.edit_user)
+        if (view.getId() == R.id.edit_user)
         {
             if (mUser != null)
             {
-                /*SharedPreferences settings = getSharedPreferences(PREFERENCES, 0);
-                SharedPreferences.Editor editor = settings.edit();
-                editor.putString("host", mUser);
-                editor.apply();
-                finish();*/
+                // TODO: Still gotta figure this one out.
             }
         }
         else if (view.getId() == R.id.edit_pass)
         {
             if (mPass != null)
             {
-                /*SharedPreferences settings = getSharedPreferences(PREFERENCES, 0);
-                SharedPreferences.Editor editor = settings.edit();
-                editor.putString("host", mPass);
-                editor.apply();
-                finish();*/
+
             }
         }
     }
@@ -123,13 +102,6 @@ public class LoginActivity extends AppCompatActivity implements TextView.OnEdito
     {
         switch(textView.getId())
         {
-            case R.id.edit_host:
-                if (actionId == EditorInfo.IME_ACTION_DONE)
-                {
-                    mHost = mHostField.getText().toString();
-                }
-                break;
-
             case R.id.edit_user:
                 if (actionId == EditorInfo.IME_ACTION_DONE)
                 {

@@ -2,19 +2,26 @@ package com.sras.sras_androidclient;
 
 public class ServerItem
 {
+    private int id;
     private String name;
     private String address;
     private int port;
     private String username;
     private String password;
 
-    public ServerItem(String n, String a, int p, String user, String pass)
+    public ServerItem(int id, String n, String a, int p, String user, String pass)
     {
+        this.id = id;
         this.name = n;
         this.address = a;
         this.port = p;
         this.username = user;
         this.password = pass;
+    }
+
+    public int getId()
+    {
+        return this.id;
     }
 
     public String getName()

@@ -27,7 +27,8 @@ public class ServerDBLoader extends AsyncTaskLoader<List<ServerItem>>
 
         while (cursor.moveToNext())
         {
-            servers.add(new ServerItem(cursor.getString(cursor.getColumnIndex("server_name")),
+            servers.add(new ServerItem(cursor.getInt(cursor.getColumnIndex("_id")),
+                    cursor.getString(cursor.getColumnIndex("server_name")),
                     cursor.getString(cursor.getColumnIndex("server_address")),
                     cursor.getInt(cursor.getColumnIndex("server_port")),
                     cursor.getString(cursor.getColumnIndex("server_username")),

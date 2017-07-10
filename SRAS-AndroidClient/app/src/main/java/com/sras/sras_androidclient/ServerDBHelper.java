@@ -75,6 +75,18 @@ public class ServerDBHelper extends SQLiteOpenHelper
         return true;
     }
 
+    public boolean updateServerWithUserAndPass(Integer id, String username, String password)
+    {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(SERVERS_COLUMN_USERNAME, username);
+        contentValues.put(SERVERS_COLUMN_PASSWORD, password);
+        db.update(SERVERS_TABLE_NAME, contentValues, SERVERS_COLUMN_ID + " = ? ", new String[]
+                {Integer.toString(id)});
+
+        return true;
+    }
+
     public Cursor getServer(int id)
     {
         SQLiteDatabase db = this.getReadableDatabase();
