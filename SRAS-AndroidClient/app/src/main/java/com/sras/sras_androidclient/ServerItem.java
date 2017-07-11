@@ -44,6 +44,11 @@ public class ServerItem
         return this.username;
     }
 
+    public String getPassword()
+    {
+        return this.password;
+    }
+
     public void setName(String n)
     {
         this.name = n;

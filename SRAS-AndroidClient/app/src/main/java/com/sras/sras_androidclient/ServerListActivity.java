@@ -1,9 +1,13 @@
 package com.sras.sras_androidclient;
 
 import android.app.LoaderManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.List;
 
 public class ServerListActivity extends AppCompatActivity implements AdapterView.OnItemClickListener,
@@ -22,6 +27,9 @@ public class ServerListActivity extends AppCompatActivity implements AdapterView
 
     private ListView mListView;
     private List<ServerItem> mServerList;
+
+    ServerConnectionService mService;
+    boolean mBound = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -36,9 +44,24 @@ public class ServerListActivity extends AppCompatActivity implements AdapterView
     }
 
     @Override
-    protected void onResume()
+    protected void onStart()
     {
-        super.onResume();
+        super.onStart();
+
+        Intent intent = new Intent(this, ServerConnectionService.class);
+        //startService(intent);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
+        if (mBound)
+        {
+            unbindService(mConnection);
+            mBound = false;
+        }
     }
 
     @Override
@@ -92,10 +115,20 @@ public class ServerListActivity extends AppCompatActivity implements AdapterView
 
         if(server.getUsername() != null)
         {
-            // Start new service
-            String toastContent = "All good under the hood!";
-            Toast toast = Toast.makeText(getApplicationContext(), toastContent, Toast.LENGTH_LONG);
-            toast.show();
+            if(mBound)
+            {
+                try
+                {
+                    mService.setParams(server.getAddress(), server.getPort(), server.getUsername(), server.getPassword());
+                    String result = mService.connectToServer();
+                    //String toastContent = "All good under the hood!";
+                    Toast toast = Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG);
+                    toast.show();
+                } catch (IOException | ClassNotFoundException | InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+            }
         }
         else
         {
@@ -104,4 +137,22 @@ public class ServerListActivity extends AppCompatActivity implements AdapterView
             startActivity(intent);
         }
     }
+
+    private ServiceConnection mConnection = new ServiceConnection()
+    {
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service)
+        {
+            ServerConnectionService.ServerConnectionBinder binder = (ServerConnectionService.ServerConnectionBinder) service;
+            mService = binder.getService();
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0)
+        {
+            unbindService(mConnection);
+            mBound = false;
+        }
+    };
 }
