@@ -1,4 +1,4 @@
-package com.sras.sras_androidclient;
+package com.sras.sras_androidclient.Models;
 
 public class ServerItem
 {

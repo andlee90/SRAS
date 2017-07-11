@@ -1,4 +1,4 @@
-package com.sras.sras_androidclient;
+package com.sras.sras_androidclient.Services;
 
 
 import android.app.Service;
@@ -30,7 +30,7 @@ public class ServerConnectionService extends Service
 
     public class ServerConnectionBinder extends Binder
     {
-        ServerConnectionService getService()
+        public ServerConnectionService getService()
         {
             return ServerConnectionService.this;
         }
@@ -38,7 +38,6 @@ public class ServerConnectionService extends Service
 
     private class ConnectionThread extends Thread
     {
-        private volatile String result;
         private volatile Devices devices = new Devices();
 
         @Override
@@ -49,7 +48,6 @@ public class ServerConnectionService extends Service
                 mSocket = new Socket(mServerAddress, mServerPort);
                 mOutputStream = new ObjectOutputStream(mSocket.getOutputStream());
                 mInputStream = new ObjectInputStream(mSocket.getInputStream());
-
                 Message message = new Message("Hello");
 
                 if (isAuthenticated(mUsername, mPassword))
@@ -59,18 +57,11 @@ public class ServerConnectionService extends Service
                     devices = (Devices) mInputStream.readObject();
                 }
 
-                //result = devices.getDeviceById(0).getDeviceName();
-                //result = message.getMessage();
-
-            } catch (IOException | ClassNotFoundException e)
+            }
+            catch (IOException | ClassNotFoundException e)
             {
                 e.printStackTrace();
             }
-        }
-
-        public String getResult()
-        {
-            return result;
         }
 
         public Devices getDevices()
@@ -90,6 +81,7 @@ public class ServerConnectionService extends Service
         ConnectionThread ct = new ConnectionThread();
         Thread t = new Thread(ct);
         t.start();
+        // TODO: Timeout if connection takes too long.
         t.join();
 
         return ct.getDevices();
@@ -106,7 +98,6 @@ public class ServerConnectionService extends Service
     private boolean isAuthenticated(String un, String p) throws IOException, ClassNotFoundException
     {
         User user = new User(un, p, "", "", "", "");
-
         mOutputStream.writeObject(user);
         user = (User)mInputStream.readObject();
 

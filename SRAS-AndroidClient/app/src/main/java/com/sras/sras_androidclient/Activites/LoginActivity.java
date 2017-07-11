@@ -1,4 +1,4 @@
-package com.sras.sras_androidclient;
+package com.sras.sras_androidclient.Activites;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +10,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.sras.sras_androidclient.Database.ServerDBHelper;
+import com.sras.sras_androidclient.R;
 
 import static com.sras.sras_androidclient.R.id.button_accept;
 import static com.sras.sras_androidclient.R.id.button_cancel;
@@ -57,13 +60,11 @@ public class LoginActivity extends AppCompatActivity implements TextView.OnEdito
             if (mUser != null && mPass != null)
             {
                 // Start new Service
-
-                /*Intent intent = new Intent(getApplicationContext(), ResourceListActivity.class);
-                startActivity(intent);*/
+                Intent intent = new Intent(getApplicationContext(), ResourceListActivity.class);
+                startActivity(intent);
                 ServerDBHelper serverDBHelper = new ServerDBHelper(getApplicationContext());
                 serverDBHelper.updateServerWithUserAndPass(mServerId, mUser, mPass);
                 finish();
-
             }
             else
             {

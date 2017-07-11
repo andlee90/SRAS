@@ -12,22 +12,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ServerListActivity">
+        <activity android:name=".Activites.ServerListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity" >
+        <activity android:name=".Activites.LoginActivity" >
         </activity>
-        <activity android:name=".ResourceListActivity" >
+        <activity android:name=".Activites.ResourceListActivity" >
         </activity>
-        <activity android:name=".AddServerActivity" >
+        <activity android:name=".Activites.AddServerActivity" >
         </activity>
-        <activity android:name=".EditServerActivity" >
+        <activity android:name=".Activites.EditServerActivity" >
         </activity>
-        <service android:name=".ServerConnectionService" >
+        <service android:name=".Services.ServerConnectionService" >
         </service>
     </application>
 

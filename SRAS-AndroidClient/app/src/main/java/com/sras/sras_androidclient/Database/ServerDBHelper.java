@@ -1,4 +1,4 @@
-package com.sras.sras_androidclient;
+package com.sras.sras_androidclient.Database;
 
 import android.content.ContentValues;
 import android.content.Context;

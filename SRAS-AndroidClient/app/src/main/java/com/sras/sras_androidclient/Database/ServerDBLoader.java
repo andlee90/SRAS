@@ -1,8 +1,10 @@
-package com.sras.sras_androidclient;
+package com.sras.sras_androidclient.Database;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.database.Cursor;
+
+import com.sras.sras_androidclient.Models.ServerItem;
 
 import java.util.ArrayList;
 import java.util.List;

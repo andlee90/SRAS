@@ -1,4 +1,4 @@
-package com.sras.sras_androidclient;
+package com.sras.sras_androidclient.Activites;
 
 import android.app.LoaderManager;
 import android.content.ComponentName;
@@ -20,6 +20,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.sras.sras_androidclient.Database.ServerDBLoader;
+import com.sras.sras_androidclient.R;
+import com.sras.sras_androidclient.Models.ServerItem;
+import com.sras.sras_androidclient.Services.ServerConnectionService;
 
 import java.io.IOException;
 import java.util.List;

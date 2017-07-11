@@ -1,4 +1,4 @@
-package com.sras.sras_androidclient;
+package com.sras.sras_androidclient.Activites;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +10,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.sras.sras_androidclient.Database.ServerDBHelper;
+import com.sras.sras_androidclient.R;
 
 public class EditServerActivity extends AppCompatActivity implements TextView.OnEditorActionListener,
         View.OnClickListener
