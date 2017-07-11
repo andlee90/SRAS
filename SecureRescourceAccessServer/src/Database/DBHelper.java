@@ -52,6 +52,9 @@ public class DBHelper
 
                     insertDevice(1, "LED1", "LED", "AVAILABLE");
                     System.out.println("> [" + Main.getDate() + "] Default device added to devices table");
+
+                    insertDevice(2, "LED2", "LED", "AVAILABLE");
+                    System.out.println("> [" + Main.getDate() + "] Default device added to devices table");
                 }
             }
         }

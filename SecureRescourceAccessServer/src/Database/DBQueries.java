@@ -51,8 +51,8 @@ class DBQueries
                 + "device_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,\n"
                 + "device_pin INTEGER NOT NULL UNIQUE,\n"
                 + "device_name TEXT NOT NULL UNIQUE,\n"
-                + "device_type TEXT NOT NULL UNIQUE,\n"
-                + "device_status TEXT NOT NULL UNIQUE\n"
+                + "device_type TEXT NOT NULL,\n"
+                + "device_status TEXT NOT NULL\n"
                 + ");";
     }
 
