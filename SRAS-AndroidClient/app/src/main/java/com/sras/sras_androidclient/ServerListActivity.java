@@ -15,10 +15,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.List;
+
+import CommModels.Devices;
 
 public class ServerListActivity extends AppCompatActivity implements AdapterView.OnItemClickListener,
         LoaderManager.LoaderCallbacks<List<ServerItem>>
@@ -120,10 +121,15 @@ public class ServerListActivity extends AppCompatActivity implements AdapterView
                 try
                 {
                     mService.setParams(server.getAddress(), server.getPort(), server.getUsername(), server.getPassword());
-                    String result = mService.connectToServer();
+                    //String result = mService.connectToServer();
                     //String toastContent = "All good under the hood!";
-                    Toast toast = Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG);
-                    toast.show();
+                    //Toast toast = Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG);
+                    //toast.show();
+                    Devices devices = mService.connectToServer();
+                    Intent intent = new Intent(getApplicationContext(), ResourceListActivity.class);
+                    intent.putExtra("devices", devices);
+                    startActivity(intent);
+
                 } catch (IOException | ClassNotFoundException | InterruptedException e)
                 {
                     e.printStackTrace();

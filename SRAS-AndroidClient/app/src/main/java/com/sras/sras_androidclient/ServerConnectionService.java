@@ -39,6 +39,7 @@ public class ServerConnectionService extends Service
     private class ConnectionThread extends Thread
     {
         private volatile String result;
+        private volatile Devices devices = new Devices();
 
         @Override
         public void run()
@@ -50,7 +51,6 @@ public class ServerConnectionService extends Service
                 mInputStream = new ObjectInputStream(mSocket.getInputStream());
 
                 Message message = new Message("Hello");
-                Devices devices = new Devices();
 
                 if (isAuthenticated(mUsername, mPassword))
                 {
@@ -60,7 +60,7 @@ public class ServerConnectionService extends Service
                 }
 
                 //result = devices.getDeviceById(0).getDeviceName();
-                result = message.getMessage();
+                //result = message.getMessage();
 
             } catch (IOException | ClassNotFoundException e)
             {
@@ -72,6 +72,11 @@ public class ServerConnectionService extends Service
         {
             return result;
         }
+
+        public Devices getDevices()
+        {
+            return devices;
+        }
     }
 
     @Override
@@ -80,14 +85,14 @@ public class ServerConnectionService extends Service
         return mBinder;
     }
 
-    public String connectToServer() throws IOException, ClassNotFoundException, InterruptedException
+    public Devices connectToServer() throws IOException, ClassNotFoundException, InterruptedException
     {
         ConnectionThread ct = new ConnectionThread();
         Thread t = new Thread(ct);
         t.start();
         t.join();
 
-        return ct.getResult();
+        return ct.getDevices();
     }
 
     public void setParams(String addr, int port, String user, String pass)
