@@ -7,8 +7,8 @@ import DesktopGUI.*;
 public class DesktopClientController {
     static MainFrame frame1;
     static JPanel DevicePanel;
-
-    public static Object[][] data = new Object[10][2];
+    public final static int maxServers = 20;
+    public static Object[][] data = new Object[maxServers][2];
     public static int currentRow = 0;
 
     public static void main(String [] args)

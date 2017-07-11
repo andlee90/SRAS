@@ -27,38 +27,6 @@ public class ServerListPanel
     GridLayout grid2 = new GridLayout(1,1,25,25);
 
 
-
-
-
-
-            /*{
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-                    {"SERVER", "PORT"},
-
-            };*/
-
-
-
-
     public ServerListPanel()
     {
         ImageIcon image = new ImageIcon("Images/pi_logo2.png");
