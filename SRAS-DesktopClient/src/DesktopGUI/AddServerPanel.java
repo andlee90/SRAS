@@ -12,19 +12,19 @@ import java.awt.event.*;
 public class AddServerPanel
 {
 
-    JLabel imageLabel;
-    JPanel picturePanel;
+    private JLabel imageLabel;
+    private  JPanel picturePanel;
 
-    JPanel AddServerPanel;
-    JPanel GridAddServer;
-    JButton AddServerButton;
-    JButton AuthenticationCancel;
+    private JPanel AddServerPanel;
+    private JPanel GridAddServer;
+    private JButton AddServerButton;
+    private JButton AuthenticationCancel;
 
-    JLabel HostnameLabel;
-    JLabel PortNumberLabel;
+    private JLabel HostnameLabel;
+    private JLabel PortNumberLabel;
 
-    JTextField hostName;
-    JTextField portNumber;
+    private  JTextField hostName;
+    private  JTextField portNumber;
 
 
 
@@ -78,7 +78,6 @@ public class AddServerPanel
         AddServerPanel.add(hostName);
 
 
-
         portNumber = new JTextField();
         portNumber.setBounds(100,75,150,30);
         AddServerPanel.add(portNumber);
@@ -112,7 +111,8 @@ public class AddServerPanel
             {
                 DesktopClientController.data[DesktopClientController.currentRow][0]=hostName.getText();
                 DesktopClientController.data[DesktopClientController.currentRow][1] = portNumber.getText();
-                DesktopClientController.currentRow++;
+                if(DesktopClientController.currentRow<DesktopClientController.maxServers)
+                    DesktopClientController.currentRow++;
                 DesktopClientController.replacePanel(new ServerListPanel().getServerListPanel(), "SRAS - Server List");
             }
         });
