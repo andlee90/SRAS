@@ -2,7 +2,6 @@ package DesktopGUI;
 
 import CommModels.*;
 import Controller.DesktopClientController;
-import com.sun.security.ntlm.Server;
 
 import javax.swing.*;
 import java.awt.*;

@@ -6,7 +6,6 @@ import DesktopGUI.*;
  */
 public class DesktopClientController {
     static MainFrame frame1;
-    static JPanel DevicePanel;
     public final static int maxServers = 20;
     public static Object[][] data = new Object[maxServers][2];
     public static int currentRow = 0;
@@ -27,9 +26,11 @@ public class DesktopClientController {
         frame1.replacePanel(panelInput,title);
     }
 
-    public static boolean isValidUser(){
+    public static boolean isValidUser()
+    {
         boolean isValid = true;
-        if (isValid){
+        if (isValid)
+        {
             return true;
         }
         else{

@@ -5,9 +5,10 @@ import java.awt.*;
 
 //This is to contruct the frame that every panel will be swapped out onto.
 
-public class MainFrame {
+public class MainFrame
+{
 
-    JFrame MainFrame;
+    private JFrame MainFrame;
 
     public MainFrame()
     {

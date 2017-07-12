@@ -2,7 +2,7 @@ package DesktopGUI;
 import CommModels.*;
 import CommModels.User;
 import Controller.DesktopClientController;
-
+import java.sql.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
