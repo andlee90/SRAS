@@ -7,7 +7,7 @@ import java.awt.*;
 public class DeviceControlPanel
 {
     JPanel mainDevicePanel;
-    Devices.Device device;
+    //Devices.Device device;
     public DeviceControlPanel()
     {
         createMainPanel();
@@ -15,7 +15,7 @@ public class DeviceControlPanel
 
     public void createMainPanel()
     {
-        GridLayout grid = new GridLayout(5,1,10,5);
+        GridLayout grid = new GridLayout(5,1,10,0);
         mainDevicePanel = new JPanel(grid);
         mainDevicePanel.setBackground(Color.WHITE);
         mainDevicePanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));

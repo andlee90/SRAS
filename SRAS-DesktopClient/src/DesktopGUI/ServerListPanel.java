@@ -1,7 +1,10 @@
 package DesktopGUI;
 import CommModels.*;
-import CommModels.User;
 import Controller.DesktopClientController;
+
+import java.io.*;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.sql.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -9,28 +12,28 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-/**
- * Created by Tim on 7/5/2017.
- */
 public class ServerListPanel
 {
-    JPanel serverListPanel;
-    JPanel serverListButtonPanel;
-    JPanel mainListPanel;
+    private JPanel serverListPanel;
+    private JPanel serverListButtonPanel;
+    private JPanel mainListPanel;
 
-    JButton cancelButton;
-    JButton connectButton;
-    JButton addServerButton;
+    private JButton cancelButton;
+    private JButton connectButton;
+    private JButton addServerButton;
+
+    private JTable table;
 
     FlowLayout flow = new FlowLayout(10,22,10);
     GridLayout grid = new GridLayout(2,1,25,25);
     GridLayout grid2 = new GridLayout(1,1,25,25);
 
 
-    public ServerListPanel()
+    ServerListPanel()
     {
         ImageIcon image = new ImageIcon("Images/pi_logo2.png");
-        JLabel imageLabel = new JLabel("", image, JLabel.CENTER);
+        JLabel imageLabel;
+        imageLabel = new JLabel("", image, JLabel.CENTER);
 
         mainListPanel = new JPanel(grid);
         serverListButtonPanel = new JPanel(flow);
@@ -68,7 +71,7 @@ public class ServerListPanel
         String[] columnNames = {"SERVER NAME: ", "PORT NUMBER: "};
 
         DefaultTableModel model = new DefaultTableModel(DesktopClientController.data, columnNames);
-        JTable table = new JTable( model )
+        table = new JTable( model )
         {
             public Class getColumnClass(int column)
             {
@@ -95,7 +98,49 @@ public class ServerListPanel
 
         connectButton.addActionListener(new ActionListener() {
             @Override public void actionPerformed(ActionEvent e) {
-                DesktopClientController.replacePanel(new DeviceControlPanel().getPanel(), "SRAS - Device Control Panel");
+                System.out.println("The selected row is: "+table.getSelectedRow());
+                String ip = DesktopClientController.data[table.getSelectedRow()][0].toString();
+                int port = Integer.parseInt(DesktopClientController.data[table.getSelectedRow()][1].toString());
+                System.out.println(ip+ " "+ port);
+                try{
+                    Socket socket = new Socket(ip,port);
+                    System.out.println("Socket created");
+                    socket.setSoTimeout(5000);
+                    Message message = new Message("Hello there");
+                    try {
+
+
+                        System.out.println("Output stream...");
+                        ObjectOutputStream clientOutputStream = new ObjectOutputStream(socket.getOutputStream());
+                        System.out.println("Sending user....");
+                        clientOutputStream.writeObject(DesktopClientController.userIn);
+                        System.out.println("user sent");
+                        System.out.println("Input stream...");
+                        ObjectInputStream clientInputStream = new ObjectInputStream(socket.getInputStream());
+                        DesktopClientController.userIn = (User) clientInputStream.readObject();
+                        System.out.println("user sent");
+                        clientOutputStream.writeObject(message);
+                        System.out.println("message sent");
+                        message = (Message) clientInputStream.readObject();
+                        DesktopClientController.devices = (Devices) clientInputStream.readObject();
+
+                    }catch (ClassNotFoundException e2) {
+                        e2.printStackTrace();
+                        System.out.println("This aint workin'");
+                    }
+                    socket.close();
+                    DesktopClientController.replacePanel(new DeviceControlPanel().getPanel(), "SRAS - Device Control Panel");
+                }catch (UnknownHostException exception)
+                {
+                    exception.printStackTrace();
+                }
+                catch (IOException e1)
+                {
+                    e1.printStackTrace();
+                }
+
+
+
             }});
 
        addServerButton.addActionListener(new ActionListener() {
@@ -107,6 +152,10 @@ public class ServerListPanel
         serverListButtonPanel.add(addServerButton);
         serverListButtonPanel.add(cancelButton);
 
+
+    }
+    private static void initialize(Socket socket ) throws IOException{
+        //OutputStream os = socket.getObjectOutputStream();
 
     }
 }

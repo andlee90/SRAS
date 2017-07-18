@@ -113,6 +113,7 @@ public class AddServerPanel
                 if(DesktopClientController.currentRow<DesktopClientController.maxServers)
                     DesktopClientController.currentRow++;
                 DesktopClientController.replacePanel(new ServerListPanel().getServerListPanel(), "SRAS - Server List");
+
             }
         });
 
