@@ -4,8 +4,6 @@ import Controller.DesktopClientController;
 
 import java.io.*;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.sql.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -18,18 +16,18 @@ public class ServerListPanel
     private JPanel serverListButtonPanel;
     private JPanel mainListPanel;
 
-    private JButton cancelButton;
+    private JButton removeButton;
     private JButton connectButton;
     private JButton addServerButton;
-
-    private JTable table;
+    private static Socket socket;
+    private static JTable table;
 
     FlowLayout flow = new FlowLayout(10,22,10);
     GridLayout grid = new GridLayout(2,1,25,25);
     GridLayout grid2 = new GridLayout(1,1,25,25);
 
 
-    ServerListPanel()
+    public ServerListPanel()
     {
         ImageIcon image = new ImageIcon("Images/pi_logo2.png");
         JLabel imageLabel;
@@ -39,7 +37,7 @@ public class ServerListPanel
         serverListButtonPanel = new JPanel(flow);
         serverListPanel = new JPanel(grid2);
 
-
+        DefaultTableModel model;
         serverListPanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
         serverListButtonPanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
         mainListPanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
@@ -87,75 +85,79 @@ public class ServerListPanel
 
     public void createButtons()
     {
-        cancelButton = new JButton("Cancel");
+        removeButton = new JButton("Remove");
         connectButton = new JButton("Connect");
-        addServerButton = new JButton("Add Server");
+        addServerButton = new JButton("   Add   ");
 
-        cancelButton.addActionListener(new ActionListener() {
+        removeButton.addActionListener(new ActionListener() {
             @Override public void actionPerformed(ActionEvent e) {
-                DesktopClientController.replacePanel(new AuthenticationPanel().getAuthenticationPanel(),"SRAS - Login");
+              /*  try {
+                    DesktopClientController.data[table.getSelectedRow()][0] = "";
+                    DesktopClientController.data[table.getSelectedRow()][1] = "";
+                }
+                catch(Exception e1)
+                {
+                   new MainErrorMessageFrame("Please select a valid server to remove from the list.");
+                }*/
             }});
 
         connectButton.addActionListener(new ActionListener() {
             @Override public void actionPerformed(ActionEvent e) {
-                System.out.println("The selected row is: "+table.getSelectedRow());
+
                 String ip = DesktopClientController.data[table.getSelectedRow()][0].toString();
                 int port = Integer.parseInt(DesktopClientController.data[table.getSelectedRow()][1].toString());
-                System.out.println(ip+ " "+ port);
-                try{
-                    Socket socket = new Socket(ip,port);
-                    System.out.println("Socket created");
+                System.out.println("You are connecting to: "+ip+ " on port "+ port+"...");
+                try {
+                    socket = new Socket(ip, port);
                     socket.setSoTimeout(5000);
-                    Message message = new Message("Hello there");
-                    try {
-
-
-                        System.out.println("Output stream...");
-                        ObjectOutputStream clientOutputStream = new ObjectOutputStream(socket.getOutputStream());
-                        System.out.println("Sending user....");
-                        clientOutputStream.writeObject(DesktopClientController.userIn);
-                        System.out.println("user sent");
-                        System.out.println("Input stream...");
-                        ObjectInputStream clientInputStream = new ObjectInputStream(socket.getInputStream());
-                        DesktopClientController.userIn = (User) clientInputStream.readObject();
-                        System.out.println("user sent");
-                        clientOutputStream.writeObject(message);
-                        System.out.println("message sent");
-                        message = (Message) clientInputStream.readObject();
-                        DesktopClientController.devices = (Devices) clientInputStream.readObject();
-
-                    }catch (ClassNotFoundException e2) {
-                        e2.printStackTrace();
-                        System.out.println("This aint workin'");
-                    }
-                    socket.close();
-                    DesktopClientController.replacePanel(new DeviceControlPanel().getPanel(), "SRAS - Device Control Panel");
-                }catch (UnknownHostException exception)
-                {
-                    exception.printStackTrace();
-                }
-                catch (IOException e1)
+                    DesktopClientController.replacePanel(new AuthenticationPanel().getAuthenticationPanel(), "SRAS - Authentication");
+                }catch (IOException e1)
                 {
                     e1.printStackTrace();
                 }
 
 
-
             }});
 
-       addServerButton.addActionListener(new ActionListener() {
-           @Override public void actionPerformed(ActionEvent e) {
-               DesktopClientController.replacePanel(new AddServerPanel().getAddServerPanel(),"SRAS - Add Server");
-           }});
+           addServerButton.addActionListener(new ActionListener()
+           {
+               @Override public void actionPerformed(ActionEvent e)
+               {
+                   DesktopClientController.replacePanel(new AddServerPanel().getAddServerPanel(),"SRAS - Add Server");
+               }
+           });
 
         serverListButtonPanel.add(connectButton);
         serverListButtonPanel.add(addServerButton);
-        serverListButtonPanel.add(cancelButton);
+        serverListButtonPanel.add(removeButton);
 
 
     }
-    private static void initialize(Socket socket ) throws IOException{
-        //OutputStream os = socket.getObjectOutputStream();
+    public static void sendUser()
+    {
+
+    }
+
+    public static void connectToServer() throws IOException{
+            try {
+
+                Message message = new Message("Hello there");
+                ObjectOutputStream clientOutputStream = new ObjectOutputStream(socket.getOutputStream());
+
+                clientOutputStream.writeObject(DesktopClientController.userIn);ObjectInputStream clientInputStream = new ObjectInputStream(socket.getInputStream());
+                DesktopClientController.userIn = (User) clientInputStream.readObject();
+                if (DesktopClientController.userIn.getValidity()) {
+                    clientOutputStream.writeObject(message);
+                    message = (Message) clientInputStream.readObject();
+                    System.out.println(message.getMessage());
+                    DesktopClientController.devices = (Devices) clientInputStream.readObject();
+                    DesktopClientController.replacePanel(new DeviceControlPanel().getPanel(),"SRAS - Device Controller");
+                }
+            }
+            catch(ClassNotFoundException e2){
+                e2.printStackTrace();
+                System.out.println("This aint workin'");
+            }
 
     }
 }

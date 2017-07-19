@@ -16,7 +16,7 @@ public class DesktopClientController {
         new AuthenticationPanel();
         data[0][0] = "";
         data[0][1]="";
-        frame1 = new MainFrame(new AuthenticationPanel().getAuthenticationPanel());
+        frame1 = new MainFrame(new ServerListPanel().getServerListPanel());
         frame1.renameFrame("SRAS - Server List");
     }
 
@@ -26,22 +26,7 @@ public class DesktopClientController {
         frame1.replacePanel(panelInput,title);
     }
 
-    public static boolean isValidUser()
-    {
-        boolean isValid = true;
-        if (isValid)
-        {
-            return true;
-        }
-        else{
-            System.out.println("INVALID USERNAME OR PASSWORD!");
-            return false;
-        }
-    }
-    /*public void setUser(String u, String p, String e, String fn, String ln, String r)
-    {
-        userIn = new User(u,p,e,fn,ln,r);
-    }*/
+
 
 
 }
