@@ -1,30 +1,29 @@
 package DesktopGUI;
+import CommModels.Device;
 import CommModels.Devices;
+import Controller.DesktopClientController;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class DeviceControlPanel
 {
     JPanel mainDevicePanel;
-    Devices.Device device;
     public DeviceControlPanel()
     {
         createMainPanel();
     }
-
+    ArrayList<Device> devices  = DesktopClientController.devices.getDevices();
     public void createMainPanel()
     {
-        GridLayout grid = new GridLayout(5,1,10,5);
+        GridLayout grid = new GridLayout(5,1,10,0);
         mainDevicePanel = new JPanel(grid);
         mainDevicePanel.setBackground(Color.WHITE);
         mainDevicePanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
+        for(int cntr = 0; cntr < devices.size() && cntr < 4; cntr++)
+            mainDevicePanel.add(createDevicePanel(devices.get(cntr).getDeviceName()));
 
-        mainDevicePanel.add(createDevicePanel("Device 1"));
-        mainDevicePanel.add(createDevicePanel("Device 2"));
-        mainDevicePanel.add(createDevicePanel("Device 3"));
-        mainDevicePanel.add(createDevicePanel("Device 4"));
-        mainDevicePanel.add(createDevicePanel("Device 5"));
     }
 
     public JPanel getPanel()

@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.*;
+import java.io.IOException;
 
 public class AuthenticationPanel
 {
@@ -23,7 +24,7 @@ public class AuthenticationPanel
     JLabel passwordLabel;
 
     JTextField username;
-    JTextField password;
+    JPasswordField password;
 
 
 
@@ -78,7 +79,7 @@ public class AuthenticationPanel
 
 
 
-        password = new JTextField();
+        password = new JPasswordField();
         password.setBounds(100,75,150,30);
         AuthenticationPanel.add(password);
 
@@ -107,12 +108,20 @@ public class AuthenticationPanel
         AuthenticationLogin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                User userIn = new User(username.getText(),password.getText(),"","","","");
-                if(DesktopClientController.isValidUser()){
-                    DesktopClientController.replacePanel(new ServerListPanel().getServerListPanel(),"SRAS - Server List");
+
+                DesktopClientController.userIn= new User(username.getText(),new String(password.getPassword()),"","","","");
+                System.out.println(new String(password.getPassword()));
+                try {
+                    ServerListPanel.connectToServer();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
                 }
-                else
-                    System.out.println("Username or Password are incorrect");
+                if(!DesktopClientController.userIn.getValidity())
+                {
+                    new MainErrorMessageFrame("Invalid Credentials!");
+                }
+
+
             }
         });
 
@@ -123,7 +132,7 @@ public class AuthenticationPanel
         AuthenticationCancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.exit(0);
+                DesktopClientController.replacePanel(new ServerListPanel().getServerListPanel(),"SRAS - Server List");
             }
         });
 

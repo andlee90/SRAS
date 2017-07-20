@@ -1,26 +1,26 @@
 package DesktopGUI;
 import CommModels.*;
-import CommModels.User;
 import Controller.DesktopClientController;
-import java.sql.*;
+
+import java.io.*;
+import java.net.Socket;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-/**
- * Created by Tim on 7/5/2017.
- */
 public class ServerListPanel
 {
-    JPanel serverListPanel;
-    JPanel serverListButtonPanel;
-    JPanel mainListPanel;
+    private JPanel serverListPanel;
+    private JPanel serverListButtonPanel;
+    private JPanel mainListPanel;
 
-    JButton cancelButton;
-    JButton connectButton;
-    JButton addServerButton;
+    private JButton removeButton;
+    private JButton connectButton;
+    private JButton addServerButton;
+    private static Socket socket;
+    private static JTable table;
 
     FlowLayout flow = new FlowLayout(10,22,10);
     GridLayout grid = new GridLayout(2,1,25,25);
@@ -30,13 +30,14 @@ public class ServerListPanel
     public ServerListPanel()
     {
         ImageIcon image = new ImageIcon("Images/pi_logo2.png");
-        JLabel imageLabel = new JLabel("", image, JLabel.CENTER);
+        JLabel imageLabel;
+        imageLabel = new JLabel("", image, JLabel.CENTER);
 
         mainListPanel = new JPanel(grid);
         serverListButtonPanel = new JPanel(flow);
         serverListPanel = new JPanel(grid2);
 
-
+        DefaultTableModel model;
         serverListPanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
         serverListButtonPanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
         mainListPanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
@@ -68,7 +69,7 @@ public class ServerListPanel
         String[] columnNames = {"SERVER NAME: ", "PORT NUMBER: "};
 
         DefaultTableModel model = new DefaultTableModel(DesktopClientController.data, columnNames);
-        JTable table = new JTable( model )
+        table = new JTable( model )
         {
             public Class getColumnClass(int column)
             {
@@ -84,29 +85,79 @@ public class ServerListPanel
 
     public void createButtons()
     {
-        cancelButton = new JButton("Cancel");
+        removeButton = new JButton("Remove");
         connectButton = new JButton("Connect");
-        addServerButton = new JButton("Add Server");
+        addServerButton = new JButton("   Add   ");
 
-        cancelButton.addActionListener(new ActionListener() {
+        removeButton.addActionListener(new ActionListener() {
             @Override public void actionPerformed(ActionEvent e) {
-                DesktopClientController.replacePanel(new AuthenticationPanel().getAuthenticationPanel(),"SRAS - Login");
+              /*  try {
+                    DesktopClientController.data[table.getSelectedRow()][0] = "";
+                    DesktopClientController.data[table.getSelectedRow()][1] = "";
+                }
+                catch(Exception e1)
+                {
+                   new MainErrorMessageFrame("Please select a valid server to remove from the list.");
+                }*/
             }});
 
         connectButton.addActionListener(new ActionListener() {
             @Override public void actionPerformed(ActionEvent e) {
-                DesktopClientController.replacePanel(new DeviceControlPanel().getPanel(), "SRAS - Device Control Panel");
+
+                String ip = DesktopClientController.data[table.getSelectedRow()][0].toString();
+                int port = Integer.parseInt(DesktopClientController.data[table.getSelectedRow()][1].toString());
+                System.out.println("You are connecting to: "+ip+ " on port "+ port+"...");
+                try {
+                    socket = new Socket(ip, port);
+                    socket.setSoTimeout(5000);
+                    DesktopClientController.replacePanel(new AuthenticationPanel().getAuthenticationPanel(), "SRAS - Authentication");
+                }catch (IOException e1)
+                {
+                    e1.printStackTrace();
+                }
+
+
             }});
 
-       addServerButton.addActionListener(new ActionListener() {
-           @Override public void actionPerformed(ActionEvent e) {
-               DesktopClientController.replacePanel(new AddServerPanel().getAddServerPanel(),"SRAS - Add Server");
-           }});
+           addServerButton.addActionListener(new ActionListener()
+           {
+               @Override public void actionPerformed(ActionEvent e)
+               {
+                   DesktopClientController.replacePanel(new AddServerPanel().getAddServerPanel(),"SRAS - Add Server");
+               }
+           });
 
         serverListButtonPanel.add(connectButton);
         serverListButtonPanel.add(addServerButton);
-        serverListButtonPanel.add(cancelButton);
+        serverListButtonPanel.add(removeButton);
 
+
+    }
+    public static void sendUser()
+    {
+
+    }
+
+    public static void connectToServer() throws IOException{
+            try {
+
+                Message message = new Message("Hello there");
+                ObjectOutputStream clientOutputStream = new ObjectOutputStream(socket.getOutputStream());
+
+                clientOutputStream.writeObject(DesktopClientController.userIn);ObjectInputStream clientInputStream = new ObjectInputStream(socket.getInputStream());
+                DesktopClientController.userIn = (User) clientInputStream.readObject();
+                if (DesktopClientController.userIn.getValidity()) {
+                    clientOutputStream.writeObject(message);
+                    message = (Message) clientInputStream.readObject();
+                    System.out.println(message.getMessage());
+                    DesktopClientController.devices = (Devices) clientInputStream.readObject();
+                    DesktopClientController.replacePanel(new DeviceControlPanel().getPanel(),"SRAS - Device Controller");
+                }
+            }
+            catch(ClassNotFoundException e2){
+                e2.printStackTrace();
+                System.out.println("This aint workin'");
+            }
 
     }
 }
