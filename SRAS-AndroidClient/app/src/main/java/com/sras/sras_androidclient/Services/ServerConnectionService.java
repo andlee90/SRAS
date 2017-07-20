@@ -9,11 +9,10 @@ import android.os.IBinder;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 
-import CommModels.Devices;
-import CommModels.Message;
-import CommModels.User;
+import CommModels.*;
 
 public class ServerConnectionService extends Service
 {
@@ -23,8 +22,8 @@ public class ServerConnectionService extends Service
     private String mPassword;
 
     private Socket mSocket;
-    private ObjectOutputStream mOutputStream;
-    private ObjectInputStream mInputStream;
+    private volatile ObjectOutputStream mOutputStream;
+    private volatile ObjectInputStream mInputStream;
 
     private final IBinder mBinder = new ServerConnectionBinder();
 
@@ -36,7 +35,7 @@ public class ServerConnectionService extends Service
         }
     }
 
-    private class ConnectionThread extends Thread
+    private class EstablishConnectionThread extends Thread
     {
         private volatile Devices devices = new Devices();
 
@@ -48,12 +47,15 @@ public class ServerConnectionService extends Service
                 mSocket = new Socket(mServerAddress, mServerPort);
                 mOutputStream = new ObjectOutputStream(mSocket.getOutputStream());
                 mInputStream = new ObjectInputStream(mSocket.getInputStream());
-                Message message = new Message("Hello");
+
+                InetAddress addr;
+                addr = InetAddress.getLocalHost();
+                String hostname = addr.getHostName();
+                Message message = new Message("Client @" + hostname + " connected.");
 
                 if (isAuthenticated(mUsername, mPassword))
                 {
                     mOutputStream.writeObject(message); // Send message to server
-                    message = (Message) mInputStream.readObject();
                     devices = (Devices) mInputStream.readObject();
                 }
 
@@ -64,9 +66,69 @@ public class ServerConnectionService extends Service
             }
         }
 
-        public Devices getDevices()
+        Devices getDevices()
         {
             return devices;
+        }
+    }
+
+    private class FetchResourcesThread extends Thread
+    {
+        private volatile Device device;
+        Message message = new Message("");
+
+        FetchResourcesThread(Device d)
+        {
+            this.device = d;
+        }
+
+        @Override
+        public void run()
+        {
+            try
+            {
+                mOutputStream.writeObject(device); // Send message to server
+                message = (Message) mInputStream.readObject();
+            }
+            catch (IOException | ClassNotFoundException e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+        Message getMessage()
+        {
+            return message;
+        }
+    }
+
+    private class IssueCommandThread extends Thread
+    {
+        private volatile Command command;
+        Message message = new Message("");
+
+        IssueCommandThread(Command c)
+        {
+            this.command = c;
+        }
+
+        @Override
+        public void run()
+        {
+            try
+            {
+                mOutputStream.writeObject(command); // Send message to server
+                message = (Message) mInputStream.readObject();
+            }
+            catch (IOException | ClassNotFoundException e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+        Message getMessage()
+        {
+            return message;
         }
     }
 
@@ -78,13 +140,35 @@ public class ServerConnectionService extends Service
 
     public Devices connectToServer() throws IOException, ClassNotFoundException, InterruptedException
     {
-        ConnectionThread ct = new ConnectionThread();
+        EstablishConnectionThread ct = new EstablishConnectionThread();
         Thread t = new Thread(ct);
         t.start();
         // TODO: Timeout if connection takes too long.
-        t.join();
+        t.join(10000);
 
         return ct.getDevices();
+    }
+
+    public Message fetchResources(Device device) throws IOException, ClassNotFoundException, InterruptedException
+    {
+        FetchResourcesThread frt = new FetchResourcesThread(device);
+        Thread t = new Thread(frt);
+        t.start();
+        // TODO: Timeout if connection takes too long.
+        t.join(10000);
+
+        return frt.getMessage();
+    }
+
+    public Message issueCommand(Command command) throws IOException, ClassNotFoundException, InterruptedException
+    {
+        IssueCommandThread ict = new IssueCommandThread(command);
+        Thread t = new Thread(ict);
+        t.start();
+        // TODO: Timeout if connection takes too long.
+        t.join(10000);
+
+        return ict.getMessage();
     }
 
     public void setParams(String addr, int port, String user, String pass)

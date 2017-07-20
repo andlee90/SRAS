@@ -1,9 +1,14 @@
 package com.sras.sras_androidclient.Activites;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,17 +18,19 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.sras.sras_androidclient.R;
+import com.sras.sras_androidclient.Services.ServerConnectionService;
 
+import java.io.IOException;
 import java.util.List;
 
-import CommModels.Device;
-import CommModels.Devices;
-
+import CommModels.*;
 
 public class ResourceListActivity extends AppCompatActivity implements AdapterView.OnItemClickListener
 {
-    private ListView mListView;
     private List<Device> mResourceList;
+
+    ServerConnectionService mService;
+    boolean mBound = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -31,7 +38,7 @@ public class ResourceListActivity extends AppCompatActivity implements AdapterVi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_resource_list);
 
-        mListView = (ListView)findViewById(R.id.listview);
+        ListView mListView = (ListView) findViewById(R.id.listview);
         mListView.setOnItemClickListener(this);
 
         Intent intent = getIntent();
@@ -44,17 +51,70 @@ public class ResourceListActivity extends AppCompatActivity implements AdapterVi
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+    protected void onStart()
     {
+        super.onStart();
 
+        Intent intent = new Intent(this, ServerConnectionService.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
-    public class ResourceItemArrayAdapter extends ArrayAdapter<Device>
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
+        if (mBound)
+        {
+            unbindService(mConnection);
+            mBound = false;
+        }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+    {
+        Device device = mResourceList.get(position);
+        if(mBound)
+        {
+            try
+            {
+                Message message = mService.fetchResources(device);
+                Intent intent = new Intent(getApplicationContext(), LEDControllerActivity.class);
+                intent.putExtra("device", device);
+                startActivity(intent);
+                Log.d("Incoming message: ", message.getMessage());
+
+            } catch (IOException | ClassNotFoundException | InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private ServiceConnection mConnection = new ServiceConnection()
+    {
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service)
+        {
+            ServerConnectionService.ServerConnectionBinder binder = (ServerConnectionService.ServerConnectionBinder) service;
+            mService = binder.getService();
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0)
+        {
+            unbindService(mConnection);
+            mBound = false;
+        }
+    };
+
+    private class ResourceItemArrayAdapter extends ArrayAdapter<Device>
     {
         private LayoutInflater mInflater;
         private List<Device> devices = null;
 
-        public ResourceItemArrayAdapter(Context context, int resource, List<Device> devices)
+        ResourceItemArrayAdapter(Context context, int resource, List<Device> devices)
         {
             super(context, resource, devices);
 
@@ -62,6 +122,7 @@ public class ResourceListActivity extends AppCompatActivity implements AdapterVi
             mInflater = LayoutInflater.from(context);
         }
 
+        @NonNull
         @Override
         public View getView(int position, View convertView, ViewGroup parent)
         {
