@@ -1,5 +1,7 @@
 package Resources;
 
+import CommModels.Command;
+
 /**
  * Class for controlling a robot arm.
  */
@@ -7,7 +9,6 @@ package Resources;
 
 public class ARMController implements DeviceController
 {
-
     @Override
     public boolean isAvailable()
     {
@@ -15,7 +16,7 @@ public class ARMController implements DeviceController
     }
 
     @Override
-    public void issueCommand(CommandType ct)
+    public void issueCommand(Command.CommandType ct)
     {
 
     }

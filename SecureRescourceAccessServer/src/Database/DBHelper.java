@@ -5,7 +5,6 @@ import CommModels.Devices;
 import Main.Main;
 
 import java.sql.*;
-import java.util.ArrayList;
 
 import static Database.DBQueries.getSelectUserByUsernameAndPassword;
 
@@ -209,7 +208,7 @@ public class DBHelper
             {
                 Device device = new Device(rs.getInt("device_pin"),
                         rs.getString("device_name"),
-                        rs.getString("device_type"),
+                        getDeviceTypeFromString(rs.getString("device_type")),
                         rs.getString("device_status"));
                 devices.addDevice(device);
             }
@@ -220,5 +219,25 @@ public class DBHelper
         }
 
         return devices;
+    }
+
+    /**
+     * Convert the device type string stored in the db to a DeviceType
+     * @param s the string from the db
+     * @return the corresponding DeviceType
+     */
+    private static Device.DeviceType getDeviceTypeFromString(String s)
+    {
+        Device.DeviceType dt = null;
+
+        if (s.equals("LED"))
+        {
+            dt = Device.DeviceType.LED;
+        }
+        else if (s.equals("ARM"))
+        {
+            dt = Device.DeviceType.ARM;
+        }
+        return dt;
     }
 }

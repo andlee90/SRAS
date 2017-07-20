@@ -1,10 +1,10 @@
 package Networking;
 
-import CommModels.Devices;
-import CommModels.Message;
-import CommModels.User;
+import CommModels.*;
 import Database.DBHelper;
 import Main.Main;
+import Resources.DeviceController;
+import Resources.DeviceControllerFactory;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -46,15 +46,29 @@ public class ClientManager extends Thread
                 Message message = (Message)serverInputStream.readObject(); // Get test message from client
                 System.out.println("> [" + Main.getDate() + "] " + message.getMessage());
 
-                message.setMessage("And a hello to you too");
+                serverOutputStream.writeObject(getDevices());
+
+                Device device = (Device) serverInputStream.readObject();
+                message.setMessage(device.getDeviceName());
                 serverOutputStream.writeObject(message);
 
-                serverOutputStream.writeObject(getDevices());
+                DeviceController dc = DeviceControllerFactory.getDeviceController(device.getDeviceType());
+
+                while(!interrupted())
+                {
+                    Command command = (Command) serverInputStream.readObject();
+                    if (dc != null)
+                    {
+                        dc.issueCommand(command.getCommandType());
+                    }
+                    message.setMessage(device.getDeviceName());
+                    serverOutputStream.writeObject(message);
+                }
             }
             serverOutputStream.writeObject(user);
-            close();
+            //close();
         }
-        catch (IOException | ClassNotFoundException e)
+        catch (IOException | ClassNotFoundException | InterruptedException e)
         {
             e.printStackTrace();
         }

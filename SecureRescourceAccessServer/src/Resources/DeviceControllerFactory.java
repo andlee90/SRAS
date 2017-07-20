@@ -1,15 +1,12 @@
 package Resources;
 
+import CommModels.Device;
+
 /**
  * Builds or gets an instance of an appropriate device controller.
  */
 public class DeviceControllerFactory
 {
-    public enum DeviceType
-    {
-        LED, ARM
-    }
-
     private volatile static DeviceController LEDController;
     private volatile static DeviceController ARMController;
 
@@ -23,9 +20,9 @@ public class DeviceControllerFactory
         return new ARMController();
     }
 
-    public static DeviceController getDeviceController(DeviceType dt)
+    public static DeviceController getDeviceController(Device.DeviceType dt)
     {
-        if(dt == DeviceType.LED)
+        if(dt == Device.DeviceType.LED)
         {
             if(LEDController == null)
             {
@@ -39,7 +36,7 @@ public class DeviceControllerFactory
             }
             return LEDController;
         }
-        else if(dt ==  DeviceType.ARM)
+        else if(dt == Device.DeviceType.ARM)
         {
             if(ARMController == null)
             {
