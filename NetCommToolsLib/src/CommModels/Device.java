@@ -7,13 +7,21 @@ import java.io.Serializable;
  */
 public class Device implements Serializable
 {
+    /**
+     * Enum to hold different device types.
+     */
+    public enum DeviceType
+    {
+        LED, ARM
+    }
+
     int deviceId;
     private int devicePin;
     private String deviceName;
-    private String deviceType;
+    private DeviceType deviceType;
     private String deviceStatus;
 
-    public Device(int dp, String dn, String dt, String ds)
+    public Device(int dp, String dn, DeviceType dt, String ds)
     {
         deviceId = -1;
         this.devicePin = dp;
@@ -37,7 +45,7 @@ public class Device implements Serializable
         return deviceName;
     }
 
-    public String getDeviceType()
+    public DeviceType getDeviceType()
     {
         return deviceType;
     }
@@ -57,7 +65,7 @@ public class Device implements Serializable
         this.deviceName = dn;
     }
 
-    public void setDeviceType(String dt)
+    public void setDeviceType(DeviceType dt)
     {
         this.deviceType = dt;
     }
