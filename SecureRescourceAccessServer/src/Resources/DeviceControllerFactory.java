@@ -10,9 +10,9 @@ public class DeviceControllerFactory
     private volatile static DeviceController LEDController;
     private volatile static DeviceController ARMController;
 
-    private static DeviceController createLEDController()
+    private static DeviceController createLEDController(Device device)
     {
-        return new LEDController();
+        return new LEDController(device);
     }
 
     private static DeviceController createARMController()
@@ -20,9 +20,10 @@ public class DeviceControllerFactory
         return new ARMController();
     }
 
-    public static DeviceController getDeviceController(Device.DeviceType dt)
+    public static DeviceController getDeviceController(Device device)
     {
-        if(dt == Device.DeviceType.LED)
+
+        if(device.getDeviceType() == Device.DeviceType.LED)
         {
             if(LEDController == null)
             {
@@ -30,13 +31,13 @@ public class DeviceControllerFactory
                 {
                     if(LEDController == null)
                     {
-                        LEDController = createLEDController();
+                        LEDController = createLEDController(device);
                     }
                 }
             }
             return LEDController;
         }
-        else if(dt == Device.DeviceType.ARM)
+        else if(device.getDeviceType() == Device.DeviceType.ARM)
         {
             if(ARMController == null)
             {

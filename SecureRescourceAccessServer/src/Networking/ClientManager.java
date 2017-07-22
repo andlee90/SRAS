@@ -5,6 +5,7 @@ import Database.DBHelper;
 import Main.Main;
 import Resources.DeviceController;
 import Resources.DeviceControllerFactory;
+import Resources.LEDController;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -52,7 +53,7 @@ public class ClientManager extends Thread
                 message.setMessage(device.getDeviceName());
                 serverOutputStream.writeObject(message);
 
-                DeviceController dc = DeviceControllerFactory.getDeviceController(device.getDeviceType());
+                DeviceController dc = DeviceControllerFactory.getDeviceController(device);
 
                 while(!interrupted())
                 {
