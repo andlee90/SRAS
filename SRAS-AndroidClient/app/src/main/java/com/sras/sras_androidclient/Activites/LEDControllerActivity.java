@@ -85,7 +85,7 @@ public class LEDControllerActivity extends AppCompatActivity implements View.OnC
             {
                 try
                 {
-                    Command command = new Command(Command.CommandType.POWER_ON);
+                    Command command = new Command(Command.CommandType.TOGGLE);
                     Message message = mService.issueCommand(command);
                     Log.d("Incoming message: ", message.getMessage());
 
