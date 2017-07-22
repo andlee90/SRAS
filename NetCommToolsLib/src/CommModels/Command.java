@@ -12,7 +12,7 @@ public class Command implements Serializable
      */
     public enum CommandType
     {
-        POWER_ON, POWER_OFF, BLINK
+        TOGGLE, BLINK
     }
 
     private CommandType commandType; // Type of command
