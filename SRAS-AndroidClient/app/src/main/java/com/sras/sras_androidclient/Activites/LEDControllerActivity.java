@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.sras.sras_androidclient.R;
 import com.sras.sras_androidclient.Services.ServerConnectionService;
@@ -33,9 +34,19 @@ public class LEDControllerActivity extends AppCompatActivity implements View.OnC
 
         Intent intent = getIntent();
         Device mDevice = (Device) intent.getSerializableExtra("device");
+        setTitle(mDevice.getDeviceName());
+
+        TextView pinView = (TextView) findViewById(R.id.textview_pin);
+        pinView.setText("LED is on pin: " + mDevice.getDevicePin());
+
+        TextView statusView = (TextView) findViewById(R.id.textview_status);
+        statusView.setText("Device status is " + mDevice.getDeviceStatus());
 
         Button toggleButton = (Button) findViewById(R.id.button_toggle);
         toggleButton.setOnClickListener(this);
+
+        Button blinkButton = (Button) findViewById(R.id.button_blink);
+        blinkButton.setOnClickListener(this);
     }
 
     @Override
@@ -86,6 +97,23 @@ public class LEDControllerActivity extends AppCompatActivity implements View.OnC
                 try
                 {
                     Command command = new Command(Command.CommandType.TOGGLE);
+                    Message message = mService.issueCommand(command);
+                    Log.d("Incoming message: ", message.getMessage());
+
+                } catch (IOException | ClassNotFoundException | InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        else if (view.getId() == R.id.button_blink)
+        {
+            if(mBound)
+            {
+                try
+                {
+                    Command command = new Command(Command.CommandType.BLINK);
                     Message message = mService.issueCommand(command);
                     Log.d("Incoming message: ", message.getMessage());
 
