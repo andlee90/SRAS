@@ -107,7 +107,7 @@ public class DBHelper
      * @param r_id role id of the user to be inserted.
      */
     //TODO: r_id should be role name and should perform a query for the name's id
-    static void insertUser(String user, String pass, String email, String fn, String ln, int r_id)
+    public static void insertUser(String user, String pass, String email, String fn, String ln, int r_id)
     {
         try (Connection conn = connect();
              PreparedStatement pstmt = conn.prepareStatement(DBQueries.getInsertUserQuery()))
@@ -130,7 +130,7 @@ public class DBHelper
      * Insert a new row into the roles table
      * @param name role name of the role to be inserted.
      */
-    static void insertRole(String name)
+    public static void insertRole(String name)
     {
         try (Connection conn = connect();
              PreparedStatement pstmt = conn.prepareStatement(DBQueries.getInsertRoleQuery()))
@@ -151,7 +151,7 @@ public class DBHelper
      * @param type device type of the device to be inserted.
      * @param status device status of the device to be inserted.
      */
-    static void insertDevice(int pin, String name, String type, String status)
+    public static void insertDevice(int pin, String name, String type, String status)
     {
         try (Connection conn = connect();
              PreparedStatement pstmt = conn.prepareStatement(DBQueries.getInsertDeviceQuery()))
