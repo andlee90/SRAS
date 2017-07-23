@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sras.sras_androidclient.R;
@@ -35,6 +36,9 @@ public class LEDControllerActivity extends AppCompatActivity implements View.OnC
         Intent intent = getIntent();
         Device mDevice = (Device) intent.getSerializableExtra("device");
         setTitle(mDevice.getDeviceName());
+
+        ImageView ledView = (ImageView) findViewById(R.id.image_led);
+        ledView.setImageResource(R.drawable.ic_led);
 
         TextView pinView = (TextView) findViewById(R.id.textview_pin);
         pinView.setText("LED is on pin: " + mDevice.getDevicePin());
