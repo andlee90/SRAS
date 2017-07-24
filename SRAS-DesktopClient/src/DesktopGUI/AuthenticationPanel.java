@@ -1,6 +1,7 @@
 package DesktopGUI;
 
 import CommModels.*;
+import Controller.ClientManager;
 import Controller.DesktopClientController;
 
 import javax.swing.*;
@@ -112,7 +113,7 @@ public class AuthenticationPanel
                 DesktopClientController.userIn= new User(username.getText(),new String(password.getPassword()),"","","","");
                 System.out.println(new String(password.getPassword()));
                 try {
-                    ServerListPanel.connectToServer();
+                    ClientManager.connectToServer();
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }

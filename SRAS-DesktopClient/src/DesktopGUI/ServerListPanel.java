@@ -1,5 +1,6 @@
 package DesktopGUI;
 import CommModels.*;
+import Controller.ClientManager;
 import Controller.DesktopClientController;
 
 import java.io.*;
@@ -104,15 +105,9 @@ public class ServerListPanel
         connectButton.addActionListener(new ActionListener() {
             @Override public void actionPerformed(ActionEvent e) {
 
-                String ip = DesktopClientController.data[table.getSelectedRow()][0].toString();
-                int port = Integer.parseInt(DesktopClientController.data[table.getSelectedRow()][1].toString());
-                System.out.println("You are connecting to: "+ip+ " on port "+ port+"...");
                 try {
-                    socket = new Socket(ip, port);
-                    socket.setSoTimeout(5000);
-                    DesktopClientController.replacePanel(new AuthenticationPanel().getAuthenticationPanel(), "SRAS - Authentication");
-                }catch (IOException e1)
-                {
+                    ClientManager.createSocket(table.getSelectedRow());
+                } catch (IOException e1) {
                     e1.printStackTrace();
                 }
 
@@ -133,31 +128,5 @@ public class ServerListPanel
 
 
     }
-    public static void sendUser()
-    {
 
-    }
-
-    public static void connectToServer() throws IOException{
-            try {
-
-                Message message = new Message("Hello there");
-                ObjectOutputStream clientOutputStream = new ObjectOutputStream(socket.getOutputStream());
-
-                clientOutputStream.writeObject(DesktopClientController.userIn);ObjectInputStream clientInputStream = new ObjectInputStream(socket.getInputStream());
-                DesktopClientController.userIn = (User) clientInputStream.readObject();
-                if (DesktopClientController.userIn.getValidity()) {
-                    clientOutputStream.writeObject(message);
-                    message = (Message) clientInputStream.readObject();
-                    System.out.println(message.getMessage());
-                    DesktopClientController.devices = (Devices) clientInputStream.readObject();
-                    DesktopClientController.replacePanel(new DeviceControlPanel().getPanel(),"SRAS - Device Controller");
-                }
-            }
-            catch(ClassNotFoundException e2){
-                e2.printStackTrace();
-                System.out.println("This aint workin'");
-            }
-
-    }
 }

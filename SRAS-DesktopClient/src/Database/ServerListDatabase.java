@@ -1,4 +1,4 @@
-/*package Database;
+package Database;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -26,9 +26,5 @@ public class ServerListDatabase
     }
 
 
-    public static void main(String[] args)
-    {
 
-            createNewDatabase("ServerList.db");
-    }
-}*/
+}

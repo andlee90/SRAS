@@ -14,8 +14,8 @@ public class DesktopClientController {
     {
 
         new AuthenticationPanel();
-        data[0][0] = "";
-        data[0][1]="";
+        data[0][0] = "localhost";
+        data[0][1]="50873";
         frame1 = new MainFrame(new ServerListPanel().getServerListPanel());
         frame1.renameFrame("SRAS - Server List");
     }
