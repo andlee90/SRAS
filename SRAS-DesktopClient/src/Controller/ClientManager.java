@@ -14,12 +14,12 @@ import java.net.Socket;
  */
 
 public class ClientManager {
-
+    static int rowConst;
     public static Socket socket;
     public static ObjectOutputStream clientOutputStream;
     public static ObjectInputStream clientInputStream;
     public static void createSocket(int row)throws IOException{
-
+        rowConst = row;
         String ip = DesktopClientController.data[row][0].toString();
         int port = Integer.parseInt(DesktopClientController.data[row][1].toString());
         System.out.println("You are connecting to: "+ip+ " on port "+ port+"...");
@@ -36,6 +36,11 @@ public class ClientManager {
 
     public static void connectToServer() throws IOException {
         try {
+
+            String ip = DesktopClientController.data[rowConst][0].toString();
+            int port = Integer.parseInt(DesktopClientController.data[rowConst][1].toString());
+            socket = new Socket(ip, port);
+            socket.setSoTimeout(5000);
 
             Message message = new Message("Hello there");
             clientOutputStream = new ObjectOutputStream(socket.getOutputStream());

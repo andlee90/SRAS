@@ -115,6 +115,7 @@ public class AuthenticationPanel
                 try {
                     ClientManager.connectToServer();
                 } catch (IOException e1) {
+                    new MainErrorMessageFrame("Cannot connect to Server");
                     e1.printStackTrace();
                 }
                 if(!DesktopClientController.userIn.getValidity())
