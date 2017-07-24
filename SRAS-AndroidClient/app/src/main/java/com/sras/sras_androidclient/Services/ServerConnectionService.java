@@ -88,9 +88,9 @@ public class ServerConnectionService extends Service
             try
             {
                 mOutputStream.writeObject(device); // Send message to server
-                message = (Message) mInputStream.readObject();
+                //message = (Message) mInputStream.readObject();
             }
-            catch (IOException | ClassNotFoundException e)
+            catch (IOException e)
             {
                 e.printStackTrace();
             }
@@ -118,9 +118,9 @@ public class ServerConnectionService extends Service
             try
             {
                 mOutputStream.writeObject(command); // Send message to server
-                message = (Message) mInputStream.readObject();
+                //message = (Message) mInputStream.readObject();
             }
-            catch (IOException | ClassNotFoundException e)
+            catch (IOException e)
             {
                 e.printStackTrace();
             }
