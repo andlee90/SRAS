@@ -80,7 +80,7 @@ public class ResourceListActivity extends AppCompatActivity implements AdapterVi
             {
                 Message message = mService.fetchResources(device);
                 Intent intent = new Intent(getApplicationContext(), LEDControllerActivity.class);
-                intent.putExtra("device", device);
+                intent.putExtra("device", (Led)device);
                 startActivity(intent);
                 Log.d("Incoming message: ", message.getMessage());
 

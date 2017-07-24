@@ -52,7 +52,8 @@ class DBQueries
                 + "device_pin INTEGER NOT NULL UNIQUE,\n"
                 + "device_name TEXT NOT NULL UNIQUE,\n"
                 + "device_type TEXT NOT NULL,\n"
-                + "device_status TEXT NOT NULL\n"
+                + "device_status TEXT NOT NULL,\n"
+                + "device_state TEXT NOT NULL\n"
                 + ");";
     }
 
@@ -69,7 +70,7 @@ class DBQueries
 
     static String getInsertDeviceQuery()
     {
-        return "INSERT INTO devices(device_pin,device_name,device_type,device_status) VALUES(?,?,?,?)";
+        return "INSERT INTO devices(device_pin,device_name,device_type,device_status,device_state) VALUES(?,?,?,?,?)";
     }
 
     static String getSelectUserByUsernameAndPassword()

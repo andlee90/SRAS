@@ -49,7 +49,7 @@ public class Main
                 System.out.println("> [" + Main.getDate() + "] Enter type for new device " + device + ": ");
                 String type = scanner.next();
 
-                DBHelper.insertDevice(pin, device, type, "AVAILABLE");
+                DBHelper.insertDevice(pin, device, type, "AVAILABLE", "OFF");
                 System.out.println("> [" + Main.getDate() + "] New device " + device + " saved.");
             }
 

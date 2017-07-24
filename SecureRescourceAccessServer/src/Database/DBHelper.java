@@ -1,10 +1,10 @@
 package Database;
 
-import CommModels.Device;
-import CommModels.Devices;
+import CommModels.*;
 import Main.Main;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 import static Database.DBQueries.getSelectUserByUsernameAndPassword;
 
@@ -20,6 +20,7 @@ public class DBHelper
             {
                 DatabaseMetaData dbm = conn.getMetaData();
                 ResultSet tables = dbm.getTables(null, null, "Users", null);
+
                 if (tables.next())
                 {
                     System.out.println("> [" + Main.getDate() + "] Connected to resources.db");
@@ -49,28 +50,28 @@ public class DBHelper
                     insertUser("admin", "drowssap", "admin@admin.com", "admin", "admin", 1);
                     System.out.println("> [" + Main.getDate() + "] Default admin user added to users table");
 
-                    insertDevice(1, "LED1", "LED", "AVAILABLE");
+                    insertDevice(1, "LED1", "LED", "AVAILABLE", "OFF");
                     System.out.println("> [" + Main.getDate() + "] Default device added to devices table");
 
-                    insertDevice(2, "LED2", "LED", "AVAILABLE");
+                    insertDevice(2, "LED2", "LED", "AVAILABLE", "OFF");
                     System.out.println("> [" + Main.getDate() + "] Default device added to devices table");
 
-                    insertDevice(3, "LED3", "LED", "AVAILABLE");
+                    insertDevice(3, "LED3", "LED", "AVAILABLE", "OFF");
                     System.out.println("> [" + Main.getDate() + "] Default device added to devices table");
 
-                    insertDevice(4, "LED4", "LED", "AVAILABLE");
+                    insertDevice(4, "LED4", "LED", "AVAILABLE", "OFF");
                     System.out.println("> [" + Main.getDate() + "] Default device added to devices table");
 
-                    insertDevice(5, "LED5", "LED", "AVAILABLE");
+                    insertDevice(5, "LED5", "LED", "AVAILABLE", "OFF");
                     System.out.println("> [" + Main.getDate() + "] Default device added to devices table");
 
-                    insertDevice(9, "LED6", "LED", "AVAILABLE");
+                    insertDevice(9, "LED6", "LED", "AVAILABLE", "OFF");
                     System.out.println("> [" + Main.getDate() + "] Default device added to devices table");
 
-                    insertDevice(7, "LED7", "LED", "AVAILABLE");
+                    insertDevice(7, "LED7", "LED", "AVAILABLE", "OFF");
                     System.out.println("> [" + Main.getDate() + "] Default device added to devices table");
 
-                    insertDevice(8, "LED8", "LED", "AVAILABLE");
+                    insertDevice(8, "LED8", "LED", "AVAILABLE", "OFF");
                     System.out.println("> [" + Main.getDate() + "] Default device added to devices table");
                 }
             }
@@ -117,12 +118,12 @@ public class DBHelper
     /**
      * Insert a new row into the users table
      *
-     * @param user username of the user to be inserted.
-     * @param pass password of the user to be inserted.
+     * @param user  username of the user to be inserted.
+     * @param pass  password of the user to be inserted.
      * @param email email of the user to be inserted.
-     * @param fn first name of the user to be inserted.
-     * @param ln last name of the user to be inserted.
-     * @param r_id role id of the user to be inserted.
+     * @param fn    first name of the user to be inserted.
+     * @param ln    last name of the user to be inserted.
+     * @param r_id  role id of the user to be inserted.
      */
     //TODO: r_id should be role name and should perform a query for the name's id
     public static void insertUser(String user, String pass, String email, String fn, String ln, int r_id)
@@ -146,6 +147,7 @@ public class DBHelper
 
     /**
      * Insert a new row into the roles table
+     *
      * @param name role name of the role to be inserted.
      */
     public static void insertRole(String name)
@@ -164,12 +166,13 @@ public class DBHelper
 
     /**
      * Insert a new row into the devices table
-     * @param pin device pin of the device to be inserted.
-     * @param name device name of the device to be inserted.
-     * @param type device type of the device to be inserted.
+     *
+     * @param pin    device pin of the device to be inserted.
+     * @param name   device name of the device to be inserted.
      * @param status device status of the device to be inserted.
+     * @param state  device state of the device to be inserted.
      */
-    public static void insertDevice(int pin, String name, String type, String status)
+    public static void insertDevice(int pin, String name, String type, String status, String state)
     {
         try (Connection conn = connect();
              PreparedStatement pstmt = conn.prepareStatement(DBQueries.getInsertDeviceQuery()))
@@ -178,6 +181,7 @@ public class DBHelper
             pstmt.setString(2, name);
             pstmt.setString(3, type);
             pstmt.setString(4, status);
+            pstmt.setString(5, state);
             pstmt.executeUpdate();
         }
         catch (SQLException e)
@@ -198,9 +202,9 @@ public class DBHelper
         try (Connection conn = connect();
              PreparedStatement pstmt = conn.prepareStatement(getSelectUserByUsernameAndPassword()))
         {
-            pstmt.setString(1,username);
-            pstmt.setString(2,password);
-            ResultSet rs    = pstmt.executeQuery();
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
+            ResultSet rs = pstmt.executeQuery();
 
             userId = rs.getInt("user_id");
         }
@@ -219,20 +223,29 @@ public class DBHelper
         Devices devices = new Devices();
 
         try (Connection conn = connect();
-             Statement stmt  = conn.createStatement();
-             ResultSet rs    = stmt.executeQuery(sql))
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql))
         {
             while (rs.next())
             {
-                Device device = new Device(rs.getInt("device_pin"),
-                        rs.getString("device_name"),
-                        getDeviceTypeFromString(rs.getString("device_type")),
-                        rs.getString("device_status"));
-                devices.addDevice(device);
+                if (rs.getString("device_type").equals("LED"))
+                {
+                    Led led = new Led(rs.getInt("device_pin"),
+                            rs.getString("device_name"),
+                            getDeviceStatusFromString(rs.getString("device_status")),
+                            getLedStateFromString(rs.getString("device_status")));
+                    devices.addDevice(led);
+                }
+                else if (rs.getString("device_type").equals("ARM"))
+                {
+                    Arm arm = new Arm(new ArrayList<Integer>(rs.getInt("device_pin")),
+                            rs.getString("device_name"),
+                            getDeviceStatusFromString(rs.getString("device_status")),
+                            getArmStateFromString(rs.getString("device_status")));
+                    devices.addDevice(arm);
+                }
             }
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             System.out.println("> [" + Main.getDate() + "] " + e.getMessage());
         }
 
@@ -241,21 +254,68 @@ public class DBHelper
 
     /**
      * Convert the device type string stored in the db to a DeviceType
+     *
      * @param s the string from the db
      * @return the corresponding DeviceType
      */
-    private static Device.DeviceType getDeviceTypeFromString(String s)
+    private static DeviceStatus getDeviceStatusFromString(String s)
     {
-        Device.DeviceType dt = null;
+        DeviceStatus ds = null;
 
-        if (s.equals("LED"))
+        if (s.equals("AVAILABLE"))
         {
-            dt = Device.DeviceType.LED;
+            ds = DeviceStatus.AVAILABLE;
         }
-        else if (s.equals("ARM"))
+        else if (s.equals("IN_USE"))
         {
-            dt = Device.DeviceType.ARM;
+            ds = DeviceStatus.IN_USE;
         }
-        return dt;
+        return ds;
+    }
+
+    /**
+     * Convert the device type string stored in the db to a DeviceType
+     *
+     * @param s the string from the db
+     * @return the corresponding DeviceType
+     */
+    private static LedState getLedStateFromString(String s)
+    {
+        LedState ls = null;
+
+        if (s.equals("ON"))
+        {
+            ls = LedState.ON;
+        }
+        else if (s.equals("OFF"))
+        {
+            ls = LedState.OFF;
+        }
+        else if (s.equals("BLINKING"))
+        {
+            ls = LedState.BLINKING;
+        }
+        return ls;
+    }
+
+    /**
+     * Convert the device type string stored in the db to a DeviceType
+     *
+     * @param s the string from the db
+     * @return the corresponding DeviceType
+     */
+    private static ArmState getArmStateFromString(String s)
+    {
+        ArmState as = null;
+
+        if (s.equals("ON"))
+        {
+            as = ArmState.ON;
+        }
+        else if (s.equals("OFF"))
+        {
+            as = ArmState.OFF;
+        }
+        return as;
     }
 }

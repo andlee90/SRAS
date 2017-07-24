@@ -1,6 +1,8 @@
 package Resources;
 
+import CommModels.Arm;
 import CommModels.Device;
+import CommModels.Led;
 
 import java.util.Hashtable;
 import java.util.Map;
@@ -44,11 +46,11 @@ public class DeviceControllerFactory
             return dc;
         }
 
-        else if(device.getDeviceType() == Device.DeviceType.LED)
+        else if(device instanceof Led)
         {
             return createLEDController(device);
         }
-        else if(device.getDeviceType() == Device.DeviceType.ARM)
+        else if(device instanceof Arm)
         {
             return createARMController(device);
         }
