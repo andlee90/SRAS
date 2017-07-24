@@ -2,54 +2,55 @@ package Resources;
 
 import CommModels.Device;
 
+import java.util.Hashtable;
+import java.util.Map;
+
 /**
  * Builds or gets an instance of an appropriate device controller.
  */
 public class DeviceControllerFactory
 {
-    private volatile static DeviceController LEDController;
-    private volatile static DeviceController ARMController;
+    private volatile static Hashtable<DeviceController, Integer> controllerTable = new Hashtable<>();
 
     private static DeviceController createLEDController(Device device)
     {
-        return new LEDController(device);
+        LEDController ledController = new LEDController(device);
+        controllerTable.put(ledController, device.getDeviceId());
+
+        return ledController;
     }
 
-    private static DeviceController createARMController()
+    private static DeviceController createARMController(Device device)
     {
-        return new ARMController();
+        ARMController armController = new ARMController(device);
+        controllerTable.put(armController, device.getDeviceId());
+
+        return armController;
     }
 
     public static DeviceController getDeviceController(Device device)
     {
+        DeviceController dc = null;
 
-        if(device.getDeviceType() == Device.DeviceType.LED)
+        if(controllerTable.contains(device.getDeviceId()))
         {
-            if(LEDController == null)
+            for (Map.Entry entry : controllerTable.entrySet())
             {
-                synchronized (DeviceController.class)
+                if (entry.getValue().equals(device.getDeviceId()))
                 {
-                    if(LEDController == null)
-                    {
-                        LEDController = createLEDController(device);
-                    }
+                    dc = (DeviceController) entry.getKey();
                 }
             }
-            return LEDController;
+            return dc;
+        }
+
+        else if(device.getDeviceType() == Device.DeviceType.LED)
+        {
+            return createLEDController(device);
         }
         else if(device.getDeviceType() == Device.DeviceType.ARM)
         {
-            if(ARMController == null)
-            {
-                synchronized (DeviceController.class)
-                {
-                    if(ARMController == null)
-                    {
-                        ARMController = createARMController();
-                    }
-                }
-            }
-            return ARMController;
+            return createARMController(device);
         }
         else
         {

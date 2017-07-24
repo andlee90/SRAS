@@ -1,6 +1,7 @@
 package Resources;
 
 import CommModels.Command;
+import CommModels.Device;
 
 /**
  * Class for controlling a robot arm.
@@ -9,6 +10,13 @@ import CommModels.Command;
 
 public class ARMController implements DeviceController
 {
+    private Device device;
+
+    ARMController(Device d)
+    {
+        this.device = d;
+    }
+
     @Override
     public boolean isAvailable()
     {

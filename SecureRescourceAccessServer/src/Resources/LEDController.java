@@ -5,8 +5,6 @@ import CommModels.Device;
 import Main.Main;
 import com.pi4j.io.gpio.*;
 
-import java.util.ArrayList;
-
 /**
  * Implementation for controlling a single LED.
  */
