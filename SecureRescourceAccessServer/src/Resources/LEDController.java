@@ -5,19 +5,25 @@ import CommModels.Device;
 import Main.Main;
 import com.pi4j.io.gpio.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Implementation for controlling a single LED.
  */
 public class LEDController implements DeviceController
 {
     private Device device;                  // The Device being controlled
+    private GpioController gpio;
     private GpioPinDigitalOutput pin;       // The pin to which the device in connected
 
     LEDController(Device d)
     {
         this.device = d;
 
-        GpioController gpio = GpioFactory.getInstance();
+        gpio = GpioFactory.getInstance();
         pin = gpio.provisionDigitalOutputPin(getGpioPin(device.getDevicePin()), "MyLED", PinState.LOW);
     }
 
@@ -56,13 +62,30 @@ public class LEDController implements DeviceController
     private Pin getGpioPin(int x)
     {
         Pin resultPin = null;
+        Pin[] p = RaspiPin.allPins();
+        ArrayList<Pin> pins = new ArrayList<>(Arrays.asList(p));
+        Collections.sort(pins);
 
-        for (Pin pin : RaspiPin.allPins())
+        for (Pin pin : pins)
         {
             String pinString = pin.toString();
-            if (pinString.substring(pinString.length() - 1).equals(Integer.toString(x)))
+
+            if(Integer.toString(x).length() == 2)
             {
-                resultPin = pin;
+                if (pinString.substring(pinString.length() - 2).equals(Integer.toString(x)))
+                {
+                    resultPin = pin;
+                    break;
+                }
+                break;
+            }
+            else if (Integer.toString(x).length() == 1)
+            {
+                if (pinString.substring(pinString.length() - 1).equals(Integer.toString(x)))
+                {
+                    resultPin = pin;
+                    break;
+                }
             }
         }
         return resultPin;
