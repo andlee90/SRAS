@@ -5,7 +5,6 @@ import Database.DBHelper;
 import Main.Main;
 import Resources.DeviceController;
 import Resources.DeviceControllerFactory;
-import Resources.LEDController;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -44,26 +43,34 @@ public class ClientManager extends Thread
             if (authenticateUser(user))
             {
                 serverOutputStream.writeObject(user);
-                Message message = (Message)serverInputStream.readObject(); // Get test message from client
-                System.out.println("> [" + Main.getDate() + "] " + message.getMessage());
-
                 serverOutputStream.writeObject(getDevices());
 
-                Device device = (Device) serverInputStream.readObject();
-                message.setMessage(device.getDeviceName());
-                serverOutputStream.writeObject(message);
-
-                DeviceController dc = DeviceControllerFactory.getDeviceController(device);
+                DeviceController dc = null;
 
                 while(!interrupted())
                 {
-                    Command command = (Command) serverInputStream.readObject();
-                    if (dc != null)
+                    Object object = serverInputStream.readObject();
+
+                    if(object instanceof Message)
                     {
-                        dc.issueCommand(command.getCommandType());
+                        Message message = (Message) object; // Get test message from client
+                        System.out.println("> [" + Main.getDate() + "] " + message.getMessage());
                     }
-                    message.setMessage(device.getDeviceName());
-                    serverOutputStream.writeObject(message);
+
+                    else if (object instanceof Device)
+                    {
+                        Device device = (Device) object;
+                        dc = DeviceControllerFactory.getDeviceController(device);
+                    }
+
+                    else if (object instanceof Command)
+                    {
+                        Command command = (Command) object;
+                        if (dc != null)
+                        {
+                            dc.issueCommand(command.getCommandType());
+                        }
+                    }
                 }
             }
             serverOutputStream.writeObject(user);
