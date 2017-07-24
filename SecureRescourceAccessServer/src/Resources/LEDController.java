@@ -13,14 +13,14 @@ import java.util.ArrayList;
 public class LEDController implements DeviceController
 {
     private Device device;                  // The Device being controlled
-    //private GpioPinDigitalOutput pin;       // The pin to which the device in connected
+    private GpioPinDigitalOutput pin;       // The pin to which the device in connected
 
     LEDController(Device d)
     {
         this.device = d;
 
-        //GpioController gpio = GpioFactory.getInstance();
-        //pin = gpio.provisionDigitalOutputPin(getGpioPin(device.getDevicePin()), "MyLED", PinState.LOW);
+        GpioController gpio = GpioFactory.getInstance();
+        pin = gpio.provisionDigitalOutputPin(getGpioPin(device.getDevicePin()), "MyLED", PinState.LOW);
     }
 
     @Override
@@ -32,21 +32,21 @@ public class LEDController implements DeviceController
     @Override
     public void issueCommand(Command.CommandType ct)
     {
-        //pin.setShutdownOptions(true, PinState.LOW);
+        pin.setShutdownOptions(true, PinState.LOW);
 
         if (ct == Command.CommandType.TOGGLE)
         {
             System.out.println("> [" + Main.getDate() + "] "
                     + device.getDeviceName() + " on "
                     + device.getDevicePin() + ": pin state toggled.");
-            //pin.toggle();
+            pin.toggle();
         }
         else if (ct == Command.CommandType.BLINK)
         {
             System.out.println("> [" + Main.getDate() + "] "
                     + device.getDeviceName() + " on "
                     + device.getDevicePin() + ": pin is blinking.");
-            //pin.blink(100);
+            pin.blink(100);
         }
     }
 
@@ -57,18 +57,16 @@ public class LEDController implements DeviceController
      */
     private Pin getGpioPin(int x)
     {
-        Pin pin = null;
-        ArrayList<Pin> pins = new ArrayList<>();
-        pins.add(RaspiPin.GPIO_01);
+        Pin resultPin = null;
 
-        for (Pin pin1 : pins)
+        for (Pin pin : RaspiPin.allPins())
         {
-            String pinString = pin1.toString();
+            String pinString = pin.toString();
             if (pinString.substring(pinString.length() - 1).equals(Integer.toString(x)))
             {
-                pin = pin1;
+                resultPin = pin;
             }
         }
-        return pin;
+        return resultPin;
     }
 }
