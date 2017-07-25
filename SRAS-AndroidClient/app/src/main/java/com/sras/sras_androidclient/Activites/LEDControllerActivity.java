@@ -4,14 +4,13 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.sras.sras_androidclient.R;
 import com.sras.sras_androidclient.Services.ServerConnectionService;
@@ -20,12 +19,13 @@ import java.io.IOException;
 
 import CommModels.Command;
 import CommModels.Device;
-import CommModels.Message;
+import CommModels.LedState;
 
 public class LEDControllerActivity extends AppCompatActivity implements View.OnClickListener
 {
     ServerConnectionService mService;
     boolean mBound = false;
+    private ImageView mLEDView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -35,16 +35,10 @@ public class LEDControllerActivity extends AppCompatActivity implements View.OnC
 
         Intent intent = getIntent();
         Device mDevice = (Device) intent.getSerializableExtra("device");
-        setTitle(mDevice.getDeviceName());
+        setTitle(mDevice.getDeviceName() + " (pin " + mDevice.getDevicePin() +")");
 
-        ImageView ledView = (ImageView) findViewById(R.id.image_led);
-        ledView.setImageResource(R.drawable.ic_led);
-
-        TextView pinView = (TextView) findViewById(R.id.textview_pin);
-        pinView.setText("LED is on pin: " + mDevice.getDevicePin());
-
-        TextView statusView = (TextView) findViewById(R.id.textview_status);
-        statusView.setText("Device status is " + mDevice.getDeviceStatus());
+        mLEDView = (ImageView) findViewById(R.id.image_led);
+        mLEDView.setImageResource(R.drawable.led_off);
 
         Button toggleButton = (Button) findViewById(R.id.button_toggle);
         toggleButton.setOnClickListener(this);
@@ -66,6 +60,7 @@ public class LEDControllerActivity extends AppCompatActivity implements View.OnC
     protected void onStop()
     {
         super.onStop();
+
         if (mBound)
         {
             unbindService(mConnection);
@@ -94,6 +89,7 @@ public class LEDControllerActivity extends AppCompatActivity implements View.OnC
     @Override
     public void onClick(View view)
     {
+        Device device;
         if (view.getId() == R.id.button_toggle)
         {
             if(mBound)
@@ -101,8 +97,8 @@ public class LEDControllerActivity extends AppCompatActivity implements View.OnC
                 try
                 {
                     Command command = new Command(Command.CommandType.TOGGLE);
-                    Message message = mService.issueCommand(command);
-                    Log.d("Incoming message: ", message.getMessage());
+                    device = mService.issueCommand(command);
+                    setImageState((LedState) device.getDeviceState());
 
                 } catch (IOException | ClassNotFoundException | InterruptedException e)
                 {
@@ -118,14 +114,32 @@ public class LEDControllerActivity extends AppCompatActivity implements View.OnC
                 try
                 {
                     Command command = new Command(Command.CommandType.BLINK);
-                    Message message = mService.issueCommand(command);
-                    Log.d("Incoming message: ", message.getMessage());
+                    device = mService.issueCommand(command);
+                    setImageState((LedState) device.getDeviceState());
 
                 } catch (IOException | ClassNotFoundException | InterruptedException e)
                 {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    private void setImageState(LedState state) throws InterruptedException
+    {
+        if(state == LedState.ON)
+        {
+            mLEDView.setImageResource(R.drawable.led_on);
+        }
+        else if(state == LedState.OFF)
+        {
+            mLEDView.setImageResource(R.drawable.led_off);
+        }
+        else if(state == LedState.BLINKING)
+        {
+            mLEDView.setImageResource(R.drawable.blink);
+            AnimationDrawable frameAnimation = (AnimationDrawable) mLEDView.getDrawable();
+            frameAnimation.start();
         }
     }
 }

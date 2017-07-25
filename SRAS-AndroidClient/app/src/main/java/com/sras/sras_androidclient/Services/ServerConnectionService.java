@@ -1,6 +1,5 @@
 package com.sras.sras_androidclient.Services;
 
-
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
@@ -87,8 +86,7 @@ public class ServerConnectionService extends Service
         {
             try
             {
-                mOutputStream.writeObject(device); // Send message to server
-                //message = (Message) mInputStream.readObject();
+                mOutputStream.writeObject(device);
             }
             catch (IOException e)
             {
@@ -105,7 +103,7 @@ public class ServerConnectionService extends Service
     private class IssueCommandThread extends Thread
     {
         private volatile Command command;
-        Message message = new Message("");
+        private volatile Device device = null;
 
         IssueCommandThread(Command c)
         {
@@ -117,18 +115,19 @@ public class ServerConnectionService extends Service
         {
             try
             {
-                mOutputStream.writeObject(command); // Send message to server
-                //message = (Message) mInputStream.readObject();
+                mOutputStream.writeObject(command);
+                device = (Device) mInputStream.readObject();
+
             }
-            catch (IOException e)
+            catch (IOException | ClassNotFoundException e)
             {
                 e.printStackTrace();
             }
         }
 
-        Message getMessage()
+        Device getDevice()
         {
-            return message;
+            return device;
         }
     }
 
@@ -143,7 +142,6 @@ public class ServerConnectionService extends Service
         EstablishConnectionThread ct = new EstablishConnectionThread();
         Thread t = new Thread(ct);
         t.start();
-        // TODO: Timeout if connection takes too long.
         t.join(10000);
 
         return ct.getDevices();
@@ -154,21 +152,19 @@ public class ServerConnectionService extends Service
         FetchResourcesThread frt = new FetchResourcesThread(device);
         Thread t = new Thread(frt);
         t.start();
-        // TODO: Timeout if connection takes too long.
         t.join(10000);
 
         return frt.getMessage();
     }
 
-    public Message issueCommand(Command command) throws IOException, ClassNotFoundException, InterruptedException
+    public Device issueCommand(Command command) throws IOException, ClassNotFoundException, InterruptedException
     {
         IssueCommandThread ict = new IssueCommandThread(command);
         Thread t = new Thread(ict);
         t.start();
-        // TODO: Timeout if connection takes too long.
         t.join(10000);
 
-        return ict.getMessage();
+        return ict.getDevice();
     }
 
     public void setParams(String addr, int port, String user, String pass)
