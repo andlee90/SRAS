@@ -6,6 +6,7 @@ import Main.Main;
 import Resources.DeviceController;
 import Resources.DeviceControllerFactory;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -45,39 +46,54 @@ public class ClientManager extends Thread
             {
                 serverOutputStream.writeObject(user);
                 serverOutputStream.writeObject(getDevices());
+                Message userAddress = (Message) serverInputStream.readObject();
+                System.out.println("> [" + Main.getDate() + "] " + user.getUserName() + "@" + userAddress.getMessage() + " connected");
+
 
                 DeviceController dc = null;
 
                 while(!interrupted())
                 {
-                    Object object = serverInputStream.readObject();
-
-                    if(object instanceof Message)
+                    try
                     {
-                        Message message = (Message) object;
-                        System.out.println("> [" + Main.getDate() + "] " + message.getMessage());
-                    }
+                        Object object = serverInputStream.readObject();
 
-                    else if (object instanceof Device)
-                    {
-                        device = (Device) object;
-                        dc = DeviceControllerFactory.getDeviceController(device);
-                    }
-
-                    else if (object instanceof Command)
-                    {
-                        Command command = (Command) object;
-                        if (dc != null)
+                        if(object instanceof Message)
                         {
-                            device.setDeviceState(dc.issueCommand(command.getCommandType()));
-                            serverOutputStream.reset(); // disregard the state of any Device already written to the stream
-                            serverOutputStream.writeObject(device);
+                            Message message = (Message) object;
+                            System.out.println("> [" + Main.getDate() + "] " + message.getMessage());
                         }
+
+                        else if (object instanceof Device)
+                        {
+                            device = (Device) object;
+                            dc = DeviceControllerFactory.getDeviceController(device);
+                        }
+
+                        else if (object instanceof Command)
+                        {
+                            Command command = (Command) object;
+                            if (dc != null)
+                            {
+                                device.setDeviceState(dc.issueCommand(command.getCommandType()));
+                                serverOutputStream.reset(); // disregard the state of any Device already written to the stream
+                                serverOutputStream.writeObject(device);
+                            }
+                        }
+                    }
+                    catch (EOFException e)
+                    {
+                        System.out.println("> [" + Main.getDate() + "] " + user.getUserName() + "@" + userAddress.getMessage() + " disconnected");
+                        close();
+                        break;
                     }
                 }
             }
-            serverOutputStream.writeObject(user);
-            close();
+            else
+            {
+                serverOutputStream.writeObject(user);
+                close();
+            }
         }
         catch (IOException | ClassNotFoundException | InterruptedException e)
         {
