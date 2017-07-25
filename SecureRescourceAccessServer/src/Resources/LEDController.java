@@ -14,10 +14,10 @@ import java.util.Collections;
  */
 public class LEDController implements DeviceController
 {
-    private Led device;                     // The device being controlled.
+    private volatile Led device;            // The device being controlled.
     private GpioController gpio;            // The controller for the device.
     private GpioPinDigitalOutput pin;       // The pin to which the device in connected.
-    private boolean state;                  // True if ON, false if OFF
+    private boolean state = false;          // True if ON, false if OFF
 
     LEDController(Device d)
     {
@@ -42,15 +42,17 @@ public class LEDController implements DeviceController
      * @param ct the type of command being issued.
      */
     @Override
-    public void issueCommand(Command.CommandType ct)
+    public LedState issueCommand(Command.CommandType ct)
     {
         if (ct == Command.CommandType.TOGGLE)
         {
+            //pin.toggle();
+
             if (device.getDeviceState() == LedState.BLINKING)
             {
                 // If the device is blinking, first turn it off.
-                pin = gpio.provisionDigitalOutputPin(getGpioPin(device.getDevicePin()), device.getDeviceName(), PinState.LOW);
-                state = false;
+                // pin = gpio.provisionDigitalOutputPin(getGpioPin(device.getDevicePin()), device.getDeviceName(), PinState.LOW);
+                state = true;
             }
             if (state)
             {
@@ -63,25 +65,29 @@ public class LEDController implements DeviceController
                 state = true;
             }
 
-            //pin.toggle();
             System.out.println("> [" + Main.getDate() + "] "
                     + device.getDeviceName() + " on "
-                    + device.getDevicePin() + ": pin state toggled.");
+                    + device.getDevicePin() + " is "
+                    + device.getDeviceState());
         }
         else if (ct == Command.CommandType.BLINK)
         {
+            device.setDeviceState(LedState.BLINKING);
+
+            //pin.blink(100);
+
             System.out.println("> [" + Main.getDate() + "] "
                     + device.getDeviceName() + " on "
-                    + device.getDevicePin() + ": pin is blinking.");
-            device.setDeviceState(LedState.BLINKING);
-            //pin.blink(100);
+                    + device.getDevicePin() + " is "
+                    + device.getDeviceState());
         }
+        return device.getDeviceState();
     }
 
     /**
-     * Converts Device.pin to gpio.pin
+     * Converts Device.pin (int) to GPIO.pin (Pin).
      * @param x pin int from Device to be converted
-     * @return GPIO pin used for issuing commands
+     * @return GPIO Pin used for issuing commands
      */
     private Pin getGpioPin(int x)
     {

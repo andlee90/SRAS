@@ -1,5 +1,6 @@
 package Resources;
 
+import CommModels.ArmState;
 import CommModels.Command;
 import CommModels.Device;
 
@@ -24,8 +25,8 @@ public class ARMController implements DeviceController
     }
 
     @Override
-    public void issueCommand(Command.CommandType ct)
+    public ArmState issueCommand(Command.CommandType ct)
     {
-
+        return ArmState.ON;
     }
 }

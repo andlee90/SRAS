@@ -22,12 +22,13 @@ public class ClientManager extends Thread
 {
     private int threadId;
     private Socket socket;
+    private volatile Device device = null;
 
     ClientManager(Socket p, int id)
     {
         this.socket = p;
         this.threadId = id;
-        start(); // Start on a new thread
+        start();
     }
 
     @Override
@@ -53,13 +54,13 @@ public class ClientManager extends Thread
 
                     if(object instanceof Message)
                     {
-                        Message message = (Message) object; // Get test message from client
+                        Message message = (Message) object;
                         System.out.println("> [" + Main.getDate() + "] " + message.getMessage());
                     }
 
                     else if (object instanceof Device)
                     {
-                        Device device = (Device) object;
+                        device = (Device) object;
                         dc = DeviceControllerFactory.getDeviceController(device);
                     }
 
@@ -68,13 +69,15 @@ public class ClientManager extends Thread
                         Command command = (Command) object;
                         if (dc != null)
                         {
-                            dc.issueCommand(command.getCommandType());
+                            device.setDeviceState(dc.issueCommand(command.getCommandType()));
+                            serverOutputStream.reset(); // disregard the state of any Device already written to the stream
+                            serverOutputStream.writeObject(device);
                         }
                     }
                 }
             }
             serverOutputStream.writeObject(user);
-            //close();
+            close();
         }
         catch (IOException | ClassNotFoundException | InterruptedException e)
         {
@@ -90,6 +93,10 @@ public class ClientManager extends Thread
         this.socket.close();
     }
 
+    /**
+     * Authenticates the received user credentials by querying for them in the db.
+     * @param u the User containing the credentials to be checked.
+     */
     private boolean authenticateUser(User u)
     {
         int userId = DBHelper.selectUserIdByUsernameAndPassword(u.getUserName(), u.getPassword());
