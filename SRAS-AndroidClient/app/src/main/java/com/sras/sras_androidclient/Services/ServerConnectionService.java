@@ -8,7 +8,7 @@ import android.os.IBinder;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.InetAddress;
+import java.net.Inet4Address;
 import java.net.Socket;
 
 import CommModels.*;
@@ -47,14 +47,11 @@ public class ServerConnectionService extends Service
                 mOutputStream = new ObjectOutputStream(mSocket.getOutputStream());
                 mInputStream = new ObjectInputStream(mSocket.getInputStream());
 
-                InetAddress addr;
-                addr = InetAddress.getLocalHost();
-                String hostname = addr.getHostName();
-                Message message = new Message("Client @" + hostname + " connected.");
+                Message message = new Message(Inet4Address.getLocalHost().getHostAddress());
 
                 if (isAuthenticated(mUsername, mPassword))
                 {
-                    mOutputStream.writeObject(message); // Send message to server
+                    mOutputStream.writeObject(message);
                     devices = (Devices) mInputStream.readObject();
                 }
 
