@@ -2,6 +2,6 @@
 <animation-list xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/selected"
     android:oneshot="false">
-    <item android:drawable="@drawable/led_on" android:duration="1000" />
-    <item android:drawable="@drawable/led_off" android:duration="1000" />
+    <item android:drawable="@drawable/led_on" android:duration="100" />
+    <item android:drawable="@drawable/led_off" android:duration="100" />
 </animation-list>

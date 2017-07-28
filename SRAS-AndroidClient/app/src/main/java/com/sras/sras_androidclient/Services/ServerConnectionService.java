@@ -9,7 +9,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Inet4Address;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
+import java.net.UnknownHostException;
 
 import CommModels.*;
 
@@ -128,6 +131,50 @@ public class ServerConnectionService extends Service
         }
     }
 
+    private class TestConnectivityThread extends Thread
+    {
+        private String ip;
+        private int port;
+        private volatile boolean exists = false;
+
+        public TestConnectivityThread(String ip, int port)
+        {
+            this.ip = ip;
+            this.port = port;
+        }
+
+        @Override
+        public void run()
+        {
+            try
+            {
+                exists = pingURL(ip, port);
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+        private boolean pingURL(String hostname, int port) throws IOException
+        {
+            boolean reachable = false;
+
+            try (Socket socket = new Socket(hostname, port))
+            {
+                reachable = true;
+                socket.close();
+            }
+
+            return reachable;
+        }
+
+        public boolean getConnectivity()
+        {
+            return exists;
+        }
+    }
+
     @Override
     public IBinder onBind(Intent intent)
     {
@@ -162,6 +209,16 @@ public class ServerConnectionService extends Service
         t.join(10000);
 
         return ict.getDevice();
+    }
+
+    public boolean testConnectivity(String address, int port) throws IOException, ClassNotFoundException, InterruptedException
+    {
+        TestConnectivityThread tct = new TestConnectivityThread(address, port);
+        Thread t = new Thread(tct);
+        t.start();
+        t.join(10000);
+
+        return tct.getConnectivity();
     }
 
     public void setParams(String addr, int port, String user, String pass)

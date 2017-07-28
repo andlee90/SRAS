@@ -13,16 +13,31 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/activity_vertical_margin"
-            android:textSize="@dimen/text_size"
+            android:textSize="16sp"
             android:layout_alignParentStart="true"/>
 
-        <ImageButton
-            android:id="@+id/server_settings_button"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_server_settings"
-            android:layout_alignParentEnd="true"
-            android:contentDescription="icon" />
+            android:orientation="horizontal"
+            android:layout_alignParentEnd="true">
+
+            <ImageButton
+                android:id="@+id/server_connect_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_server_connect"
+                android:layout_alignParentEnd="true"
+                android:contentDescription="icon" />
+
+            <ImageButton
+                android:id="@+id/server_settings_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_server_settings"
+                android:layout_alignParentEnd="true"
+                android:contentDescription="icon" />
+        </LinearLayout>
 
 
     </RelativeLayout>

@@ -22,7 +22,7 @@
         </activity>
         <activity android:name=".Activites.LoginActivity" >
         </activity>
-        <activity android:name=".Activites.ResourceListActivity" >
+        <activity android:name=".Activites.DeviceListActivity" >
         </activity>
         <activity android:name=".Activites.AddServerActivity" >
         </activity>

@@ -24,6 +24,7 @@ public class ClientManager extends Thread
     private int threadId;
     private Socket socket;
     private volatile Device device = null;
+    private volatile DeviceController dc = null;
 
     ClientManager(Socket p, int id)
     {
@@ -49,9 +50,6 @@ public class ClientManager extends Thread
                 Message userAddress = (Message) serverInputStream.readObject();
                 System.out.println("> [" + Main.getDate() + "] " + user.getUserName() + "@" + userAddress.getMessage() + " connected");
 
-
-                DeviceController dc = null;
-
                 while(!interrupted())
                 {
                     try
@@ -75,7 +73,8 @@ public class ClientManager extends Thread
                             Command command = (Command) object;
                             if (dc != null)
                             {
-                                device.setDeviceState(dc.issueCommand(command.getCommandType()));
+                                Enum deviceState = dc.issueCommand(command.getCommandType());
+                                device.setDeviceState(deviceState);
                                 serverOutputStream.reset(); // disregard the state of any Device already written to the stream
                                 serverOutputStream.writeObject(device);
                             }

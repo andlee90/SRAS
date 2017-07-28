@@ -165,7 +165,34 @@ public class ServerListActivity extends AppCompatActivity implements LoaderManag
 
             ViewHolder holder = (ViewHolder) convertView.getTag();
             holder.serverName.setText(server.getName());
-            holder.serverName.setOnClickListener(view ->
+
+            boolean serverExists = true;
+            /*if(mBound)
+            {
+                try
+                {
+                    serverExists = mService.testConnectivity(server.getAddress(), server.getPort());
+
+                    String string = "false";
+                    if(serverExists)
+                    {
+                        string = "true";
+                    }
+                    Toast.makeText(this.getContext(), string, Toast.LENGTH_SHORT).show();
+                }
+                catch (InterruptedException | ClassNotFoundException | IOException e)
+                {
+                    e.printStackTrace();
+                }
+            }*/
+
+            if (!serverExists)
+            {
+                holder.serverConnect.setBackgroundResource(R.drawable.ic_server_dne);
+                holder.serverConnect.setEnabled(false);
+            }
+
+            holder.serverConnect.setOnClickListener(view ->
             {
                 if(server.getUsername() != null)
                 {
@@ -180,7 +207,7 @@ public class ServerListActivity extends AppCompatActivity implements LoaderManag
                                     server.getPassword());
 
                             Devices devices = mService.connectToServer();
-                            Intent intent = new Intent(getApplicationContext(), ResourceListActivity.class);
+                            Intent intent = new Intent(getApplicationContext(), DeviceListActivity.class);
                             intent.putExtra("devices", devices);
                             startActivity(intent);
 
@@ -215,11 +242,13 @@ public class ServerListActivity extends AppCompatActivity implements LoaderManag
         {
             private final TextView serverName;
             private final ImageButton serverSettings;
+            private final ImageButton serverConnect;
 
             ViewHolder(View view)
             {
                 serverName = (TextView) view.findViewById(R.id.serverName);
                 serverSettings = (ImageButton) view.findViewById(R.id.server_settings_button);
+                serverConnect = (ImageButton) view.findViewById(R.id.server_connect_button);
             }
         }
     }
