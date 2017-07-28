@@ -9,10 +9,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Inet4Address;
-import java.net.InetSocketAddress;
+
 import java.net.Socket;
-import java.net.SocketAddress;
-import java.net.UnknownHostException;
 
 import CommModels.*;
 
@@ -39,7 +37,7 @@ public class ServerConnectionService extends Service
 
     private class EstablishConnectionThread extends Thread
     {
-        private volatile Devices devices = new Devices();
+        private volatile Devices devices = null;
 
         @Override
         public void run()

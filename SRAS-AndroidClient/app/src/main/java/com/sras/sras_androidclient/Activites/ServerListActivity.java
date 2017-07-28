@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sras.sras_androidclient.Database.ServerDBLoader;
 import com.sras.sras_androidclient.R;
@@ -207,9 +208,17 @@ public class ServerListActivity extends AppCompatActivity implements LoaderManag
                                     server.getPassword());
 
                             Devices devices = mService.connectToServer();
-                            Intent intent = new Intent(getApplicationContext(), DeviceListActivity.class);
-                            intent.putExtra("devices", devices);
-                            startActivity(intent);
+
+                            if (devices != null)
+                            {
+                                Intent intent = new Intent(getApplicationContext(), DeviceListActivity.class);
+                                intent.putExtra("devices", devices);
+                                startActivity(intent);
+                            }
+                            else
+                            {
+                                Toast.makeText(this.getContext(), "Failed to connect to server.", Toast.LENGTH_SHORT).show();
+                            }
 
                         } catch (IOException | ClassNotFoundException | InterruptedException e)
                         {
