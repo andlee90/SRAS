@@ -25,7 +25,7 @@ import java.util.List;
 
 import CommModels.*;
 
-public class ResourceListActivity extends AppCompatActivity implements AdapterView.OnItemClickListener
+public class DeviceListActivity extends AppCompatActivity implements AdapterView.OnItemClickListener
 {
     private List<Device> mResourceList;
 
@@ -67,6 +67,21 @@ public class ResourceListActivity extends AppCompatActivity implements AdapterVi
         {
             unbindService(mConnection);
             mBound = false;
+        }
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        try
+        {
+            // Disconnect from server
+            mService.closeServer();
+            finish();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
         }
     }
 
