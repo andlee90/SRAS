@@ -30,7 +30,7 @@ public class ServerListPanel
 
     public ServerListPanel()
     {
-        ImageIcon image = new ImageIcon("Images/pi_logo2.png");
+        ImageIcon image = new ImageIcon("Images/SRAS LOGOmd.png");
         JLabel imageLabel;
         imageLabel = new JLabel("", image, JLabel.CENTER);
 
