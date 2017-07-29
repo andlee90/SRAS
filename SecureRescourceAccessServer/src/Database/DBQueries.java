@@ -73,6 +73,16 @@ class DBQueries
         return "INSERT INTO devices(device_pin,device_name,device_type,device_status,device_state) VALUES(?,?,?,?,?)";
     }
 
+    static String getUpdateDeviceQuery()
+    {
+        return "UPDATE devices SET device_pin = ? , "
+                + "device_name = ? , "
+                + "device_type = ? , "
+                + "device_status = ? , "
+                + "device_state = ? "
+                + "WHERE device_id = ?";
+    }
+
     static String getSelectUserByUsernameAndPassword()
     {
         return "SELECT user_id FROM users WHERE user_username = ? AND user_password = ?";

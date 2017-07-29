@@ -1,6 +1,7 @@
 package Resources;
 
 import CommModels.*;
+import Database.DBHelper;
 import Main.Main;
 import com.pi4j.io.gpio.*;
 
@@ -51,7 +52,7 @@ public class LEDController implements DeviceController
                 // If the device is blinking, first turn it off.
                 //pin.blink(0);
                 device.setDeviceState(LedState.OFF);
-                //state = true;
+                state = true;
             }
 
             //pin.toggle();
@@ -84,6 +85,14 @@ public class LEDController implements DeviceController
                     + device.getDevicePin() + " is "
                     + device.getDeviceState());
         }
+
+        DBHelper.updateDevice(device.getDeviceId(),
+                device.getDevicePin(),
+                device.getDeviceName(),
+                "LED",
+                device.getDeviceStatus().toString(),
+                device.getDeviceState().toString());
+
         return device.getDeviceState();
     }
 

@@ -190,6 +190,23 @@ public class DBHelper
         }
     }
 
+    public static void updateDevice(int id, int pin, String name, String type, String status, String state)
+    {
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(DBQueries.getUpdateDeviceQuery()))
+        {
+            pstmt.setInt(1, pin);
+            pstmt.setString(2, name);
+            pstmt.setString(3, type);
+            pstmt.setString(4, status);
+            pstmt.setString(5, state);
+            pstmt.setInt(6, id);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     /**
      * Returns an user id for the corresponding username and password from the users table.
      *
@@ -219,7 +236,7 @@ public class DBHelper
 
     public static Devices selectAllDevices()
     {
-        String sql = "SELECT device_pin,device_name,device_type,device_status FROM devices";
+        String sql = "SELECT device_id,device_pin,device_name,device_type,device_status,device_state FROM devices";
         Devices devices = new Devices();
 
         try (Connection conn = connect();
@@ -230,18 +247,20 @@ public class DBHelper
             {
                 if (rs.getString("device_type").equals("LED"))
                 {
-                    Led led = new Led(rs.getInt("device_pin"),
+                    Led led = new Led(rs.getInt("device_id"),
+                            rs.getInt("device_pin"),
                             rs.getString("device_name"),
                             getDeviceStatusFromString(rs.getString("device_status")),
-                            getLedStateFromString(rs.getString("device_status")));
+                            getLedStateFromString(rs.getString("device_state")));
                     devices.addDevice(led);
                 }
                 else if (rs.getString("device_type").equals("ARM"))
                 {
-                    Arm arm = new Arm(new ArrayList<Integer>(rs.getInt("device_pin")),
+                    Arm arm = new Arm(rs.getInt("device_id"),
+                            new ArrayList<Integer>(rs.getInt("device_pin")),
                             rs.getString("device_name"),
                             getDeviceStatusFromString(rs.getString("device_status")),
-                            getArmStateFromString(rs.getString("device_status")));
+                            getArmStateFromString(rs.getString("device_state")));
                     devices.addDevice(arm);
                 }
             }
