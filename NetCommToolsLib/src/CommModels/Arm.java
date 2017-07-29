@@ -8,15 +8,17 @@ import java.util.ArrayList;
  */
 public class Arm implements Device<ArrayList<Integer>, ArmState>, Serializable
 {
-    int deviceId;
+    private int deviceId;
+    private int deviceListId;
     private ArrayList<Integer> devicePin;
     private String deviceName;
     private DeviceStatus deviceStatus;
     private ArmState deviceState;
 
-    public Arm(ArrayList<Integer> pin, String name, DeviceStatus status, ArmState state)
+    public Arm(int id, ArrayList<Integer> pin, String name, DeviceStatus status, ArmState state)
     {
-        deviceId = -1;
+        this.deviceId = id;
+        this.deviceListId = -1;
         this.devicePin = pin;
         this.deviceName = name;
         this.deviceStatus = status;
@@ -27,6 +29,12 @@ public class Arm implements Device<ArrayList<Integer>, ArmState>, Serializable
     public int getDeviceId()
     {
         return deviceId;
+    }
+
+    @Override
+    public int getDeviceListId()
+    {
+        return deviceListId;
     }
 
     @Override
@@ -54,9 +62,9 @@ public class Arm implements Device<ArrayList<Integer>, ArmState>, Serializable
     }
 
     @Override
-    public void setDeviceId(int id)
+    public void setDeviceListId(int id)
     {
-        deviceId = id;
+        deviceListId = id;
     }
 
     @Override

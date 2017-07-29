@@ -28,7 +28,7 @@ public class Devices implements Serializable
     public void addDevice(Device d)
     {
         devices.add(d);
-        d.setDeviceId(devices.indexOf(d));
+        d.setDeviceListId(devices.indexOf(d));
     }
 
     public Device getDeviceById(int id)

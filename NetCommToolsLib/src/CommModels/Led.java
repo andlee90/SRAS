@@ -7,15 +7,17 @@ import java.io.Serializable;
  */
 public class Led implements Device<Integer, LedState>, Serializable
 {
-    int deviceId;
+    private int deviceId;
+    private int deviceListId;
     private int devicePin;
     private String deviceName;
     private DeviceStatus deviceStatus;
     private LedState deviceState;
 
-    public Led(int pin, String name, DeviceStatus status, LedState state)
+    public Led(int id, int pin, String name, DeviceStatus status, LedState state)
     {
-        deviceId = -1;
+        this.deviceId = id;
+        this.deviceListId = -1;
         this.devicePin = pin;
         this.deviceName = name;
         this.deviceStatus = status;
@@ -26,6 +28,12 @@ public class Led implements Device<Integer, LedState>, Serializable
     public int getDeviceId()
     {
         return deviceId;
+    }
+
+    @Override
+    public int getDeviceListId()
+    {
+        return deviceListId;
     }
 
     @Override
@@ -53,9 +61,9 @@ public class Led implements Device<Integer, LedState>, Serializable
     }
 
     @Override
-    public void setDeviceId(int id)
+    public void setDeviceListId(int id)
     {
-        deviceId = id;
+        this.deviceListId = id;
     }
 
     @Override
