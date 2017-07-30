@@ -42,11 +42,15 @@ public class ClientManager extends Thread
             ObjectOutputStream serverOutputStream = new ObjectOutputStream(socket.getOutputStream());
 
             User user = (User)serverInputStream.readObject();
+            Message connectionMessage;
 
             if (authenticateUser(user))
             {
                 serverOutputStream.writeObject(user);
-                serverOutputStream.writeObject(getDevices());
+
+                connectionMessage = new Message("Logged in as " + user.getUserName());
+                serverOutputStream.writeObject(connectionMessage);
+
                 Message userAddress = (Message) serverInputStream.readObject();
                 System.out.println("> [" + Main.getDate() + "] " + user.getUserName() + "@" + userAddress.getMessage() + " connected");
 
@@ -60,6 +64,12 @@ public class ClientManager extends Thread
                         {
                             Message message = (Message) object;
                             System.out.println("> [" + Main.getDate() + "] " + message.getMessage());
+                        }
+
+                        else if (object instanceof Devices)
+                        {
+                            Devices devices = getDevices();
+                            serverOutputStream.writeObject(devices);
                         }
 
                         else if (object instanceof Device)
@@ -91,6 +101,11 @@ public class ClientManager extends Thread
             else
             {
                 serverOutputStream.writeObject(user);
+
+                connectionMessage = new Message("Incorrect username or password");
+                connectionMessage.setState(false);
+                serverOutputStream.writeObject(connectionMessage);
+
                 close();
             }
         }
