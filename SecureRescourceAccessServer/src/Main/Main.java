@@ -1,9 +1,11 @@
 package Main;
 
+import CommModels.*;
 import Database.DBHelper;
 import Networking.ServerManager;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main
@@ -51,6 +53,37 @@ public class Main
 
                 DBHelper.insertDevice(pin, device, type, "AVAILABLE", "OFF");
                 System.out.println("> [" + Main.getDate() + "] New device " + device + " saved.");
+            }
+
+            else if (command.equals("shutdown"))
+            {
+                Devices devices = DBHelper.selectAllDevices();
+
+                for (Device d: devices.getDevices())
+                {
+                    if(d instanceof Led)
+                    {
+                        d.setDeviceState(LedState.OFF);
+
+                        DBHelper.updateDevice(d.getDeviceId(),
+                                (int)d.getDevicePin(),
+                                d.getDeviceName(),
+                                "LED",
+                                d.getDeviceStatus().toString(),
+                                d.getDeviceState().toString());
+                    }
+                    else if (d instanceof Arm)
+                    {
+                        d.setDeviceState(ArmState.OFF);
+                        DBHelper.updateDevice(d.getDeviceId(),
+                                (int)d.getDevicePin(),
+                                d.getDeviceName(),
+                                "ARM",
+                                d.getDeviceStatus().toString(),
+                                d.getDeviceState().toString());
+                    }
+                }
+                System.exit(0);
             }
 
             else
