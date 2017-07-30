@@ -34,11 +34,12 @@ public class LEDControllerActivity extends AppCompatActivity implements View.OnC
         setContentView(R.layout.activity_led_controller);
 
         Intent intent = getIntent();
-        Device mDevice = (Device) intent.getSerializableExtra("device");
-        setTitle(mDevice.getDeviceName() + " (pin " + mDevice.getDevicePin() +")");
+        Device device = (Device) intent.getSerializableExtra("device");
+        setTitle(device.getDeviceName() + " (pin " + device.getDevicePin() +")");
 
         mLEDView = (ImageView) findViewById(R.id.image_led);
-        mLEDView.setImageResource(R.drawable.led_off);
+        setImageState((LedState) device.getDeviceState());
+
 
         Button toggleButton = (Button) findViewById(R.id.button_toggle);
         toggleButton.setOnClickListener(this);
@@ -125,7 +126,7 @@ public class LEDControllerActivity extends AppCompatActivity implements View.OnC
         }
     }
 
-    private void setImageState(LedState state) throws InterruptedException
+    private void setImageState(LedState state)
     {
         if(state == LedState.ON)
         {

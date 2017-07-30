@@ -27,7 +27,8 @@ import CommModels.*;
 
 public class DeviceListActivity extends AppCompatActivity implements AdapterView.OnItemClickListener
 {
-    private List<Device> mResourceList;
+    private List<Device> mDeviceList;
+    private ListView mListView;
 
     ServerConnectionService mService;
     boolean mBound = false;
@@ -38,16 +39,12 @@ public class DeviceListActivity extends AppCompatActivity implements AdapterView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_resource_list);
 
-        ListView mListView = (ListView) findViewById(R.id.listview);
+        mListView = (ListView) findViewById(R.id.listview);
         mListView.setOnItemClickListener(this);
 
-        Intent intent = getIntent();
-        Devices devices = (Devices) intent.getSerializableExtra("devices");
-        mResourceList = devices.getDevices();
-
-        ResourceItemArrayAdapter adapter = new ResourceItemArrayAdapter(getApplicationContext(),
-                android.R.layout.simple_list_item_1, mResourceList);
-        mListView.setAdapter(adapter);
+        //Intent intent = getIntent();
+        //Devices devices = (Devices) intent.getSerializableExtra("devices");
+        //mDeviceList = devices.getDevices();
     }
 
     @Override
@@ -88,7 +85,7 @@ public class DeviceListActivity extends AppCompatActivity implements AdapterView
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-        Device device = mResourceList.get(position);
+        Device device = mDeviceList.get(position);
         if(mBound)
         {
             try
@@ -114,6 +111,20 @@ public class DeviceListActivity extends AppCompatActivity implements AdapterView
             ServerConnectionService.ServerConnectionBinder binder = (ServerConnectionService.ServerConnectionBinder) service;
             mService = binder.getService();
             mBound = true;
+
+           try
+            {
+                Devices devices = mService.fetchDevices();
+                mDeviceList = devices.getDevices();
+            }
+            catch (IOException | ClassNotFoundException | InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+
+            ResourceItemArrayAdapter adapter = new ResourceItemArrayAdapter(getApplicationContext(),
+                    android.R.layout.simple_list_item_1, mDeviceList);
+            mListView.setAdapter(adapter);
         }
 
         @Override

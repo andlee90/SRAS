@@ -1,5 +1,6 @@
 package com.sras.sras_androidclient.Services;
 
+import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
@@ -37,7 +38,7 @@ public class ServerConnectionService extends Service
 
     private class EstablishConnectionThread extends Thread
     {
-        private volatile Devices devices = null;
+        private volatile Message message = null;
 
         @Override
         public void run()
@@ -48,14 +49,41 @@ public class ServerConnectionService extends Service
                 mOutputStream = new ObjectOutputStream(mSocket.getOutputStream());
                 mInputStream = new ObjectInputStream(mSocket.getInputStream());
 
-                Message message = new Message(Inet4Address.getLocalHost().getHostAddress());
-
                 if (isAuthenticated(mUsername, mPassword))
                 {
+                    message = new Message(Inet4Address.getLocalHost().getHostAddress());
                     mOutputStream.writeObject(message);
-                    devices = (Devices) mInputStream.readObject();
+                    message = (Message) mInputStream.readObject();
+                }
+                else
+                {
+                    message = (Message) mInputStream.readObject();
                 }
 
+            }
+            catch (IOException | ClassNotFoundException e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+        Message getMessage()
+        {
+            return message;
+        }
+    }
+
+    private class FetchDevicesThread extends Thread
+    {
+        private volatile Devices devices = new Devices();
+
+        @Override
+        public void run()
+        {
+            try
+            {
+                mOutputStream.writeObject(devices);
+                devices = (Devices) mInputStream.readObject();
             }
             catch (IOException | ClassNotFoundException e)
             {
@@ -179,14 +207,14 @@ public class ServerConnectionService extends Service
         return mBinder;
     }
 
-    public Devices connectToServer() throws IOException, ClassNotFoundException, InterruptedException
+    public Message connectToServer() throws IOException, ClassNotFoundException, InterruptedException
     {
         EstablishConnectionThread ct = new EstablishConnectionThread();
         Thread t = new Thread(ct);
         t.start();
         t.join(10000);
 
-        return ct.getDevices();
+        return ct.getMessage();
     }
 
     public Message fetchResources(Device device) throws IOException, ClassNotFoundException, InterruptedException
@@ -197,6 +225,16 @@ public class ServerConnectionService extends Service
         t.join(10000);
 
         return frt.getMessage();
+    }
+
+    public Devices fetchDevices() throws IOException, ClassNotFoundException, InterruptedException
+    {
+        FetchDevicesThread fdt = new FetchDevicesThread();
+        Thread t = new Thread(fdt);
+        t.start();
+        t.join(10000);
+
+        return fdt.getDevices();
     }
 
     public Device issueCommand(Command command) throws IOException, ClassNotFoundException, InterruptedException

@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.util.List;
 
 import CommModels.Devices;
+import CommModels.Message;
 
 public class ServerListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<ServerItem>>
 {
@@ -207,13 +208,21 @@ public class ServerListActivity extends AppCompatActivity implements LoaderManag
                                     server.getUsername(),
                                     server.getPassword());
 
-                            Devices devices = mService.connectToServer();
+                            Message message = mService.connectToServer();
 
-                            if (devices != null)
+                            if (message != null)
                             {
-                                Intent intent = new Intent(getApplicationContext(), DeviceListActivity.class);
-                                intent.putExtra("devices", devices);
-                                startActivity(intent);
+                                if (message.getState())
+                                {
+                                    Toast.makeText(this.getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(getApplicationContext(), DeviceListActivity.class);
+                                    //intent.putExtra("devices", devices);
+                                    startActivity(intent);
+                                }
+                                else
+                                {
+                                    Toast.makeText(this.getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
                             }
                             else
                             {
