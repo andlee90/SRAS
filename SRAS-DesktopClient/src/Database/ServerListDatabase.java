@@ -25,6 +25,16 @@ public class ServerListDatabase
         }
     }
 
+    public static void addServers()
+    {
+
+    }
+
+    public static void readServers()
+    {
+
+    }
+
 
 
 }
