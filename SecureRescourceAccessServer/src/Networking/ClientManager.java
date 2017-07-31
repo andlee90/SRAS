@@ -12,23 +12,21 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-
 /**
- * Manages a single client connection by first comparing the incoming
- * user object attributes against those in the database. The socket is
- * closed if authentication fails. Otherwise, communication with the
- * client continues.
+ * Manages a single client connection by first comparing the incoming user object attributes against those in the
+ * database. The socket is closed if authentication fails. Otherwise, communication with the client continues.
  */
 public class ClientManager extends Thread
 {
     private int threadId;
+    private ClientManager[] clientConnections;
+
     private User authenticatedUser;
-    private String userName;
-    private String userRole;
-    private String userAddress;
+    private String authenticatedUserName;
+    private String authenticatedUserRole;
+    private String authenticatedUserAddress;
 
     private Socket socket;
-    private ClientManager[] clientConnections;
 
     private volatile Device device = null;
     private volatile DeviceController dc = null;
@@ -55,17 +53,18 @@ public class ClientManager extends Thread
 
             if (authenticateUser(user))
             {
-                userName = authenticatedUser.getUserName();
-                userRole = authenticatedUser.getRole();
+                authenticatedUserName = authenticatedUser.getUserName();
+                authenticatedUserRole = authenticatedUser.getRole();
 
                 serverOutputStream.writeObject(authenticatedUser);
 
-                connectionMessage = new Message("Logged in as " + userName);
+                connectionMessage = new Message("Logged in as " + authenticatedUserName);
                 serverOutputStream.writeObject(connectionMessage);
 
                 Message userAddressMessage = (Message) serverInputStream.readObject();
-                userAddress = userAddressMessage.getMessage();
-                System.out.println("> [" + Main.getDate() + "] " + userName + "@" + userAddress + " connected");
+                authenticatedUserAddress = userAddressMessage.getMessage();
+                System.out.println("> [" + Main.getDate() + "] " + authenticatedUserName + "@"
+                        + authenticatedUserAddress + " connected");
 
                 while(!interrupted())
                 {
@@ -98,17 +97,20 @@ public class ClientManager extends Thread
                             {
                                 Enum deviceState = dc.issueCommand(command.getCommandType());
                                 device.setDeviceState(deviceState);
-                                serverOutputStream.reset(); // disregard the state of any Device already written to the stream
+
+                                // disregard the state of any Device already written to the stream
+                                serverOutputStream.reset();
                                 serverOutputStream.writeObject(device);
                             }
                         }
                     }
                     catch (EOFException e)
                     {
-                        System.out.println("> [" + Main.getDate() + "] " + user.getUserName() + "@" + userAddress + " disconnected");
-                        clientConnections[threadId] = null;
-                        close();
-                        this.interrupt();
+                        System.out.println("> [" + Main.getDate() + "] " + user.getUserName() + "@"
+                                + authenticatedUserAddress + " disconnected");
+                        clientConnections[threadId] = null; // Clear index
+                        close(); // Terminate socket
+                        this.interrupt(); // Terminate thread
                         break;
                     }
                 }
@@ -121,7 +123,9 @@ public class ClientManager extends Thread
                 connectionMessage.setState(false);
                 serverOutputStream.writeObject(connectionMessage);
 
-                close();
+                clientConnections[threadId] = null; // Clear index
+                close(); // Terminate socket
+                this.interrupt(); // Terminate thread
             }
         }
         catch (IOException | ClassNotFoundException | InterruptedException e)
@@ -155,28 +159,43 @@ public class ClientManager extends Thread
         return authenticatedUser.getValidity();
     }
 
+    /**
+     * @return A Devices object containing a List of all Devices stored in the db.
+     */
     private Devices getDevices()
     {
         return DBHelper.selectAllDevices();
     }
 
+    /**
+     * @return This thread's index in the ClientConnections[].
+     */
     public int getThreadId()
     {
         return threadId;
     }
 
-    public String getUserName()
+    /**
+     * @return This thread's User.
+     */
+    public String getAuthenticatedUserName()
     {
-        return userName;
+        return authenticatedUserName;
     }
 
-    public String getUserRole()
+    /**
+     * @return This thread's User's role.
+     */
+    public String getAuthenticatedUserRole()
     {
-        return userRole;
+        return authenticatedUserRole;
     }
 
-    public String getUserAddress()
+    /**
+     * @return This thread's User's address.
+     */
+    public String getAuthenticatedUserAddress()
     {
-        return userAddress;
+        return authenticatedUserAddress;
     }
 }

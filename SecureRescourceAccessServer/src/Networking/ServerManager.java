@@ -14,10 +14,10 @@ import java.net.Socket;
  */
 public class ServerManager extends Thread
 {
-    final private int MAX_CLIENTS = 100;
+    final private int MAX_CLIENTS = 10;
     final private ServerSocket serverSocket;
 
-    private volatile static ClientManager[] clientConnections;
+    private volatile static ClientManager[] clientConnections; // Holds all established client threads
 
     public ServerManager() throws IOException
     {
@@ -29,7 +29,7 @@ public class ServerManager extends Thread
     @Override
     public void run()
     {
-        DBHelper.createDB(); // Create a new resource database if one does not already exist
+        DBHelper.connectToOrCreateNewDB(); // Create a new resource database if one does not already exist
         System.out.println("> [" + Main.getDate() + "] Listening on: " + serverSocket.getLocalPort());
         System.out.println("> [" + Main.getDate() + "] Maximum allowed client connections: " + this.MAX_CLIENTS);
 
@@ -39,7 +39,7 @@ public class ServerManager extends Thread
         {
             try
             {
-                socket = this.serverSocket.accept();
+                socket = this.serverSocket.accept(); // Waits for incoming client
             }
             catch (IOException e)
             {
@@ -49,10 +49,10 @@ public class ServerManager extends Thread
         }
         try
         {
-            for(ClientManager st:clientConnections)
+            for(ClientManager cm : clientConnections)
             {
-                st.close(); // Close all child connections if this server is interrupted
-                st.interrupt(); // Interrupt all child threads if this thread is interrupted
+                cm.close(); // Close all child connections if this server is interrupted
+                cm.interrupt(); // Interrupt all child threads if this thread is interrupted
             }
             serverSocket.setReuseAddress(true);
             serverSocket.close();
@@ -64,7 +64,7 @@ public class ServerManager extends Thread
     }
 
     /**
-     * Assigns each new client connection to it's own manager until MAX_CLIENTS is reached
+     * Assigns each new client connection to it's own manager until MAX_CLIENTS is reached.
      */
     private void assignClientToThread(Socket socket)
     {
@@ -83,6 +83,10 @@ public class ServerManager extends Thread
         }
     }
 
+    /**
+     * Returns current established client connections.
+     * @return array of established connections.
+     */
     public ClientManager[] getClientConnections()
     {
         return clientConnections;

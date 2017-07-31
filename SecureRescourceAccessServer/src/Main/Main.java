@@ -10,15 +10,16 @@ import java.util.Scanner;
 
 public class Main
 {
-    private static ServerManager serverManager;
 
     public static void main(String[] args) throws InterruptedException, IOException
     {
-        System.out.println("> [" + Main.getDate() + "] Starting new server... type command 'help' for usage");
-        serverManager = new ServerManager();
+        //TODO: Should probably take in port number and max clients as params
 
+        System.out.println("> [" + Main.getDate() + "] Starting new server... type command 'help' for usage");
+        ServerManager serverManager = new ServerManager();
         Scanner scanner = new Scanner(System.in);
 
+        // Listen for commands from the server administrator.
         while(scanner.hasNext())
         {
             String fullCommand = scanner.next();
@@ -63,8 +64,6 @@ public class Main
                 System.out.println("adddevice:[devicename] --- Adds a new device with the specified name");
                 System.out.println("showclients --- Prints a list of connected clients");
                 System.out.println("shutdown --- Terminates the server after updating the database");
-
-
             }
 
             else if (command.equals("shutdown"))
@@ -95,6 +94,7 @@ public class Main
                                 d.getDeviceState().toString());
                     }
                 }
+
                 System.exit(0);
             }
 
@@ -105,7 +105,8 @@ public class Main
                 String divider = " ---------------------------------------------------------------------------";
 
                 System.out.println(divider);
-                System.out.printf("%-12s %-22s %-16s %-22s %s %n", "| ThreadId", "| Username", "| Role", "| Address", "|");
+                System.out.printf("%-12s %-22s %-16s %-22s %s %n",
+                        "| ThreadId", "| Username", "| Role", "| Address", "|");
                 System.out.println(divider);
 
                 for (ClientManager cm: clientConnections)
@@ -114,9 +115,9 @@ public class Main
                     {
                         System.out.printf("%-12s %-22s %-16s %-22s %s %n",
                                 "| " + cm.getThreadId(),
-                                "| " + cm.getUserName(),
-                                "| " + cm.getUserRole(),
-                                "| " + cm.getUserAddress(), "|");
+                                "| " + cm.getAuthenticatedUserName(),
+                                "| " + cm.getAuthenticatedUserRole(),
+                                "| " + cm.getAuthenticatedUserAddress(), "|");
 
                         System.out.println(divider);
                     }

@@ -6,13 +6,16 @@ import Main.Main;
 import java.sql.*;
 import java.util.ArrayList;
 
-import static Database.DBQueries.getSelectUserByUsernameAndPassword;
+import static Database.DBQueries.*;
 
 public class DBHelper
 {
     private static String dbUrl = "jdbc:sqlite:sqlite/db/resources.db";
 
-    public static void createDB()
+    /**
+     * Connects to the existing resources.db or creates it from scratch using default settings.
+     */
+    public static void connectToOrCreateNewDB()
     {
         try (Connection conn = DriverManager.getConnection(dbUrl))
         {
@@ -27,52 +30,7 @@ public class DBHelper
                 }
                 else
                 {
-                    System.out.println("> [" + Main.getDate() + "] Created resources.db");
-
-                    executeStatement(DBQueries.getRolesTableCreationQuery());
-                    System.out.println("> [" + Main.getDate() + "] Roles table created");
-
-                    executeStatement(DBQueries.getDevicesTableCreationQuery());
-                    System.out.println("> [" + Main.getDate() + "] Devices table created");
-
-                    executeStatement(DBQueries.getPermissionsTableCreationQuery());
-                    System.out.println("> [" + Main.getDate() + "] Permissions table created");
-
-                    executeStatement(DBQueries.getUsersTableCreationQuery());
-                    System.out.println("> [" + Main.getDate() + "] Users table created");
-
-                    executeStatement(DBQueries.getRolePermissionsTableCreationQuery());
-                    System.out.println("> [" + Main.getDate() + "] Role-permissions linking table created");
-
-                    insertRole("admin");
-                    System.out.println("> [" + Main.getDate() + "] Default admin role added to roles table");
-
-                    insertUser("admin", "drowssap", "admin@admin.com", "admin", "admin", 1);
-                    System.out.println("> [" + Main.getDate() + "] Default admin user added to users table");
-
-                    insertDevice(1, "LED1", "LED", "AVAILABLE", "OFF");
-                    System.out.println("> [" + Main.getDate() + "] Default device added to devices table");
-
-                    insertDevice(2, "LED2", "LED", "AVAILABLE", "OFF");
-                    System.out.println("> [" + Main.getDate() + "] Default device added to devices table");
-
-                    insertDevice(3, "LED3", "LED", "AVAILABLE", "OFF");
-                    System.out.println("> [" + Main.getDate() + "] Default device added to devices table");
-
-                    insertDevice(4, "LED4", "LED", "AVAILABLE", "OFF");
-                    System.out.println("> [" + Main.getDate() + "] Default device added to devices table");
-
-                    insertDevice(5, "LED5", "LED", "AVAILABLE", "OFF");
-                    System.out.println("> [" + Main.getDate() + "] Default device added to devices table");
-
-                    insertDevice(9, "LED6", "LED", "AVAILABLE", "OFF");
-                    System.out.println("> [" + Main.getDate() + "] Default device added to devices table");
-
-                    insertDevice(7, "LED7", "LED", "AVAILABLE", "OFF");
-                    System.out.println("> [" + Main.getDate() + "] Default device added to devices table");
-
-                    insertDevice(8, "LED8", "LED", "AVAILABLE", "OFF");
-                    System.out.println("> [" + Main.getDate() + "] Default device added to devices table");
+                    buildDefaultDB();
                 }
             }
         }
@@ -116,8 +74,7 @@ public class DBHelper
     }
 
     /**
-     * Insert a new row into the users table
-     *
+     * Insert a new row into the users table.
      * @param user  username of the user to be inserted.
      * @param pass  password of the user to be inserted.
      * @param email email of the user to be inserted.
@@ -146,8 +103,7 @@ public class DBHelper
     }
 
     /**
-     * Insert a new row into the roles table
-     *
+     * Insert a new row into the roles table.
      * @param name role name of the role to be inserted.
      */
     public static void insertRole(String name)
@@ -165,8 +121,7 @@ public class DBHelper
     }
 
     /**
-     * Insert a new row into the devices table
-     *
+     * Insert a new row into the devices table.
      * @param pin    device pin of the device to be inserted.
      * @param name   device name of the device to be inserted.
      * @param status device status of the device to be inserted.
@@ -190,26 +145,8 @@ public class DBHelper
         }
     }
 
-    public static void updateDevice(int id, int pin, String name, String type, String status, String state)
-    {
-        try (Connection conn = connect();
-             PreparedStatement pstmt = conn.prepareStatement(DBQueries.getUpdateDeviceQuery()))
-        {
-            pstmt.setInt(1, pin);
-            pstmt.setString(2, name);
-            pstmt.setString(3, type);
-            pstmt.setString(4, status);
-            pstmt.setString(5, state);
-            pstmt.setInt(6, id);
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
     /**
-     * Returns an user id for the corresponding username and password from the users table.
-     *
+     * Returns a User object for the corresponding username and password from the users table.
      * @param username the username of the user to select.
      * @param password the password of the user to select.
      */
@@ -242,13 +179,17 @@ public class DBHelper
         return user;
     }
 
+    /**
+     * Returns the name of the role for a given id.
+     * @param id the id of the role to select.
+     * @return the name of the selected role.
+     */
     public static String selectRoleById(int id)
     {
-        String sql = "SELECT role_name FROM roles WHERE role_id = ?";
         String roleName = "";
 
         try (Connection conn = connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql))
+             PreparedStatement pstmt = conn.prepareStatement(getSelectRoleById()))
         {
             pstmt.setInt(1, id);
 
@@ -263,14 +204,17 @@ public class DBHelper
         return roleName;
     }
 
+    /**
+     * Return all devices currently stored in the db.
+     * @return A Devices object containing a List of of Devices in the db.
+     */
     public static Devices selectAllDevices()
     {
-        String sql = "SELECT device_id,device_pin,device_name,device_type,device_status,device_state FROM devices";
         Devices devices = new Devices();
 
         try (Connection conn = connect();
              Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql))
+             ResultSet rs = stmt.executeQuery(getSelectAllDevices()))
         {
             while (rs.next())
             {
@@ -293,7 +237,9 @@ public class DBHelper
                     devices.addDevice(arm);
                 }
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             System.out.println("> [" + Main.getDate() + "] " + e.getMessage());
         }
 
@@ -301,10 +247,90 @@ public class DBHelper
     }
 
     /**
-     * Convert the device type string stored in the db to a DeviceType
-     *
-     * @param s the string from the db
-     * @return the corresponding DeviceType
+     * Updates the selected Device's information.
+     * @param id the id of the Device to update.
+     * @param pin the updated Device's pin.
+     * @param name the updated Device's name.
+     * @param type the updated Device's type.
+     * @param status the updated Device's status.
+     * @param state the updated Device's state.
+     */
+    public static void updateDevice(int id, int pin, String name, String type, String status, String state)
+    {
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(DBQueries.getUpdateDeviceQuery()))
+        {
+            pstmt.setInt(1, pin);
+            pstmt.setString(2, name);
+            pstmt.setString(3, type);
+            pstmt.setString(4, status);
+            pstmt.setString(5, state);
+            pstmt.setInt(6, id);
+            pstmt.executeUpdate();
+        }
+        catch (SQLException e)
+        {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Adds default characteristics to a blank database.
+     */
+    private static void buildDefaultDB()
+    {
+        System.out.println("> [" + Main.getDate() + "] Created resources.db");
+
+        executeStatement(DBQueries.getRolesTableCreationQuery());
+        System.out.println("> [" + Main.getDate() + "] Roles table created");
+
+        executeStatement(DBQueries.getDevicesTableCreationQuery());
+        System.out.println("> [" + Main.getDate() + "] Devices table created");
+
+        executeStatement(DBQueries.getPermissionsTableCreationQuery());
+        System.out.println("> [" + Main.getDate() + "] Permissions table created");
+
+        executeStatement(DBQueries.getUsersTableCreationQuery());
+        System.out.println("> [" + Main.getDate() + "] Users table created");
+
+        executeStatement(DBQueries.getRolePermissionsTableCreationQuery());
+        System.out.println("> [" + Main.getDate() + "] Role-permissions linking table created");
+
+        insertRole("admin");
+        System.out.println("> [" + Main.getDate() + "] Default admin role added to roles table");
+
+        insertUser("admin", "drowssap", "admin@admin.com", "admin", "admin", 1);
+        System.out.println("> [" + Main.getDate() + "] Default admin user added to users table");
+
+        insertDevice(1, "LED1", "LED", "AVAILABLE", "OFF");
+        System.out.println("> [" + Main.getDate() + "] Default device added to devices table");
+
+        insertDevice(2, "LED2", "LED", "AVAILABLE", "OFF");
+        System.out.println("> [" + Main.getDate() + "] Default device added to devices table");
+
+        insertDevice(3, "LED3", "LED", "AVAILABLE", "OFF");
+        System.out.println("> [" + Main.getDate() + "] Default device added to devices table");
+
+        insertDevice(4, "LED4", "LED", "AVAILABLE", "OFF");
+        System.out.println("> [" + Main.getDate() + "] Default device added to devices table");
+
+        insertDevice(5, "LED5", "LED", "AVAILABLE", "OFF");
+        System.out.println("> [" + Main.getDate() + "] Default device added to devices table");
+
+        insertDevice(9, "LED6", "LED", "AVAILABLE", "OFF");
+        System.out.println("> [" + Main.getDate() + "] Default device added to devices table");
+
+        insertDevice(7, "LED7", "LED", "AVAILABLE", "OFF");
+        System.out.println("> [" + Main.getDate() + "] Default device added to devices table");
+
+        insertDevice(8, "LED8", "LED", "AVAILABLE", "OFF");
+        System.out.println("> [" + Main.getDate() + "] Default device added to devices table");
+    }
+
+    /**
+     * Convert the device type string stored in the db to a DeviceType.
+     * @param s the string from the db.
+     * @return the corresponding DeviceType.
      */
     private static DeviceStatus getDeviceStatusFromString(String s)
     {
@@ -322,10 +348,9 @@ public class DBHelper
     }
 
     /**
-     * Convert the device type string stored in the db to a DeviceType
-     *
-     * @param s the string from the db
-     * @return the corresponding DeviceType
+     * Convert the device type string stored in the db to a DeviceType.
+     * @param s the string from the db.
+     * @return the corresponding DeviceType.
      */
     private static LedState getLedStateFromString(String s)
     {
@@ -347,10 +372,9 @@ public class DBHelper
     }
 
     /**
-     * Convert the device type string stored in the db to a DeviceType
-     *
-     * @param s the string from the db
-     * @return the corresponding DeviceType
+     * Convert the device type string stored in the db to a DeviceType.
+     * @param s the string from the db.
+     * @return the corresponding DeviceType.
      */
     private static ArmState getArmStateFromString(String s)
     {

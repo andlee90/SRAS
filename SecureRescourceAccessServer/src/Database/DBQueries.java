@@ -1,7 +1,13 @@
 package Database;
 
+/**
+ * Returns various SQL query strings.
+ */
 class DBQueries
 {
+    /**
+     * The following query strings are used for table creation.
+     */
     static String getUsersTableCreationQuery()
     {
         return "CREATE TABLE IF NOT EXISTS users (\n"
@@ -57,6 +63,9 @@ class DBQueries
                 + ");";
     }
 
+    /**
+     * The following query strings are used for row insertion.
+     */
     static String getInsertUserQuery()
     {
         return "INSERT INTO users(user_username,user_password,user_email," +
@@ -73,6 +82,28 @@ class DBQueries
         return "INSERT INTO devices(device_pin,device_name,device_type,device_status,device_state) VALUES(?,?,?,?,?)";
     }
 
+    /**
+     * The following query strings are used for row selections.
+     */
+    static String getSelectUserByUsernameAndPassword()
+    {
+        return "SELECT user_id,user_email,user_first_name,user_last_name,role_id " +
+                "FROM users WHERE user_username = ? AND user_password = ?";
+    }
+
+    static String getSelectAllDevices()
+    {
+        return "SELECT device_id,device_pin,device_name,device_type,device_status,device_state FROM devices";
+    }
+
+    static String getSelectRoleById()
+    {
+        return "SELECT role_name FROM roles WHERE role_id = ?";
+    }
+
+    /**
+     * The following query strings are used for row updates.
+     */
     static String getUpdateDeviceQuery()
     {
         return "UPDATE devices SET device_pin = ? , "
@@ -81,10 +112,5 @@ class DBQueries
                 + "device_status = ? , "
                 + "device_state = ? "
                 + "WHERE device_id = ?";
-    }
-
-    static String getSelectUserByUsernameAndPassword()
-    {
-        return "SELECT user_id,user_email,user_first_name,user_last_name,role_id FROM users WHERE user_username = ? AND user_password = ?";
     }
 }

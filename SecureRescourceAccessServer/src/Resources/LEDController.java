@@ -10,8 +10,9 @@ import java.util.Arrays;
 import java.util.Collections;
 
 /**
- * Implementation for controlling a single LED.
- * Commented lines are commented to allow testing outside of a Raspbian environment. Uncomment before testing on a Pi.
+ * Implementation for controlling a single LED. Commented-out lines are commented to allow testing outside of a
+ * Raspbian environment (In this case, no GPIO pins are available and an exception is thrown when these lines are
+ * called). Uncomment before testing on a Pi.
  */
 public class LEDController implements DeviceController
 {
@@ -48,7 +49,7 @@ public class LEDController implements DeviceController
         {
             if (device.getDeviceState() == LedState.BLINKING)
             {
-                // If the device is blinking, first turn it off.
+                // If the device is blinking, first turn it off
                 //pin.blink(0);
                 device.setDeviceState(LedState.OFF);
             }

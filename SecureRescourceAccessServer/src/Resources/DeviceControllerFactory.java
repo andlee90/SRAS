@@ -8,7 +8,9 @@ import java.util.Hashtable;
 import java.util.Map;
 
 /**
- * Builds or gets an instance of an appropriate device controller.
+ * Builds or gets an instance of an appropriate device controller. Ensures that only one instance of a controller is
+ * built by storing controller object in a Hastable after they are built for the first time and then returning them as
+ * needed.
  */
 public class DeviceControllerFactory
 {
