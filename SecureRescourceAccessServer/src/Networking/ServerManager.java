@@ -17,14 +17,13 @@ public class ServerManager extends Thread
     final private int MAX_CLIENTS = 100;
     final private ServerSocket serverSocket;
 
-    private static ClientManager[] clientConnections;
+    private volatile static ClientManager[] clientConnections;
 
     public ServerManager() throws IOException
     {
         clientConnections = new ClientManager[MAX_CLIENTS];
         this.serverSocket = new ServerSocket(50873);
-
-        start(); // Start manager on a new thread
+        start();
     }
 
     @Override
@@ -32,7 +31,7 @@ public class ServerManager extends Thread
     {
         DBHelper.createDB(); // Create a new resource database if one does not already exist
         System.out.println("> [" + Main.getDate() + "] Listening on: " + serverSocket.getLocalPort());
-        System.out.println("> [" + Main.getDate() + "] Total connected clients: 0/" + this.MAX_CLIENTS);
+        System.out.println("> [" + Main.getDate() + "] Maximum allowed client connections: " + this.MAX_CLIENTS);
 
         Socket socket = null;
 
@@ -55,7 +54,6 @@ public class ServerManager extends Thread
                 st.close(); // Close all child connections if this server is interrupted
                 st.interrupt(); // Interrupt all child threads if this thread is interrupted
             }
-            // TODO: Address already in use (Bind failed) when restarting server on same port.
             serverSocket.setReuseAddress(true);
             serverSocket.close();
         }
@@ -79,9 +77,14 @@ public class ServerManager extends Thread
             }
             else if(clientConnections[i] == null)
             {
-                clientConnections[i] = new ClientManager(socket, i);
+                clientConnections[i] = new ClientManager(socket, i, this);
                 break;
             }
         }
+    }
+
+    public ClientManager[] getClientConnections()
+    {
+        return clientConnections;
     }
 }

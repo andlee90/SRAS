@@ -2,18 +2,20 @@ package Main;
 
 import CommModels.*;
 import Database.DBHelper;
+import Networking.ClientManager;
 import Networking.ServerManager;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Scanner;
 
 public class Main
 {
+    private static ServerManager serverManager;
+
     public static void main(String[] args) throws InterruptedException, IOException
     {
-        System.out.println("> [" + Main.getDate() + "] Starting new server... Ctrl+C to shutdown.");
-        new ServerManager();
+        System.out.println("> [" + Main.getDate() + "] Starting new server... type command 'help' for usage");
+        serverManager = new ServerManager();
 
         Scanner scanner = new Scanner(System.in);
 
@@ -55,6 +57,16 @@ public class Main
                 System.out.println("> [" + Main.getDate() + "] New device " + device + " saved.");
             }
 
+            else if (command.equals("help"))
+            {
+                System.out.println("adduser:[username] --- Adds a new user with the specified username");
+                System.out.println("adddevice:[devicename] --- Adds a new device with the specified name");
+                System.out.println("showclients --- Prints a list of connected clients");
+                System.out.println("shutdown --- Terminates the server after updating the database");
+
+
+            }
+
             else if (command.equals("shutdown"))
             {
                 Devices devices = DBHelper.selectAllDevices();
@@ -84,6 +96,31 @@ public class Main
                     }
                 }
                 System.exit(0);
+            }
+
+            else if (command.equals("showclients"))
+            {
+                ClientManager[] clientConnections = serverManager.getClientConnections();
+
+                String divider = " ---------------------------------------------------------------------------";
+
+                System.out.println(divider);
+                System.out.printf("%-12s %-22s %-16s %-22s %s %n", "| ThreadId", "| Username", "| Role", "| Address", "|");
+                System.out.println(divider);
+
+                for (ClientManager cm: clientConnections)
+                {
+                    if(cm != null)
+                    {
+                        System.out.printf("%-12s %-22s %-16s %-22s %s %n",
+                                "| " + cm.getThreadId(),
+                                "| " + cm.getUserName(),
+                                "| " + cm.getUserRole(),
+                                "| " + cm.getUserAddress(), "|");
+
+                        System.out.println(divider);
+                    }
+                }
             }
 
             else

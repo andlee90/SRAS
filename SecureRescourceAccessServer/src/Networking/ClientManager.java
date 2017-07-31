@@ -22,14 +22,21 @@ import java.net.Socket;
 public class ClientManager extends Thread
 {
     private int threadId;
+    private String userName;
+    private String userRole;
+    private String userAddress;
+
     private Socket socket;
+    private ClientManager[] clientConnections;
+
     private volatile Device device = null;
     private volatile DeviceController dc = null;
 
-    ClientManager(Socket p, int id)
+    ClientManager(Socket p, int id, ServerManager sm)
     {
         this.socket = p;
         this.threadId = id;
+        this.clientConnections = sm.getClientConnections();
         start();
     }
 
@@ -42,6 +49,9 @@ public class ClientManager extends Thread
             ObjectOutputStream serverOutputStream = new ObjectOutputStream(socket.getOutputStream());
 
             User user = (User)serverInputStream.readObject();
+            userName = user.getUserName();
+            userRole = user.getRole();
+
             Message connectionMessage;
 
             if (authenticateUser(user))
@@ -51,8 +61,9 @@ public class ClientManager extends Thread
                 connectionMessage = new Message("Logged in as " + user.getUserName());
                 serverOutputStream.writeObject(connectionMessage);
 
-                Message userAddress = (Message) serverInputStream.readObject();
-                System.out.println("> [" + Main.getDate() + "] " + user.getUserName() + "@" + userAddress.getMessage() + " connected");
+                Message userAddressMessage = (Message) serverInputStream.readObject();
+                userAddress = userAddressMessage.getMessage();
+                System.out.println("> [" + Main.getDate() + "] " + user.getUserName() + "@" + userAddress + " connected");
 
                 while(!interrupted())
                 {
@@ -92,8 +103,10 @@ public class ClientManager extends Thread
                     }
                     catch (EOFException e)
                     {
-                        System.out.println("> [" + Main.getDate() + "] " + user.getUserName() + "@" + userAddress.getMessage() + " disconnected");
+                        System.out.println("> [" + Main.getDate() + "] " + user.getUserName() + "@" + userAddress + " disconnected");
+                        clientConnections[threadId] = null;
                         close();
+                        this.interrupt();
                         break;
                     }
                 }
@@ -142,5 +155,25 @@ public class ClientManager extends Thread
     private Devices getDevices()
     {
         return DBHelper.selectAllDevices();
+    }
+
+    public int getThreadId()
+    {
+        return threadId;
+    }
+
+    public String getUserName()
+    {
+        return userName;
+    }
+
+    public String getUserRole()
+    {
+        return userRole;
+    }
+
+    public String getUserAddress()
+    {
+        return userAddress;
     }
 }
