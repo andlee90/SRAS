@@ -18,7 +18,6 @@ public class LEDController implements DeviceController
     private volatile Led device;            // The device being controlled.
     private GpioController gpio;            // The controller for the device.
     private GpioPinDigitalOutput pin;       // The pin to which the device in connected.
-    private boolean state = false;                  // True if ON, false if OFF
 
     LEDController(Device d)
     {
@@ -52,21 +51,19 @@ public class LEDController implements DeviceController
                 // If the device is blinking, first turn it off.
                 //pin.blink(0);
                 device.setDeviceState(LedState.OFF);
-                state = true;
+            }
+
+            else if (device.getDeviceState() == LedState.ON)
+            {
+                device.setDeviceState(LedState.OFF);
+            }
+
+            else if (device.getDeviceState() == LedState.OFF)
+            {
+                device.setDeviceState(LedState.ON);
             }
 
             //pin.toggle();
-
-            if (state)
-            {
-                device.setDeviceState(LedState.OFF);
-                state = false;
-            }
-            else
-            {
-                device.setDeviceState(LedState.ON);
-                state = true;
-            }
 
             System.out.println("> [" + Main.getDate() + "] "
                     + device.getDeviceName() + " on "
@@ -76,7 +73,6 @@ public class LEDController implements DeviceController
         else if (ct == Command.CommandType.BLINK)
         {
             device.setDeviceState(LedState.BLINKING);
-            state = true;
 
             //pin.blink(100);
 
