@@ -22,6 +22,7 @@ import java.net.Socket;
 public class ClientManager extends Thread
 {
     private int threadId;
+    private User authenticatedUser;
     private String userName;
     private String userRole;
     private String userAddress;
@@ -49,21 +50,22 @@ public class ClientManager extends Thread
             ObjectOutputStream serverOutputStream = new ObjectOutputStream(socket.getOutputStream());
 
             User user = (User)serverInputStream.readObject();
-            userName = user.getUserName();
-            userRole = user.getRole();
 
             Message connectionMessage;
 
             if (authenticateUser(user))
             {
-                serverOutputStream.writeObject(user);
+                userName = authenticatedUser.getUserName();
+                userRole = authenticatedUser.getRole();
 
-                connectionMessage = new Message("Logged in as " + user.getUserName());
+                serverOutputStream.writeObject(authenticatedUser);
+
+                connectionMessage = new Message("Logged in as " + userName);
                 serverOutputStream.writeObject(connectionMessage);
 
                 Message userAddressMessage = (Message) serverInputStream.readObject();
                 userAddress = userAddressMessage.getMessage();
-                System.out.println("> [" + Main.getDate() + "] " + user.getUserName() + "@" + userAddress + " connected");
+                System.out.println("> [" + Main.getDate() + "] " + userName + "@" + userAddress + " connected");
 
                 while(!interrupted())
                 {
@@ -142,14 +144,15 @@ public class ClientManager extends Thread
      */
     private boolean authenticateUser(User u)
     {
-        int userId = DBHelper.selectUserIdByUsernameAndPassword(u.getUserName(), u.getPassword());
+        User user = DBHelper.selectUserByUsernameAndPassword(u.getUserName(), u.getPassword());
 
-        if (userId != 0)
+        if (user != null && user.getUserId() != 0)
         {
-            u.setValidity(true);
+            authenticatedUser = user;
+            authenticatedUser.setValidity(true);
         }
 
-        return u.getValidity();
+        return authenticatedUser.getValidity();
     }
 
     private Devices getDevices()

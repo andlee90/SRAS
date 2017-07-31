@@ -8,6 +8,7 @@ import java.io.Serializable;
  */
 public class User implements Serializable
 {
+    private int userId;
     private String userName;
     private String password;
     private String email;
@@ -16,8 +17,9 @@ public class User implements Serializable
     private String role;
     private boolean isValid; // true if username and password have been validated (found in db)
 
-    public User(String un, String p, String e, String fn, String ln, String r)
+    public User(int id, String un, String p, String e, String fn, String ln, String r)
     {
+        this.userId = id;
         this.userName = un;
         this.password = p;
         this.email = e;
@@ -25,6 +27,11 @@ public class User implements Serializable
         this.lastName = ln;
         this.role = r;
         this.isValid = false;
+    }
+
+    public int getUserId()
+    {
+        return this.userId;
     }
 
     public String getUserName()

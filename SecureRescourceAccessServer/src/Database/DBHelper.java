@@ -213,9 +213,10 @@ public class DBHelper
      * @param username the username of the user to select.
      * @param password the password of the user to select.
      */
-    public static int selectUserIdByUsernameAndPassword(String username, String password)
+    public static User selectUserByUsernameAndPassword(String username, String password)
     {
-        int userId;
+        User user;
+
         try (Connection conn = connect();
              PreparedStatement pstmt = conn.prepareStatement(getSelectUserByUsernameAndPassword()))
         {
@@ -223,15 +224,43 @@ public class DBHelper
             pstmt.setString(2, password);
             ResultSet rs = pstmt.executeQuery();
 
-            userId = rs.getInt("user_id");
+            int userId = rs.getInt("user_id");
+            String email = rs.getString("user_email");
+            String firstName = rs.getString("user_first_name");
+            String lastName = rs.getString("user_last_name");
+            int roleId = rs.getInt("role_id");
+            String roleName = selectRoleById(roleId);
+
+            user = new User(userId, username, password, email, firstName, lastName, roleName);
         }
         catch (SQLException e)
         {
             System.out.println("> [" + Main.getDate() + "] DB: No such user found: " + e.getMessage());
-            return 0;
+            return null;
         }
 
-        return userId;
+        return user;
+    }
+
+    public static String selectRoleById(int id)
+    {
+        String sql = "SELECT role_name FROM roles WHERE role_id = ?";
+        String roleName = "";
+
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql))
+        {
+            pstmt.setInt(1, id);
+
+            ResultSet rs = pstmt.executeQuery();
+            roleName = rs.getString("role_name");
+        }
+        catch (SQLException e)
+        {
+            System.out.println("> [" + Main.getDate() + "] " + e.getMessage());
+        }
+
+        return roleName;
     }
 
     public static Devices selectAllDevices()

@@ -85,6 +85,6 @@ class DBQueries
 
     static String getSelectUserByUsernameAndPassword()
     {
-        return "SELECT user_id FROM users WHERE user_username = ? AND user_password = ?";
+        return "SELECT user_id,user_email,user_first_name,user_last_name,role_id FROM users WHERE user_username = ? AND user_password = ?";
     }
 }

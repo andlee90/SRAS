@@ -59,7 +59,6 @@ public class LoginActivity extends AppCompatActivity implements TextView.OnEdito
         {
             if (mUser != null && mPass != null)
             {
-                // Start new Service
                 Intent intent = new Intent(getApplicationContext(), ServerListActivity.class);
                 startActivity(intent);
                 ServerDBHelper serverDBHelper = new ServerDBHelper(getApplicationContext());

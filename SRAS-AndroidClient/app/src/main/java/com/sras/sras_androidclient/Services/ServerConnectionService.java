@@ -267,7 +267,7 @@ public class ServerConnectionService extends Service
 
     private boolean isAuthenticated(String un, String p) throws IOException, ClassNotFoundException
     {
-        User user = new User(un, p, "", "", "", "");
+        User user = new User(0, un, p, "", "", "", "");
         mOutputStream.writeObject(user);
         user = (User)mInputStream.readObject();
 
