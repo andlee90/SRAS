@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sras.sras_androidclient.R;
 import com.sras.sras_androidclient.Services.ServerConnectionService;
@@ -74,6 +75,7 @@ public class DeviceListActivity extends AppCompatActivity implements AdapterView
         {
             // Disconnect from server
             mService.closeServer();
+            Toast.makeText(this.getApplicationContext(), "Logged out successfully", Toast.LENGTH_SHORT).show();
             finish();
         }
         catch (IOException e)

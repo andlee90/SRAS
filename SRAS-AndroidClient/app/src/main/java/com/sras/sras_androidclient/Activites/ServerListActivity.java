@@ -30,7 +30,6 @@ import com.sras.sras_androidclient.Services.ServerConnectionService;
 import java.io.IOException;
 import java.util.List;
 
-import CommModels.Devices;
 import CommModels.Message;
 
 public class ServerListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<ServerItem>>
@@ -38,7 +37,6 @@ public class ServerListActivity extends AppCompatActivity implements LoaderManag
     private static final int LOADER_ID = 1;
 
     private ListView mListView;
-    private List<ServerItem> mServerList;
 
     ServerConnectionService mService;
     boolean mBound = false;
@@ -50,6 +48,11 @@ public class ServerListActivity extends AppCompatActivity implements LoaderManag
         setContentView(R.layout.activity_server_list);
 
         getLoaderManager().initLoader(LOADER_ID, null, this).forceLoad();
+
+        // Start the service so that it runs until it is explicitly stopped. Without this call,
+        // screen orientation changes can unbind the service from all activities, thus destroying it
+        // completely.
+        startService(new Intent(this, ServerConnectionService.class));
 
         mListView = (ListView)findViewById(R.id.listview);
         TextView emptyText = (TextView)findViewById(R.id.empty_listview);
@@ -85,8 +88,6 @@ public class ServerListActivity extends AppCompatActivity implements LoaderManag
     @Override
     public void onLoadFinished(Loader<List<ServerItem>> loader, List<ServerItem> data)
     {
-        mServerList = data;
-
         ServerItemArrayAdapter adapter = new ServerItemArrayAdapter(getApplicationContext(),
                 android.R.layout.simple_list_item_1, data);
         mListView.setAdapter(adapter);
@@ -168,30 +169,28 @@ public class ServerListActivity extends AppCompatActivity implements LoaderManag
             ViewHolder holder = (ViewHolder) convertView.getTag();
             holder.serverName.setText(server.getName());
 
-            boolean serverExists = true;
-            /*if(mBound)
+            holder.serverConnect.setImageDrawable(getDrawable(R.drawable.ic_server_connect));
+            holder.serverConnect.setEnabled(true);
+
+            if(mBound)
             {
                 try
                 {
-                    serverExists = mService.testConnectivity(server.getAddress(), server.getPort());
+                    boolean serverExists = mService.testConnectivity(server.getAddress(), server.getPort());
 
-                    String string = "false";
-                    if(serverExists)
+                    if (!serverExists)
                     {
-                        string = "true";
+                        holder.serverConnect.setImageDrawable(getDrawable(R.drawable.ic_server_dne));
                     }
-                    Toast.makeText(this.getContext(), string, Toast.LENGTH_SHORT).show();
+                    else
+                    {
+                        holder.serverConnect.setImageDrawable(getDrawable(R.drawable.ic_server_connect));
+                    }
                 }
                 catch (InterruptedException | ClassNotFoundException | IOException e)
                 {
                     e.printStackTrace();
                 }
-            }*/
-
-            if (!serverExists)
-            {
-                holder.serverConnect.setBackgroundResource(R.drawable.ic_server_dne);
-                holder.serverConnect.setEnabled(false);
             }
 
             holder.serverConnect.setOnClickListener(view ->
@@ -202,13 +201,10 @@ public class ServerListActivity extends AppCompatActivity implements LoaderManag
                     {
                         try
                         {
-                            mService.setParams(
-                                    server.getAddress(),
+                            Message message = mService.connectToServer( server.getAddress(),
                                     server.getPort(),
                                     server.getUsername(),
                                     server.getPassword());
-
-                            Message message = mService.connectToServer();
 
                             if (message != null)
                             {
@@ -216,7 +212,6 @@ public class ServerListActivity extends AppCompatActivity implements LoaderManag
                                 {
                                     Toast.makeText(this.getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(getApplicationContext(), DeviceListActivity.class);
-                                    //intent.putExtra("devices", devices);
                                     startActivity(intent);
                                 }
                                 else
@@ -226,7 +221,8 @@ public class ServerListActivity extends AppCompatActivity implements LoaderManag
                             }
                             else
                             {
-                                Toast.makeText(this.getContext(), "Failed to connect to server.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this.getContext(), "Failed to connect to server", Toast.LENGTH_SHORT).show();
+                                holder.serverConnect.setImageDrawable(getDrawable(R.drawable.ic_server_dne));
                             }
 
                         } catch (IOException | ClassNotFoundException | InterruptedException e)

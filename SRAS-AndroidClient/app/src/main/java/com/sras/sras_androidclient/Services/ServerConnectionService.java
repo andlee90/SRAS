@@ -1,6 +1,5 @@
 package com.sras.sras_androidclient.Services;
 
-import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
@@ -172,27 +171,18 @@ public class ServerConnectionService extends Service
         @Override
         public void run()
         {
-            try
+            try (Socket socket = new Socket(ip, port))
             {
-                exists = pingURL(ip, port);
+                Message message = new Message("test");
+                ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
+                outputStream.writeObject(message);
+                exists = true;
+                socket.close();
             }
             catch (IOException e)
             {
                 e.printStackTrace();
             }
-        }
-
-        private boolean pingURL(String hostname, int port) throws IOException
-        {
-            boolean reachable = false;
-
-            try (Socket socket = new Socket(hostname, port))
-            {
-                reachable = true;
-                socket.close();
-            }
-
-            return reachable;
         }
 
         public boolean getConnectivity()
@@ -207,12 +197,17 @@ public class ServerConnectionService extends Service
         return mBinder;
     }
 
-    public Message connectToServer() throws IOException, ClassNotFoundException, InterruptedException
+    public Message connectToServer(String addr, int port, String user, String pass) throws IOException, ClassNotFoundException, InterruptedException
     {
+        this.mServerAddress = addr;
+        this.mServerPort = port;
+        this.mUsername = user;
+        this.mPassword = pass;
+
         EstablishConnectionThread ct = new EstablishConnectionThread();
         Thread t = new Thread(ct);
         t.start();
-        t.join(10000);
+        t.join();
 
         return ct.getMessage();
     }
@@ -222,7 +217,7 @@ public class ServerConnectionService extends Service
         FetchResourcesThread frt = new FetchResourcesThread(device);
         Thread t = new Thread(frt);
         t.start();
-        t.join(10000);
+        t.join();
 
         return frt.getMessage();
     }
@@ -232,7 +227,7 @@ public class ServerConnectionService extends Service
         FetchDevicesThread fdt = new FetchDevicesThread();
         Thread t = new Thread(fdt);
         t.start();
-        t.join(10000);
+        t.join();
 
         return fdt.getDevices();
     }
@@ -242,7 +237,7 @@ public class ServerConnectionService extends Service
         IssueCommandThread ict = new IssueCommandThread(command);
         Thread t = new Thread(ict);
         t.start();
-        t.join(10000);
+        t.join();
 
         return ict.getDevice();
     }
@@ -252,17 +247,9 @@ public class ServerConnectionService extends Service
         TestConnectivityThread tct = new TestConnectivityThread(address, port);
         Thread t = new Thread(tct);
         t.start();
-        t.join(10000);
+        t.join();
 
         return tct.getConnectivity();
-    }
-
-    public void setParams(String addr, int port, String user, String pass)
-    {
-        this.mServerAddress = addr;
-        this.mServerPort = port;
-        this.mUsername = user;
-        this.mPassword = pass;
     }
 
     private boolean isAuthenticated(String un, String p) throws IOException, ClassNotFoundException

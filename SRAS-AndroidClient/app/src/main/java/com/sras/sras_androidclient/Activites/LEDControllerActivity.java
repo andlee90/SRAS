@@ -40,7 +40,6 @@ public class LEDControllerActivity extends AppCompatActivity implements View.OnC
         mLEDView = (ImageView) findViewById(R.id.image_led);
         setImageState((LedState) device.getDeviceState());
 
-
         Button toggleButton = (Button) findViewById(R.id.button_toggle);
         toggleButton.setOnClickListener(this);
 

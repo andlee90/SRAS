@@ -47,85 +47,96 @@ public class ClientManager extends Thread
             ObjectInputStream serverInputStream = new ObjectInputStream(socket.getInputStream());
             ObjectOutputStream serverOutputStream = new ObjectOutputStream(socket.getOutputStream());
 
-            User user = (User)serverInputStream.readObject();
+            Object initialObject = serverInputStream.readObject(); // Check initial object for a possible connection test.
 
-            Message connectionMessage;
-
-            if (authenticateUser(user))
+            if (initialObject instanceof Message)
             {
-                authenticatedUserName = authenticatedUser.getUserName();
-                authenticatedUserRole = authenticatedUser.getRole();
-
-                serverOutputStream.writeObject(authenticatedUser);
-
-                connectionMessage = new Message("Logged in as " + authenticatedUserName);
-                serverOutputStream.writeObject(connectionMessage);
-
-                Message userAddressMessage = (Message) serverInputStream.readObject();
-                authenticatedUserAddress = userAddressMessage.getMessage();
-                System.out.println("> [" + Main.getDate() + "] " + authenticatedUserName + "@"
-                        + authenticatedUserAddress + " connected");
-
-                while(!interrupted())
-                {
-                    try
-                    {
-                        Object object = serverInputStream.readObject();
-
-                        if(object instanceof Message)
-                        {
-                            Message message = (Message) object;
-                            System.out.println("> [" + Main.getDate() + "] " + message.getMessage());
-                        }
-
-                        else if (object instanceof Devices)
-                        {
-                            Devices devices = getDevices();
-                            serverOutputStream.writeObject(devices);
-                        }
-
-                        else if (object instanceof Device)
-                        {
-                            device = (Device) object;
-                            dc = DeviceControllerFactory.getDeviceController(device);
-                        }
-
-                        else if (object instanceof Command)
-                        {
-                            Command command = (Command) object;
-                            if (dc != null)
-                            {
-                                Enum deviceState = dc.issueCommand(command.getCommandType());
-                                device.setDeviceState(deviceState);
-
-                                // disregard the state of any Device already written to the stream
-                                serverOutputStream.reset();
-                                serverOutputStream.writeObject(device);
-                            }
-                        }
-                    }
-                    catch (EOFException e)
-                    {
-                        System.out.println("> [" + Main.getDate() + "] " + user.getUserName() + "@"
-                                + authenticatedUserAddress + " disconnected");
-                        clientConnections[threadId] = null; // Clear index
-                        close(); // Terminate socket
-                        this.interrupt(); // Terminate thread
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                serverOutputStream.writeObject(user);
-
-                connectionMessage = new Message("Incorrect username or password");
-                connectionMessage.setState(false);
-                serverOutputStream.writeObject(connectionMessage);
-
                 clientConnections[threadId] = null; // Clear index
                 close(); // Terminate socket
-                this.interrupt(); // Terminate thread
+                this.interrupt();
+            }
+            else if (initialObject instanceof User)
+            {
+                User user = (User) initialObject;
+
+                Message connectionMessage;
+
+                if (authenticateUser(user))
+                {
+                    authenticatedUserName = authenticatedUser.getUserName();
+                    authenticatedUserRole = authenticatedUser.getRole();
+
+                    serverOutputStream.writeObject(authenticatedUser);
+
+                    connectionMessage = new Message("Logged in as " + authenticatedUserName);
+                    serverOutputStream.writeObject(connectionMessage);
+
+                    Message userAddressMessage = (Message) serverInputStream.readObject();
+                    authenticatedUserAddress = userAddressMessage.getMessage();
+                    System.out.println("> [" + Main.getDate() + "] " + authenticatedUserName + "@"
+                            + authenticatedUserAddress + " connected");
+
+                    while(!interrupted())
+                    {
+                        try
+                        {
+                            Object object = serverInputStream.readObject();
+
+                            if(object instanceof Message)
+                            {
+                                Message message = (Message) object;
+                                System.out.println("> [" + Main.getDate() + "] " + message.getMessage());
+                            }
+
+                            else if (object instanceof Devices)
+                            {
+                                Devices devices = getDevices();
+                                serverOutputStream.writeObject(devices);
+                            }
+
+                            else if (object instanceof Device)
+                            {
+                                device = (Device) object;
+                                dc = DeviceControllerFactory.getDeviceController(device);
+                            }
+
+                            else if (object instanceof Command)
+                            {
+                                Command command = (Command) object;
+                                if (dc != null)
+                                {
+                                    Enum deviceState = dc.issueCommand(command.getCommandType());
+                                    device.setDeviceState(deviceState);
+
+                                    // disregard the state of any Device already written to the stream
+                                    serverOutputStream.reset();
+                                    serverOutputStream.writeObject(device);
+                                }
+                            }
+                        }
+                        catch (EOFException e)
+                        {
+                            System.out.println("> [" + Main.getDate() + "] " + user.getUserName() + "@"
+                                    + authenticatedUserAddress + " disconnected");
+                            clientConnections[threadId] = null; // Clear index
+                            close(); // Terminate socket
+                            this.interrupt(); // Terminate thread
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    serverOutputStream.writeObject(user);
+
+                    connectionMessage = new Message("Incorrect username or password");
+                    connectionMessage.setState(false);
+                    serverOutputStream.writeObject(connectionMessage);
+
+                    clientConnections[threadId] = null; // Clear index
+                    close(); // Terminate socket
+                    this.interrupt(); // Terminate thread
+                }
             }
         }
         catch (IOException | ClassNotFoundException | InterruptedException e)
