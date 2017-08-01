@@ -50,8 +50,6 @@ public class ServerConnectionService extends Service
 
                 if (isAuthenticated(mUsername, mPassword))
                 {
-                    message = new Message(Inet4Address.getLocalHost().getHostAddress());
-                    mOutputStream.writeObject(message);
                     message = (Message) mInputStream.readObject();
                 }
                 else
