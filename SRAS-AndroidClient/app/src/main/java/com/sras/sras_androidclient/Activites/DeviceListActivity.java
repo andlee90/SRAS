@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,8 +72,7 @@ public class DeviceListActivity extends AppCompatActivity implements AdapterView
     {
         try
         {
-            // Disconnect from server
-            mService.closeServer();
+            mService.closeServer(); // Disconnect from server
             Toast.makeText(this.getApplicationContext(), "Logged out successfully", Toast.LENGTH_SHORT).show();
             finish();
         }
@@ -88,17 +86,18 @@ public class DeviceListActivity extends AppCompatActivity implements AdapterView
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
         Device device = mDeviceList.get(position);
+
         if(mBound)
         {
             try
             {
-                Message message = mService.fetchResources(device);
+                mService.initiateController(device);
                 Intent intent = new Intent(getApplicationContext(), LEDControllerActivity.class);
                 intent.putExtra("device", (Led)device);
                 startActivity(intent);
-                Log.d("Incoming message: ", message.getMessage());
 
-            } catch (IOException | ClassNotFoundException | InterruptedException e)
+            }
+            catch (IOException | ClassNotFoundException | InterruptedException e)
             {
                 e.printStackTrace();
             }

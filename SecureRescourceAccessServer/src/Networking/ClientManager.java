@@ -66,8 +66,6 @@ public class ClientManager extends Thread
                     authenticatedUserName = authenticatedUser.getUserName();
                     authenticatedUserRole = authenticatedUser.getRole();
 
-                    serverOutputStream.writeObject(authenticatedUser);
-
                     connectionMessage = new Message("Logged in as " + authenticatedUserName);
                     serverOutputStream.writeObject(connectionMessage);
 

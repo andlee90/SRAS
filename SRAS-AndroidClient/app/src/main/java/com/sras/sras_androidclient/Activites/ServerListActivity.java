@@ -201,7 +201,7 @@ public class ServerListActivity extends AppCompatActivity implements LoaderManag
                     {
                         try
                         {
-                            Message message = mService.connectToServer( server.getAddress(),
+                            Message message = mService.establishConnection( server.getAddress(),
                                     server.getPort(),
                                     server.getUsername(),
                                     server.getPassword());
