@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
@@ -37,7 +38,7 @@ public class DeviceListActivity extends AppCompatActivity implements AdapterView
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_resource_list);
+        setContentView(R.layout.activity_device_list);
 
         mListView = (ListView) findViewById(R.id.listview);
         mListView.setOnItemClickListener(this);
@@ -155,25 +156,37 @@ public class DeviceListActivity extends AppCompatActivity implements AdapterView
         {
             if (convertView == null)
             {
-                convertView = mInflater.inflate(R.layout.list_resource_items, parent, false);
+                convertView = mInflater.inflate(R.layout.list_device_items, parent, false);
                 convertView.setTag(new ViewHolder(convertView));
             }
 
             Device device = devices.get(position);
 
             ViewHolder holder = (ViewHolder) convertView.getTag();
-            holder.resourceName.setText(device.getDeviceName());
+            holder.deviceName.setText(device.getDeviceName());
+            holder.deviceState.setText(device.getDeviceState().toString());
 
+            if (device.getDeviceState().toString().equals("ON") ||
+                    device.getDeviceState().toString().equals("BLINKING"))
+            {
+                holder.deviceState.setTextColor(Color.GREEN);
+            }
+            else if (device.getDeviceState().toString().equals("OFF"))
+            {
+                holder.deviceState.setTextColor(Color.RED);
+            }
             return convertView;
         }
 
         private class ViewHolder
         {
-            private final TextView resourceName;
+            private final TextView deviceName;
+            private final TextView deviceState;
 
             ViewHolder(View view)
             {
-                resourceName = (TextView) view.findViewById(R.id.resourceName);
+                deviceName = (TextView) view.findViewById(R.id.deviceName);
+                deviceState = (TextView) view.findViewById(R.id.deviceState);
             }
         }
     }
