@@ -46,6 +46,7 @@ public class ServerListActivity extends AppCompatActivity implements LoaderManag
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_server_list);
+        setTitle("SRAS - Client");
 
         getLoaderManager().initLoader(LOADER_ID, null, this).forceLoad();
 

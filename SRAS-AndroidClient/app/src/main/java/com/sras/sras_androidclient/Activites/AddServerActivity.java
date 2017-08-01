@@ -29,6 +29,7 @@ public class AddServerActivity extends AppCompatActivity implements TextView.OnE
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_server);
+        setTitle("Add a New Server");
 
         mNameField = (EditText) findViewById(R.id.edit_server_name);
         mNameField.setOnEditorActionListener(this);

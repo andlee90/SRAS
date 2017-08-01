@@ -40,6 +40,8 @@ public class EditServerActivity extends AppCompatActivity implements TextView.On
         mServerAddress = intent.getStringExtra("server_address");
         mServerPort = intent.getIntExtra("server_port", 0);
 
+        setTitle("Edit Server: " + mServerName);
+
         mNameField = (EditText) findViewById(R.id.edit_server_name);
         mNameField.setText(mServerName);
         mNameField.setOnEditorActionListener(this);

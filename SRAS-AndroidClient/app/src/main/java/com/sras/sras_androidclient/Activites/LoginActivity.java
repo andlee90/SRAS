@@ -35,6 +35,7 @@ public class LoginActivity extends AppCompatActivity implements TextView.OnEdito
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        setTitle("Login Required");
 
         Intent intent = getIntent();
         mServerId = intent.getIntExtra(Intent.EXTRA_KEY_EVENT, 0);

@@ -39,13 +39,10 @@ public class DeviceListActivity extends AppCompatActivity implements AdapterView
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device_list);
+        setTitle("Available Devices");
 
         mListView = (ListView) findViewById(R.id.listview);
         mListView.setOnItemClickListener(this);
-
-        //Intent intent = getIntent();
-        //Devices devices = (Devices) intent.getSerializableExtra("devices");
-        //mDeviceList = devices.getDevices();
     }
 
     @Override
