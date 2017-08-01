@@ -71,8 +71,10 @@ public class ClientManager extends Thread
                     connectionMessage = new Message("Logged in as " + authenticatedUserName);
                     serverOutputStream.writeObject(connectionMessage);
 
-                    Message userAddressMessage = (Message) serverInputStream.readObject();
-                    authenticatedUserAddress = userAddressMessage.getMessage();
+                    authenticatedUserAddress = socket.getRemoteSocketAddress().toString();
+                    int end = authenticatedUserAddress.indexOf(':');
+                    authenticatedUserAddress = authenticatedUserAddress.substring(1, end);
+
                     System.out.println("> [" + Main.getDate() + "] " + authenticatedUserName + "@"
                             + authenticatedUserAddress + " connected");
 
