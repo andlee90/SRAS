@@ -21,6 +21,9 @@ import CommModels.Command;
 import CommModels.Device;
 import CommModels.LedState;
 
+//TODO: 1) Device state should be persisted through screen rotation
+//TODO: 2) UI should be updated to properly display all content after rotation
+//TODO: 3) Finally, remove this line from the manifest: android:screenOrientation="portrait"
 public class LEDControllerActivity extends AppCompatActivity implements View.OnClickListener
 {
     ServerConnectionService mService;

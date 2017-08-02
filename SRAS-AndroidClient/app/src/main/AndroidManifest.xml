@@ -28,7 +28,11 @@
         </activity>
         <activity android:name=".Activites.EditServerActivity" >
         </activity>
-        <activity android:name=".Activites.LEDControllerActivity" >
+
+        <!-- Preventing screen rotation for controller activities until I figure out how to properly
+        persist the device state -->
+        <activity android:name=".Activites.LEDControllerActivity"
+            android:screenOrientation="portrait">
         </activity>
         <service android:name=".Services.ServerConnectionService" >
         </service>
