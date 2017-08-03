@@ -295,8 +295,8 @@ public class DBHelper
         executeStatement(DBQueries.getUsersTableCreationQuery());
         System.out.println("> [" + Main.getDate() + "] Users table created");
 
-        executeStatement(DBQueries.getRolePermissionsTableCreationQuery());
-        System.out.println("> [" + Main.getDate() + "] Role-permissions linking table created");
+        executeStatement(DBQueries.getRulesTableCreationQuery());
+        System.out.println("> [" + Main.getDate() + "] Rules table created");
 
         insertRole("admin", 0);
         System.out.println("> [" + Main.getDate() + "] Default admin role added to roles table");

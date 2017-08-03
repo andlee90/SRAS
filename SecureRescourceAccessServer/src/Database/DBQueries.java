@@ -31,14 +31,16 @@ class DBQueries
                 + ");";
     }
 
-    static String getRolePermissionsTableCreationQuery()
+    static String getRulesTableCreationQuery()
     {
-        return "CREATE TABLE IF NOT EXISTS role_permissions (\n"
-                + "role_permission_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,\n"
+        return "CREATE TABLE IF NOT EXISTS rules (\n"
+                + "rule_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,\n"
                 + "role_id INTEGER NOT NULL,\n"
                 + "permission_id INTEGER NOT NULL,\n"
+                + "device_id INTEGER NOT NULL,\n"
                 + "FOREIGN KEY(role_id) REFERENCES roles(role_id),\n"
-                + "FOREIGN KEY(permission_id) REFERENCES permissions(permission_id)\n"
+                + "FOREIGN KEY(permission_id) REFERENCES permissions(permission_id),\n"
+                + "FOREIGN KEY(device_id) REFERENCES devices(device_id)\n"
                 + ");";
     }
 
@@ -46,9 +48,7 @@ class DBQueries
     {
         return "CREATE TABLE IF NOT EXISTS permissions (\n"
                 + "permission_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,\n"
-                + "permission_value TEXT NOT NULL UNIQUE,\n"
-                + "device_id INTEGER NOT NULL,\n"
-                + "FOREIGN KEY(device_id) REFERENCES devices(device_id)\n"
+                + "permission_value TEXT NOT NULL UNIQUE\n"
                 + ");";
     }
 
