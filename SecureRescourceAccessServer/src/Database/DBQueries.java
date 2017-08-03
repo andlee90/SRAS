@@ -88,6 +88,11 @@ class DBQueries
         return "INSERT INTO devices(device_pin,device_name,device_type,device_status,device_state) VALUES(?,?,?,?,?)";
     }
 
+    static String getInsertRuleQuery()
+    {
+        return "INSERT INTO rules(role_id,permission_id,device_id) VALUES(?,?,?)";
+    }
+
     /**
      * The following query strings are used for row selections.
      */
@@ -105,6 +110,21 @@ class DBQueries
     static String getSelectRoleById()
     {
         return "SELECT role_name FROM roles WHERE role_id = ?";
+    }
+
+    static String getSelectRoleIdByName()
+    {
+        return "SELECT role_id FROM roles WHERE role_name = ?";
+    }
+
+    static String getSelectDeviceIdByName()
+    {
+        return "SELECT device_id FROM devices WHERE device_name = ?";
+    }
+
+    static String getSelectPermissionIdByValue()
+    {
+        return "SELECT permission_id FROM permissions WHERE permission_value = ?";
     }
 
     /**
