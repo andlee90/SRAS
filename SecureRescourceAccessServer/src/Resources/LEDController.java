@@ -51,20 +51,21 @@ public class LEDController implements DeviceController
             {
                 // If the device is blinking, first turn it off
                 pin.blink(0);
+                pin.setState(PinState.LOW);
                 device.setDeviceState(LedState.OFF);
             }
 
             else if (device.getDeviceState() == LedState.ON)
             {
+                pin.toggle();
                 device.setDeviceState(LedState.OFF);
             }
 
             else if (device.getDeviceState() == LedState.OFF)
             {
+                pin.toggle();
                 device.setDeviceState(LedState.ON);
             }
-
-            pin.toggle();
 
             System.out.println("> [" + Main.getDate() + "] "
                     + device.getDeviceName() + " on "
