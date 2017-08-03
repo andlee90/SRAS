@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.ServiceConnection;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
@@ -26,8 +27,11 @@ import com.sras.sras_androidclient.Database.ServerDBLoader;
 import com.sras.sras_androidclient.R;
 import com.sras.sras_androidclient.Models.ServerItem;
 import com.sras.sras_androidclient.Services.ServerConnectionService;
+import com.sras.sras_androidclient.Tasks.TestConnectionTask;
 
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.List;
 
 import CommModels.Message;
@@ -117,6 +121,11 @@ public class ServerListActivity extends AppCompatActivity implements LoaderManag
             Intent intent = new Intent(getApplicationContext(), AddServerActivity.class);
             startActivity(intent);
         }
+        else if (item.getItemId() == R.id.refresh)
+        {
+            finish();
+            startActivity(getIntent());
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -156,7 +165,7 @@ public class ServerListActivity extends AppCompatActivity implements LoaderManag
 
         @NonNull
         @Override
-        public View getView(int position, View convertView, ViewGroup parent)
+        public View getView(int position, View convertView, @NonNull ViewGroup parent)
         {
             ServerItem server = servers.get(position);
             int serverId = server.getId();
@@ -170,66 +179,57 @@ public class ServerListActivity extends AppCompatActivity implements LoaderManag
             ViewHolder holder = (ViewHolder) convertView.getTag();
             holder.serverName.setText(server.getName());
 
-            holder.serverConnect.setImageDrawable(getDrawable(R.drawable.ic_server_connect));
-            holder.serverConnect.setEnabled(true);
-
-            if(mBound)
+            TestConnectionTask testConnectionTask = new TestConnectionTask(server.getAddress(), server.getPort(), result ->
             {
-                try
+                if(result)
                 {
-                    boolean serverExists = mService.testConnectivity(server.getAddress(), server.getPort());
+                    holder.serverConnect.setImageDrawable(getDrawable(R.drawable.ic_server_connect));
+                    holder.serverConnect.setEnabled(true);
+                }
+                else
+                {
+                    holder.serverConnect.setImageDrawable(getDrawable(R.drawable.ic_server_dne));
+                    holder.serverConnect.setEnabled(false);
+                }
+            });
 
-                    if (!serverExists)
-                    {
-                        holder.serverConnect.setImageDrawable(getDrawable(R.drawable.ic_server_dne));
-                    }
-                    else
-                    {
-                        holder.serverConnect.setImageDrawable(getDrawable(R.drawable.ic_server_connect));
-                    }
-                }
-                catch (InterruptedException | ClassNotFoundException | IOException e)
-                {
-                    e.printStackTrace();
-                }
-            }
+            testConnectionTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
+
 
             holder.serverConnect.setOnClickListener(view ->
             {
-                if(server.getUsername() != null)
+                if(server.getUsername() != null && mBound)
                 {
-                    if(mBound)
+                    try
                     {
-                        try
-                        {
-                            Message message = mService.establishConnection( server.getAddress(),
-                                    server.getPort(),
-                                    server.getUsername(),
-                                    server.getPassword());
+                        Message message = mService.establishConnection( server.getAddress(),
+                                server.getPort(),
+                                server.getUsername(),
+                                server.getPassword());
 
-                            if (message != null)
+                        if (message != null)
+                        {
+                            if (message.getState())
                             {
-                                if (message.getState())
-                                {
-                                    Toast.makeText(this.getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(getApplicationContext(), DeviceListActivity.class);
-                                    startActivity(intent);
-                                }
-                                else
-                                {
-                                    Toast.makeText(this.getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
-                                }
+                                Toast.makeText(this.getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(getApplicationContext(), DeviceListActivity.class);
+                                startActivity(intent);
                             }
                             else
                             {
-                                Toast.makeText(this.getContext(), "Failed to connect to server", Toast.LENGTH_SHORT).show();
-                                holder.serverConnect.setImageDrawable(getDrawable(R.drawable.ic_server_dne));
+                                Toast.makeText(this.getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
                             }
-
-                        } catch (IOException | ClassNotFoundException | InterruptedException e)
-                        {
-                            e.printStackTrace();
                         }
+                        else
+                        {
+                            Toast.makeText(this.getContext(), "Failed to connect to server", Toast.LENGTH_SHORT).show();
+                            holder.serverConnect.setImageDrawable(getDrawable(R.drawable.ic_server_dne));
+                            holder.serverConnect.setEnabled(false);
+                        }
+                    }
+                    catch (IOException | ClassNotFoundException | InterruptedException e)
+                    {
+                        e.printStackTrace();
                     }
                 }
                 else
@@ -264,7 +264,10 @@ public class ServerListActivity extends AppCompatActivity implements LoaderManag
                 serverName = (TextView) view.findViewById(R.id.serverName);
                 serverSettings = (ImageButton) view.findViewById(R.id.server_settings_button);
                 serverConnect = (ImageButton) view.findViewById(R.id.server_connect_button);
+                serverConnect.setImageDrawable(getDrawable(R.drawable.ic_server_refresh));
+                serverConnect.setEnabled(false);
             }
         }
+
     }
 }

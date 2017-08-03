@@ -24,9 +24,9 @@ public class LEDController implements DeviceController
     {
         this.device = (Led) d;
 
-        //gpio = GpioFactory.getInstance();
-        //pin = gpio.provisionDigitalOutputPin(getGpioPin(device.getDevicePin()), device.getDeviceName(), PinState.LOW);
-        //pin.setShutdownOptions(true, PinState.LOW);
+        gpio = GpioFactory.getInstance();
+        pin = gpio.provisionDigitalOutputPin(getGpioPin(device.getDevicePin()), device.getDeviceName(), PinState.LOW);
+        pin.setShutdownOptions(true, PinState.LOW);
     }
 
     /**
@@ -50,7 +50,7 @@ public class LEDController implements DeviceController
             if (device.getDeviceState() == LedState.BLINKING)
             {
                 // If the device is blinking, first turn it off
-                //pin.blink(0);
+                pin.blink(0);
                 device.setDeviceState(LedState.OFF);
             }
 
@@ -64,7 +64,7 @@ public class LEDController implements DeviceController
                 device.setDeviceState(LedState.ON);
             }
 
-            //pin.toggle();
+            pin.toggle();
 
             System.out.println("> [" + Main.getDate() + "] "
                     + device.getDeviceName() + " on "
@@ -75,7 +75,7 @@ public class LEDController implements DeviceController
         {
             device.setDeviceState(LedState.BLINKING);
 
-            //pin.blink(100);
+            pin.blink(100);
 
             System.out.println("> [" + Main.getDate() + "] "
                     + device.getDeviceName() + " on "

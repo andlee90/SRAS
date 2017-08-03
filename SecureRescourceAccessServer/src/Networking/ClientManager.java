@@ -27,6 +27,8 @@ public class ClientManager extends Thread
     private String authenticatedUserAddress;
 
     private Socket socket;
+    private ObjectInputStream serverInputStream;
+    private ObjectOutputStream serverOutputStream;
 
     private volatile Device device = null;
     private volatile DeviceController dc = null;
@@ -44,13 +46,14 @@ public class ClientManager extends Thread
     {
         try
         {
-            ObjectInputStream serverInputStream = new ObjectInputStream(socket.getInputStream());
-            ObjectOutputStream serverOutputStream = new ObjectOutputStream(socket.getOutputStream());
+            serverInputStream = new ObjectInputStream(socket.getInputStream());
+            serverOutputStream = new ObjectOutputStream(socket.getOutputStream());
 
             Object initialObject = serverInputStream.readObject(); // Check initial object for a possible connection test.
 
             if (initialObject instanceof Message)
             {
+                // TODO: This may be the cause of a Connection Reset Exception being thrown. Needs fixing.
                 clientConnections[threadId] = null; // Clear index
                 close(); // Terminate socket
                 this.interrupt();
@@ -150,6 +153,8 @@ public class ClientManager extends Thread
      */
     void close() throws IOException
     {
+        this.serverInputStream.close();
+        this.serverOutputStream.close();
         this.socket.close();
     }
 

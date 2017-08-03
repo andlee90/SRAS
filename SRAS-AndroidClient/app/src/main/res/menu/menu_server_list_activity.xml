@@ -3,5 +3,7 @@
 
     <item android:id="@+id/add_server"
         android:title="Add New Server" />
+    <item android:id="@+id/refresh"
+        android:title="Refresh Server List" />
 
 </menu>

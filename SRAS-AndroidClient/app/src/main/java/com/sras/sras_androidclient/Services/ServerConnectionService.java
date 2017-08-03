@@ -41,26 +41,6 @@ public class ServerConnectionService extends Service
     }
 
     /**
-     * Tests for server connectivity on a background thread.
-     * @param address the address of the server to test.
-     * @param port the port of the server to test.
-     * @return a boolean value representing the success of the test.
-     * @throws IOException
-     * @throws ClassNotFoundException
-     * @throws InterruptedException
-     */
-    public boolean testConnectivity(String address, int port)
-            throws IOException, ClassNotFoundException, InterruptedException
-    {
-        TestConnectivityThread tct = new TestConnectivityThread(address, port);
-        Thread t = new Thread(tct);
-        t.start();
-        t.join();
-
-        return tct.getConnectivity();
-    }
-
-    /**
      * Establishes a lasting connection to a specified server.
      * @param addr the address of the server to connect to.
      * @param port the port of the server to connect to.
@@ -149,45 +129,6 @@ public class ServerConnectionService extends Service
         mOutputStream.close();
         mInputStream.close();
         mSocket.close();
-    }
-
-    private class TestConnectivityThread extends Thread
-    {
-        private String ip;
-        private int port;
-        private volatile boolean exists = false;
-
-        TestConnectivityThread(String ip, int port)
-        {
-            this.ip = ip;
-            this.port = port;
-        }
-
-        @Override
-        public void run()
-        {
-            try (Socket socket = new Socket(ip, port))
-            {
-                ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
-
-                Message message = new Message("test");
-                outputStream.writeObject(message);
-
-                exists = true;
-
-                socket.close();
-                outputStream.close();
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-        }
-
-        boolean getConnectivity()
-        {
-            return exists;
-        }
     }
 
     private class EstablishConnectionThread extends Thread
