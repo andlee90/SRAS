@@ -78,6 +78,11 @@ class DBQueries
         return "INSERT INTO roles(role_name,role_priority) VALUES(?,?)";
     }
 
+    static String getInsertPermissionQuery()
+    {
+        return "INSERT INTO permissions(permission_value) VALUES(?)";
+    }
+
     static String getInsertDeviceQuery()
     {
         return "INSERT INTO devices(device_pin,device_name,device_type,device_status,device_state) VALUES(?,?,?,?,?)";

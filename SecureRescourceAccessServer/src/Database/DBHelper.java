@@ -123,6 +123,24 @@ public class DBHelper
     }
 
     /**
+     * Insert a new row into the permissions table.
+     * @param value permission value of the permission to be inserted.
+     */
+    public static void insertPermission(String value)
+    {
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(DBQueries.getInsertPermissionQuery()))
+        {
+            pstmt.setString(1, value);
+            pstmt.executeUpdate();
+        }
+        catch (SQLException e)
+        {
+            System.out.println("> [" + Main.getDate() + "] " + e.getMessage());
+        }
+    }
+
+    /**
      * Insert a new row into the devices table.
      * @param pin    device pin of the device to be inserted.
      * @param name   device name of the device to be inserted.
@@ -300,6 +318,15 @@ public class DBHelper
 
         insertRole("admin", 0);
         System.out.println("> [" + Main.getDate() + "] Default admin role added to roles table");
+
+        insertPermission("NONE");
+        System.out.println("> [" + Main.getDate() + "] Default permission NONE added to permissions table");
+
+        insertPermission("VIEW_ONLY");
+        System.out.println("> [" + Main.getDate() + "] Default permission VIEW_ONLY added to permissions table");
+
+        insertPermission("MODIFY");
+        System.out.println("> [" + Main.getDate() + "] Default permission MODIFY added to permissions table");
 
         insertUser("admin", "drowssap", "admin@admin.com", "admin", "admin", 1);
         System.out.println("> [" + Main.getDate() + "] Default admin user added to users table");
