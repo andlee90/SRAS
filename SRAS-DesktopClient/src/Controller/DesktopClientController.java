@@ -1,11 +1,13 @@
 package Controller;
 import javax.swing.*;
+
+import Database.DBHelper;
 import DesktopGUI.*;
 import CommModels.*;
 
 public class DesktopClientController {
     static MainFrame frame1;
-    public final static int maxServers = 20;
+    public final static int maxServers = 15;
     public static int currentServer;
     public static Object[][] data = new Object[maxServers][2];
     public static int currentRow = 0;
@@ -13,6 +15,7 @@ public class DesktopClientController {
     public static Devices devices;
     public static void main(String [] args)
     {
+        DBHelper.createNewServerTable();
         devices = new Devices();
         new AuthenticationPanel();
         data[0][0] = "localhost";

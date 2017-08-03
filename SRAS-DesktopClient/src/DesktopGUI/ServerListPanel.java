@@ -2,6 +2,7 @@ package DesktopGUI;
 import CommModels.*;
 import Controller.ClientManager;
 import Controller.DesktopClientController;
+import sun.security.krb5.internal.crypto.Des;
 
 import java.io.*;
 import java.net.Socket;
@@ -98,8 +99,11 @@ public class ServerListPanel
                         DesktopClientController.data[i][0] = DesktopClientController.data[i+1][0];
                         DesktopClientController.data[i][1] = DesktopClientController.data[i+1][1];
                     }
+                  DesktopClientController.data[DesktopClientController.maxServers-1][0]="";
+                  DesktopClientController.data[DesktopClientController.maxServers-1][1]="";
                   DesktopClientController.currentRow--;
-                    DesktopClientController.replacePanel(new ServerListPanel().getServerListPanel(),"SRAS - Server List");
+
+                  DesktopClientController.replacePanel(new ServerListPanel().getServerListPanel(),"SRAS - Server List");
                 }
                 catch(Exception e1)
                 {
