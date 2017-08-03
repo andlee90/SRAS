@@ -1,6 +1,7 @@
 package CommModels;
 
 import java.io.Serializable;
+import java.util.Hashtable;
 
 /**
  * Data model for holding info about a user including their username, password, first and last names, admin status and
@@ -16,6 +17,8 @@ public class User implements Serializable
     private String lastName;
     private String role;
     private boolean isValid; // true if username and password have been validated (found in db)
+
+    private Hashtable<String, String> rules = new Hashtable<>();
 
     public User(int id, String un, String p, String e, String fn, String ln, String r)
     {
@@ -64,6 +67,11 @@ public class User implements Serializable
         return this.role;
     }
 
+    public Hashtable<String, String> getRules()
+    {
+        return this.rules;
+    }
+
     public boolean getValidity()
     {
         return this.isValid;
@@ -92,5 +100,10 @@ public class User implements Serializable
     public void setValidity(boolean v)
     {
         this.isValid = v;
+    }
+
+    public void setRules(Hashtable<String, String> r)
+    {
+        this.rules = r;
     }
 }

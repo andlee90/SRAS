@@ -51,7 +51,7 @@ public class ServerConnectionService extends Service
      * @throws ClassNotFoundException
      * @throws InterruptedException
      */
-    public Message establishConnection(String addr, int port, String user, String pass)
+    public User establishConnection(String addr, int port, String user, String pass)
             throws IOException, ClassNotFoundException, InterruptedException
     {
         this.mServerAddress = addr;
@@ -64,7 +64,7 @@ public class ServerConnectionService extends Service
         t.start();
         t.join();
 
-        return ct.getMessage();
+        return ct.getUser();
     }
 
     /**
@@ -133,7 +133,7 @@ public class ServerConnectionService extends Service
 
     private class EstablishConnectionThread extends Thread
     {
-        private volatile Message message = null;
+        private volatile User user = null;
 
         @Override
         public void run()
@@ -144,10 +144,10 @@ public class ServerConnectionService extends Service
                 mOutputStream = new ObjectOutputStream(mSocket.getOutputStream());
                 mInputStream = new ObjectInputStream(mSocket.getInputStream());
 
-                User user = new User(0, mUsername, mPassword, "", "", "", "");
-                mOutputStream.writeObject(user);
+                User newUser = new User(0, mUsername, mPassword, "", "", "", "");
+                mOutputStream.writeObject(newUser);
 
-                message = (Message) mInputStream.readObject();
+                user = (User) mInputStream.readObject();
             }
             catch (IOException | ClassNotFoundException e)
             {
@@ -155,9 +155,9 @@ public class ServerConnectionService extends Service
             }
         }
 
-        Message getMessage()
+        User getUser()
         {
-            return message;
+            return user;
         }
     }
 

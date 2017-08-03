@@ -12,6 +12,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * Manages a single client connection by first comparing the incoming user object attributes against those in the
@@ -62,15 +64,18 @@ public class ClientManager extends Thread
             {
                 User user = (User) initialObject;
 
-                Message connectionMessage;
-
                 if (authenticateUser(user))
                 {
                     authenticatedUserName = authenticatedUser.getUserName();
                     authenticatedUserRole = authenticatedUser.getRole();
 
-                    connectionMessage = new Message("Logged in as " + authenticatedUserName);
-                    serverOutputStream.writeObject(connectionMessage);
+                    int authenticatedUserRoleId = DBHelper.selectRoleIdByRoleName(authenticatedUser.getRole());
+
+                    Hashtable<String, String> rules = DBHelper.selectRulesByRoleId(authenticatedUserRoleId);
+
+                    authenticatedUser.setRules(rules);
+
+                    serverOutputStream.writeObject(authenticatedUser);
 
                     authenticatedUserAddress = socket.getRemoteSocketAddress().toString();
                     int end = authenticatedUserAddress.indexOf(':');
@@ -132,9 +137,9 @@ public class ClientManager extends Thread
                 {
                     serverOutputStream.writeObject(user);
 
-                    connectionMessage = new Message("Incorrect username or password");
-                    connectionMessage.setState(false);
-                    serverOutputStream.writeObject(connectionMessage);
+                    //Message connectionMessage = new Message("Incorrect username or password");
+                    //connectionMessage.setState(false);
+                    //serverOutputStream.writeObject(connectionMessage);
 
                     clientConnections[threadId] = null; // Clear index
                     close(); // Terminate socket

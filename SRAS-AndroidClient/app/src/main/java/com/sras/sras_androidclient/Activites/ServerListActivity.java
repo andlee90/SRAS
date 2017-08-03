@@ -35,6 +35,7 @@ import java.net.Socket;
 import java.util.List;
 
 import CommModels.Message;
+import CommModels.User;
 
 public class ServerListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<ServerItem>>
 {
@@ -202,22 +203,22 @@ public class ServerListActivity extends AppCompatActivity implements LoaderManag
                 {
                     try
                     {
-                        Message message = mService.establishConnection( server.getAddress(),
+                        User user = mService.establishConnection( server.getAddress(),
                                 server.getPort(),
                                 server.getUsername(),
                                 server.getPassword());
 
-                        if (message != null)
+                        if (user != null)
                         {
-                            if (message.getState())
+                            if (user.getValidity())
                             {
-                                Toast.makeText(this.getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this.getContext(), "Logged in as " + user.getUserName(), Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(getApplicationContext(), DeviceListActivity.class);
                                 startActivity(intent);
                             }
                             else
                             {
-                                Toast.makeText(this.getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this.getContext(), "Login attempt failed", Toast.LENGTH_SHORT).show();
                             }
                         }
                         else

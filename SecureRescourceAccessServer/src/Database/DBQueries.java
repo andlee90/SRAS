@@ -117,9 +117,25 @@ class DBQueries
         return "SELECT role_id FROM roles WHERE role_name = ?";
     }
 
+
+    static String getSelectRulesByRoleId()
+    {
+        return "SELECT permission_id,device_id FROM rules WHERE role_id = ?";
+    }
+
     static String getSelectDeviceIdByName()
     {
         return "SELECT device_id FROM devices WHERE device_name = ?";
+    }
+
+    static String getSelectDeviceNameById()
+    {
+        return "SELECT device_name FROM devices WHERE device_id = ?";
+    }
+
+    static String getSelectPermissionValueById()
+    {
+        return "SELECT permission_value FROM permissions WHERE permission_id = ?";
     }
 
     static String getSelectPermissionIdByValue()

@@ -5,6 +5,7 @@ import Main.Main;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 import static Database.DBQueries.*;
 
@@ -301,6 +302,56 @@ public class DBHelper
     }
 
     /**
+     * Returns the name of the device for a given id.
+     * @param id the id of the device to select.
+     * @return the name of the selected device.
+     */
+    public static String selectDeviceNameByDeviceId(int id)
+    {
+        String deviceName = "";
+
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(getSelectDeviceNameById()))
+        {
+            pstmt.setInt(1, id);
+
+            ResultSet rs = pstmt.executeQuery();
+            deviceName = rs.getString("device_name");
+        }
+        catch (SQLException e)
+        {
+            System.out.println("> [" + Main.getDate() + "] " + e.getMessage());
+        }
+
+        return deviceName;
+    }
+
+    /**
+     * Returns the value of the permission for a given id.
+     * @param permissionId the id of the permission to select.
+     * @return the value of the selected permission.
+     */
+    public static String selectPermissionValueByPermissionId(int permissionId)
+    {
+        String permissionValue = "";
+
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(getSelectPermissionValueById()))
+        {
+            pstmt.setInt(1, permissionId);
+
+            ResultSet rs = pstmt.executeQuery();
+            permissionValue = rs.getString("permission_value");
+        }
+        catch (SQLException e)
+        {
+            System.out.println("> [" + Main.getDate() + "] " + e.getMessage());
+        }
+
+        return permissionValue;
+    }
+
+    /**
      * Returns the id of the permission for a given value.
      * @param value the name of the permission to select.
      * @return the id of the selected permission.
@@ -323,6 +374,40 @@ public class DBHelper
         }
 
         return permissionId;
+    }
+
+    /**
+     * Returns the a Hashtable containing all rules for a given role id.
+     * @param id the id of the role to select.
+     * @return the rules of the selected role.
+     */
+    public static Hashtable<String, String> selectRulesByRoleId(int id)
+    {
+        Hashtable<String, String> rules = new Hashtable<>();
+
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(getSelectRulesByRoleId()))
+        {
+            pstmt.setInt(1,id);
+            ResultSet rs    = pstmt.executeQuery();
+
+            while (rs.next())
+            {
+                int deviceId = rs.getInt("device_id");
+                int permissionId = rs.getInt("permission_id");
+
+                String device = selectDeviceNameByDeviceId(deviceId);
+                String permission = selectPermissionValueByPermissionId(permissionId);
+
+                rules.put(device, permission);
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println("> [" + Main.getDate() + "] " + e.getMessage());
+        }
+
+        return rules;
     }
 
     /**
@@ -415,10 +500,13 @@ public class DBHelper
         System.out.println("> [" + Main.getDate() + "] Users table created");
 
         executeStatement(DBQueries.getRulesTableCreationQuery());
-        System.out.println("> [" + Main.getDate() + "] Rules table created");
+        System.out.println("> [" + Main.getDate() + "] Rules table created\n");
 
         insertRole("ADMIN", 0);
         System.out.println("> [" + Main.getDate() + "] Default admin role added to roles table");
+
+        insertRole("USER", 1);
+        System.out.println("> [" + Main.getDate() + "] Default user role added to roles table\n");
 
         insertPermission("NONE");
         System.out.println("> [" + Main.getDate() + "] Default permission NONE added to permissions table");
@@ -427,42 +515,69 @@ public class DBHelper
         System.out.println("> [" + Main.getDate() + "] Default permission VIEW_ONLY added to permissions table");
 
         insertPermission("MODIFY");
-        System.out.println("> [" + Main.getDate() + "] Default permission MODIFY added to permissions table");
+        System.out.println("> [" + Main.getDate() + "] Default permission MODIFY added to permissions table\n");
 
         insertUser("admin", "drowssap", "admin@admin.com", "admin", "admin", 1);
         System.out.println("> [" + Main.getDate() + "] Default admin user added to users table");
 
+        insertUser("andlee", "password", "andlee@andlee.com", "Andrew", "Smith", 2);
+        System.out.println("> [" + Main.getDate() + "] User andlee added to users table\n");
+
         insertDevice(1, "LED1", "LED", "AVAILABLE", "OFF");
         insertRule("ADMIN", "MODIFY", "LED1");
-        System.out.println("> [" + Main.getDate() + "] Default device added to devices table and MODIFY permissions given to ADMIN");
+        insertRule("USER", "VIEW_ONLY", "LED1");
+        System.out.println("> [" + Main.getDate() + "] Default device LED1 added to devices table");
+        System.out.println("> [" + Main.getDate() + "] MODIFY permissions given to ADMIN for LED1");
+        System.out.println("> [" + Main.getDate() + "] VIEW_ONLY permissions given to USER for LED1\n");
 
         insertDevice(2, "LED2", "LED", "AVAILABLE", "OFF");
         insertRule("ADMIN", "MODIFY", "LED2");
-        System.out.println("> [" + Main.getDate() + "] Default device added to devices table and MODIFY permissions given to ADMIN");
+        insertRule("USER", "VIEW_ONLY", "LED2");
+        System.out.println("> [" + Main.getDate() + "] Default device LED2 added to devices table");
+        System.out.println("> [" + Main.getDate() + "] MODIFY permissions given to ADMIN for LED2");
+        System.out.println("> [" + Main.getDate() + "] VIEW_ONLY permissions given to USER for LED2\n");
 
         insertDevice(3, "LED3", "LED", "AVAILABLE", "OFF");
         insertRule("ADMIN", "MODIFY", "LED3");
-        System.out.println("> [" + Main.getDate() + "] Default device added to devices table and MODIFY permissions given to ADMIN");
+        insertRule("USER", "VIEW_ONLY", "LED3");
+        System.out.println("> [" + Main.getDate() + "] Default device LED3 added to devices table");
+        System.out.println("> [" + Main.getDate() + "] MODIFY permissions given to ADMIN for LED3");
+        System.out.println("> [" + Main.getDate() + "] VIEW_ONLY permissions given to USER for LED3\n");
 
         insertDevice(4, "LED4", "LED", "AVAILABLE", "OFF");
         insertRule("ADMIN", "MODIFY", "LED4");
-        System.out.println("> [" + Main.getDate() + "] Default device added to devices table and MODIFY permissions given to ADMIN");
+        insertRule("USER", "VIEW_ONLY", "LED4");
+        System.out.println("> [" + Main.getDate() + "] Default device LED4 added to devices table");
+        System.out.println("> [" + Main.getDate() + "] MODIFY permissions given to ADMIN for LED4");
+        System.out.println("> [" + Main.getDate() + "] VIEW_ONLY permissions given to USER for LED4\n");
 
         insertDevice(5, "LED5", "LED", "AVAILABLE", "OFF");
         insertRule("ADMIN", "MODIFY", "LED5");
-        System.out.println("> [" + Main.getDate() + "] Default device added to devices table and MODIFY permissions given to ADMIN");
+        insertRule("USER", "VIEW_ONLY", "LED5");
+        System.out.println("> [" + Main.getDate() + "] Default device LED5 added to devices table");
+        System.out.println("> [" + Main.getDate() + "] MODIFY permissions given to ADMIN for LED5");
+        System.out.println("> [" + Main.getDate() + "] VIEW_ONLY permissions given to USER for LED5\n");
 
         insertDevice(9, "LED6", "LED", "AVAILABLE", "OFF");
         insertRule("ADMIN", "MODIFY", "LED6");
-        System.out.println("> [" + Main.getDate() + "] Default device added to devices table and MODIFY permissions given to ADMIN");
+        insertRule("USER", "VIEW_ONLY", "LED6");
+        System.out.println("> [" + Main.getDate() + "] Default device LED6 added to devices table");
+        System.out.println("> [" + Main.getDate() + "] MODIFY permissions given to ADMIN for LED6");
+        System.out.println("> [" + Main.getDate() + "] VIEW_ONLY permissions given to USER for LED6\n");
 
         insertDevice(7, "LED7", "LED", "AVAILABLE", "OFF");
         insertRule("ADMIN", "MODIFY", "LED7");
-        System.out.println("> [" + Main.getDate() + "] Default device added to devices table and MODIFY permissions given to ADMIN");
+        insertRule("USER", "VIEW_ONLY", "LED7");
+        System.out.println("> [" + Main.getDate() + "] Default device LED7 added to devices table");
+        System.out.println("> [" + Main.getDate() + "] MODIFY permissions given to ADMIN for LED7");
+        System.out.println("> [" + Main.getDate() + "] VIEW_ONLY permissions given to USER for LED7\n");
 
         insertDevice(8, "LED8", "LED", "AVAILABLE", "OFF");
         insertRule("ADMIN", "MODIFY", "LED8");
-        System.out.println("> [" + Main.getDate() + "] Default device added to devices table and MODIFY permissions given to ADMIN");
+        insertRule("USER", "VIEW_ONLY", "LED8");
+        System.out.println("> [" + Main.getDate() + "] Default device LED8 added to devices table");
+        System.out.println("> [" + Main.getDate() + "] MODIFY permissions given to ADMIN for LED8");
+        System.out.println("> [" + Main.getDate() + "] VIEW_ONLY permissions given to USER for LED8\n");
     }
 
     /**
