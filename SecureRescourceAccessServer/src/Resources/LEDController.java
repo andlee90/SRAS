@@ -25,7 +25,7 @@ public class LEDController implements DeviceController
         this.device = (Led) d;
 
         gpio = GpioFactory.getInstance();
-        pin = gpio.provisionDigitalOutputPin(getGpioPin(device.getDevicePin()), device.getDeviceName(), PinState.LOW);
+        pin = gpio.provisionDigitalOutputPin(Main.getGpioPin(device.getDevicePin()), device.getDeviceName(), PinState.LOW);
         pin.setShutdownOptions(true, PinState.LOW);
     }
 
@@ -51,20 +51,21 @@ public class LEDController implements DeviceController
             {
                 // If the device is blinking, first turn it off
                 pin.blink(0);
+                pin.setState(PinState.LOW);
                 device.setDeviceState(LedState.OFF);
             }
 
             else if (device.getDeviceState() == LedState.ON)
             {
+                pin.toggle();
                 device.setDeviceState(LedState.OFF);
             }
 
             else if (device.getDeviceState() == LedState.OFF)
             {
+                pin.toggle();
                 device.setDeviceState(LedState.ON);
             }
-
-            pin.toggle();
 
             System.out.println("> [" + Main.getDate() + "] "
                     + device.getDeviceName() + " on "
@@ -91,41 +92,5 @@ public class LEDController implements DeviceController
                 device.getDeviceState().toString());
 
         return device.getDeviceState();
-    }
-
-    /**
-     * Converts Device.pin (int) to GPIO.pin (Pin).
-     * @param x pin int from Device to be converted
-     * @return GPIO Pin used for issuing commands
-     */
-    private Pin getGpioPin(int x)
-    {
-        Pin resultPin = null;
-        Pin[] p = RaspiPin.allPins();
-        ArrayList<Pin> pins = new ArrayList<>(Arrays.asList(p));
-        Collections.sort(pins);
-
-        for (Pin pin : pins)
-        {
-            String pinString = pin.toString();
-
-            if(Integer.toString(x).length() == 2)
-            {
-                if (pinString.substring(pinString.length() - 2).equals(Integer.toString(x)))
-                {
-                    resultPin = pin;
-                    break;
-                }
-            }
-            else if (Integer.toString(x).length() == 1)
-            {
-                if (pinString.substring(pinString.length() - 1).equals(Integer.toString(x)))
-                {
-                    resultPin = pin;
-                    break;
-                }
-            }
-        }
-        return resultPin;
     }
 }

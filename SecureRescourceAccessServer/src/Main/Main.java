@@ -4,13 +4,16 @@ import CommModels.*;
 import Database.DBHelper;
 import Networking.ClientManager;
 import Networking.ServerManager;
+import com.pi4j.io.gpio.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class Main
 {
-
     public static void main(String[] args) throws InterruptedException, IOException
     {
         //TODO: Should probably take in port number and max clients as params
@@ -18,6 +21,8 @@ public class Main
         System.out.println("> [" + Main.getDate() + "] Starting new server... type command 'help' for usage");
         ServerManager serverManager = new ServerManager();
         Scanner scanner = new Scanner(System.in);
+
+        initializePins();
 
         // Listen for commands from the server administrator.
         while(scanner.hasNext())
@@ -140,5 +145,55 @@ public class Main
         String dateString = date.toString();
 
         return dateString.substring(4,19);
+    }
+
+    private static void initializePins()
+    {
+        GpioController gpio = GpioFactory.getInstance();
+        Devices devices = DBHelper.selectAllDevices();
+
+        for (Device device : devices.getDevices())
+        {
+            GpioPinDigitalOutput pin = gpio.provisionDigitalOutputPin(getGpioPin((int)device.getDevicePin()), device.getDeviceName(), PinState.LOW);
+            pin.setShutdownOptions(true, PinState.LOW);
+            pin.setState(PinState.LOW);
+            gpio.unprovisionPin(pin);
+        }
+    }
+
+    /**
+     * Converts Device.pin (int) to GPIO.pin (Pin).
+     * @param x pin int from Device to be converted
+     * @return GPIO Pin used for issuing commands
+     */
+    public static Pin getGpioPin(int x)
+    {
+        Pin resultPin = null;
+        Pin[] p = RaspiPin.allPins();
+        ArrayList<Pin> pins = new ArrayList<>(Arrays.asList(p));
+        Collections.sort(pins);
+
+        for (Pin pin : pins)
+        {
+            String pinString = pin.toString();
+
+            if(Integer.toString(x).length() == 2)
+            {
+                if (pinString.substring(pinString.length() - 2).equals(Integer.toString(x)))
+                {
+                    resultPin = pin;
+                    break;
+                }
+            }
+            else if (Integer.toString(x).length() == 1)
+            {
+                if (pinString.substring(pinString.length() - 1).equals(Integer.toString(x)))
+                {
+                    resultPin = pin;
+                    break;
+                }
+            }
+        }
+        return resultPin;
     }
 }
