@@ -26,7 +26,8 @@ class DBQueries
     {
         return "CREATE TABLE IF NOT EXISTS roles (\n"
                 + "role_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,\n"
-                + "role_name TEXT NOT NULL UNIQUE\n"
+                + "role_name TEXT NOT NULL UNIQUE,\n"
+                + "role_priority INT NOT NULL\n"
                 + ");";
     }
 
@@ -74,7 +75,7 @@ class DBQueries
 
     static String getInsertRoleQuery()
     {
-        return "INSERT INTO roles(role_name) VALUES(?)";
+        return "INSERT INTO roles(role_name,role_priority) VALUES(?,?)";
     }
 
     static String getInsertDeviceQuery()

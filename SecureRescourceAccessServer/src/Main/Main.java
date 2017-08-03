@@ -16,13 +16,13 @@ public class Main
 {
     public static void main(String[] args) throws InterruptedException, IOException
     {
-        //TODO: Should probably take in port number and max clients as params
+        // Set up pins to be in OFF state
+        //initializePins();
 
+        //TODO: Should probably take in port number and max clients as params
         System.out.println("> [" + Main.getDate() + "] Starting new server... type command 'help' for usage");
         ServerManager serverManager = new ServerManager();
         Scanner scanner = new Scanner(System.in);
-
-        initializePins();
 
         // Listen for commands from the server administrator.
         while(scanner.hasNext())

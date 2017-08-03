@@ -105,13 +105,15 @@ public class DBHelper
     /**
      * Insert a new row into the roles table.
      * @param name role name of the role to be inserted.
+     * @param priority priority of the role to be inserted (0 - n, 0 being highest).
      */
-    public static void insertRole(String name)
+    public static void insertRole(String name, int priority)
     {
         try (Connection conn = connect();
              PreparedStatement pstmt = conn.prepareStatement(DBQueries.getInsertRoleQuery()))
         {
             pstmt.setString(1, name);
+            pstmt.setInt(2, priority);
             pstmt.executeUpdate();
         }
         catch (SQLException e)
@@ -296,7 +298,7 @@ public class DBHelper
         executeStatement(DBQueries.getRolePermissionsTableCreationQuery());
         System.out.println("> [" + Main.getDate() + "] Role-permissions linking table created");
 
-        insertRole("admin");
+        insertRole("admin", 0);
         System.out.println("> [" + Main.getDate() + "] Default admin role added to roles table");
 
         insertUser("admin", "drowssap", "admin@admin.com", "admin", "admin", 1);
