@@ -36,7 +36,6 @@ public class TestConnectionTask extends AsyncTask<Void, Void, Boolean>
 
             exists = true;
 
-            // TODO: This may be the cause of a Connection Reset Exception being thrown. Needs fixing.
             socket.close();
             outputStream.close();
         }

@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 
 /**
  * Manages a single client connection by first comparing the incoming user object attributes against those in the
@@ -53,7 +54,6 @@ public class ClientManager extends Thread
 
             if (initialObject instanceof Message)
             {
-                // TODO: This may be the cause of a Connection Reset Exception being thrown. Needs fixing.
                 clientConnections[threadId] = null; // Clear index
                 close(); // Terminate socket
                 this.interrupt();
@@ -144,7 +144,16 @@ public class ClientManager extends Thread
         }
         catch (IOException | ClassNotFoundException | InterruptedException e)
         {
-            e.printStackTrace();
+            try
+            {
+                clientConnections[threadId] = null; // Clear index
+                close(); // Terminate socket
+                this.interrupt();
+            }
+            catch (IOException e1)
+            {
+                e1.printStackTrace();
+            }
         }
     }
 
