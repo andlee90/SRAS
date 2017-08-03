@@ -92,14 +92,19 @@ public class ServerListPanel
 
         removeButton.addActionListener(new ActionListener() {
             @Override public void actionPerformed(ActionEvent e) {
-              /*  try {
-                    DesktopClientController.data[table.getSelectedRow()][0] = "";
-                    DesktopClientController.data[table.getSelectedRow()][1] = "";
+              try {
+                    for(int i = table.getSelectedRow();i<DesktopClientController.data.length-1;i++)
+                    {
+                        DesktopClientController.data[i][0] = DesktopClientController.data[i+1][0];
+                        DesktopClientController.data[i][1] = DesktopClientController.data[i+1][1];
+                    }
+                  DesktopClientController.currentRow--;
+                    DesktopClientController.replacePanel(new ServerListPanel().getServerListPanel(),"SRAS - Server List");
                 }
                 catch(Exception e1)
                 {
                    new MainErrorMessageFrame("Please select a valid server to remove from the list.");
-                }*/
+                }
             }});
 
         connectButton.addActionListener(new ActionListener() {

@@ -67,7 +67,7 @@ public class DeviceControlPanel
         JPanel devicePanel = new JPanel(f1);
         devicePanel.setBackground(Color.WHITE);
         devicePanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
-        JButton deviceButton = new JButton("Control");
+        JButton deviceButton = new JButton(device.getDeviceState().toString());
 
 
 

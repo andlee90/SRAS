@@ -24,7 +24,6 @@ public class ClientManager {
         rowConst = row;
         String ip = DesktopClientController.data[row][0].toString();
         int port = Integer.parseInt(DesktopClientController.data[row][1].toString());
-        // System.out.println("You are connecting to: "+ip+ " on port "+ port+"...");
         try {
             socket = new Socket(ip, port);
             socket.setSoTimeout(5000);
@@ -40,20 +39,17 @@ public class ClientManager {
 
             String ip = DesktopClientController.data[rowConst][0].toString();
             int port = Integer.parseInt(DesktopClientController.data[rowConst][1].toString());
-            socket = new Socket(ip, port);
-            socket.setSoTimeout(5000);
 
             Message message = new Message(DesktopClientController.userIn.getUserName()+" @ " + InetAddress.getLocalHost()+" has connected to the server.");
             clientOutputStream = new ObjectOutputStream(socket.getOutputStream());
-
             clientOutputStream.writeObject(DesktopClientController.userIn);
             clientInputStream = new ObjectInputStream(socket.getInputStream());
-            DesktopClientController.userIn = (User) clientInputStream.readObject();
-            if (DesktopClientController.userIn.getValidity()) {
-                clientOutputStream.writeObject(message);
-                DesktopClientController.devices = (Devices) clientInputStream.readObject();
-                DesktopClientController.replacePanel(new DeviceControlPanel().getPanel(),"SRAS - Device Controller");
-            }
+            System.out.println(((Message) clientInputStream.readObject()).getMessage());
+            clientOutputStream.writeObject((Devices)DesktopClientController.devices);
+            //wait error is here
+            DesktopClientController.devices = (Devices) clientInputStream.readObject();
+            DesktopClientController.replacePanel(new DeviceControlPanel().getPanel(),"SRAS - Device Controller");
+            DesktopClientController.userIn.setValidity(true);
         }
         catch(ClassNotFoundException e2){
             e2.printStackTrace();
@@ -63,7 +59,6 @@ public class ClientManager {
     }
 
     public static void sendCommand(Device device, Command command) throws IOException, ClassNotFoundException {
-        //send current device here**
         clientOutputStream.writeObject((Led)device);
         clientOutputStream.writeObject(command);
     }

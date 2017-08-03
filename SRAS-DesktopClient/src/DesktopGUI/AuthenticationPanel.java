@@ -110,7 +110,7 @@ public class AuthenticationPanel
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                DesktopClientController.userIn= new User(username.getText(),new String(password.getPassword()),"","","","");
+                DesktopClientController.userIn= new User(-1,username.getText(),new String(password.getPassword()),"","","","");
                 System.out.println(new String(password.getPassword()));
                 try {
                     ClientManager.connectToServer();

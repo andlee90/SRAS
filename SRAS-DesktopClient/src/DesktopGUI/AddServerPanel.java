@@ -108,12 +108,14 @@ public class AddServerPanel
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                DesktopClientController.data[DesktopClientController.currentRow][0]=hostName.getText();
-                DesktopClientController.data[DesktopClientController.currentRow][1] = portNumber.getText();
-                if(DesktopClientController.currentRow<DesktopClientController.maxServers)
+                if(DesktopClientController.currentRow<DesktopClientController.maxServers){
+                    DesktopClientController.data[DesktopClientController.currentRow][0]=hostName.getText();
+                    DesktopClientController.data[DesktopClientController.currentRow][1] = portNumber.getText();
                     DesktopClientController.currentRow++;
-                DesktopClientController.replacePanel(new ServerListPanel().getServerListPanel(), "SRAS - Server List");
-
+                    DesktopClientController.replacePanel(new ServerListPanel().getServerListPanel(), "SRAS - Server List");
+                }
+                else
+                    new MainErrorMessageFrame("Maximum amount of servers reached. ("+DesktopClientController.maxServers+")");
             }
         });
 
