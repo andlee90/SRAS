@@ -166,7 +166,7 @@ public class Main
      * @param x pin int from Device to be converted
      * @return GPIO Pin used for issuing commands
      */
-    private static Pin getGpioPin(int x)
+    public static Pin getGpioPin(int x)
     {
         Pin resultPin = null;
         Pin[] p = RaspiPin.allPins();
