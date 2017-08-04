@@ -508,6 +508,9 @@ public class DBHelper
         insertRole("USER", 1);
         System.out.println("> [" + Main.getDate() + "] Default user role added to roles table\n");
 
+        insertRole("RESTRICTED_USER", 2);
+        System.out.println("> [" + Main.getDate() + "] Default user role added to roles table\n");
+
         insertPermission("NONE");
         System.out.println("> [" + Main.getDate() + "] Default permission NONE added to permissions table");
 
@@ -521,11 +524,15 @@ public class DBHelper
         System.out.println("> [" + Main.getDate() + "] Default admin user added to users table");
 
         insertUser("andlee", "password", "andlee@andlee.com", "Andrew", "Smith", 2);
-        System.out.println("> [" + Main.getDate() + "] User andlee added to users table\n");
+        System.out.println("> [" + Main.getDate() + "] User andlee added to users table");
+
+        insertUser("mymeggie", "password", "mymeggie@megs.com", "Megan", "La Penta", 3);
+        System.out.println("> [" + Main.getDate() + "] User mymeggie added to users table\n");
 
         insertDevice(1, "LED1", "LED", "AVAILABLE", "OFF");
         insertRule("ADMIN", "MODIFY", "LED1");
         insertRule("USER", "VIEW_ONLY", "LED1");
+        insertRule("RESTRICTED_USER", "VIEW_ONLY", "LED1");
         System.out.println("> [" + Main.getDate() + "] Default device LED1 added to devices table");
         System.out.println("> [" + Main.getDate() + "] MODIFY permissions given to ADMIN for LED1");
         System.out.println("> [" + Main.getDate() + "] VIEW_ONLY permissions given to USER for LED1\n");
@@ -533,6 +540,7 @@ public class DBHelper
         insertDevice(2, "LED2", "LED", "AVAILABLE", "OFF");
         insertRule("ADMIN", "MODIFY", "LED2");
         insertRule("USER", "VIEW_ONLY", "LED2");
+        insertRule("RESTRICTED_USER", "NONE", "LED2");
         System.out.println("> [" + Main.getDate() + "] Default device LED2 added to devices table");
         System.out.println("> [" + Main.getDate() + "] MODIFY permissions given to ADMIN for LED2");
         System.out.println("> [" + Main.getDate() + "] VIEW_ONLY permissions given to USER for LED2\n");
@@ -540,6 +548,7 @@ public class DBHelper
         insertDevice(3, "LED3", "LED", "AVAILABLE", "OFF");
         insertRule("ADMIN", "MODIFY", "LED3");
         insertRule("USER", "VIEW_ONLY", "LED3");
+        insertRule("RESTRICTED_USER", "VIEW_ONLY", "LED3");
         System.out.println("> [" + Main.getDate() + "] Default device LED3 added to devices table");
         System.out.println("> [" + Main.getDate() + "] MODIFY permissions given to ADMIN for LED3");
         System.out.println("> [" + Main.getDate() + "] VIEW_ONLY permissions given to USER for LED3\n");
@@ -547,6 +556,7 @@ public class DBHelper
         insertDevice(4, "LED4", "LED", "AVAILABLE", "OFF");
         insertRule("ADMIN", "MODIFY", "LED4");
         insertRule("USER", "VIEW_ONLY", "LED4");
+        insertRule("RESTRICTED_USER", "NONE", "LED4");
         System.out.println("> [" + Main.getDate() + "] Default device LED4 added to devices table");
         System.out.println("> [" + Main.getDate() + "] MODIFY permissions given to ADMIN for LED4");
         System.out.println("> [" + Main.getDate() + "] VIEW_ONLY permissions given to USER for LED4\n");
@@ -554,6 +564,7 @@ public class DBHelper
         insertDevice(5, "LED5", "LED", "AVAILABLE", "OFF");
         insertRule("ADMIN", "MODIFY", "LED5");
         insertRule("USER", "VIEW_ONLY", "LED5");
+        insertRule("RESTRICTED_USER", "VIEW_ONLY", "LED5");
         System.out.println("> [" + Main.getDate() + "] Default device LED5 added to devices table");
         System.out.println("> [" + Main.getDate() + "] MODIFY permissions given to ADMIN for LED5");
         System.out.println("> [" + Main.getDate() + "] VIEW_ONLY permissions given to USER for LED5\n");
@@ -561,6 +572,7 @@ public class DBHelper
         insertDevice(9, "LED6", "LED", "AVAILABLE", "OFF");
         insertRule("ADMIN", "MODIFY", "LED6");
         insertRule("USER", "VIEW_ONLY", "LED6");
+        insertRule("RESTRICTED_USER", "NONE", "LED6");
         System.out.println("> [" + Main.getDate() + "] Default device LED6 added to devices table");
         System.out.println("> [" + Main.getDate() + "] MODIFY permissions given to ADMIN for LED6");
         System.out.println("> [" + Main.getDate() + "] VIEW_ONLY permissions given to USER for LED6\n");
@@ -568,6 +580,7 @@ public class DBHelper
         insertDevice(7, "LED7", "LED", "AVAILABLE", "OFF");
         insertRule("ADMIN", "MODIFY", "LED7");
         insertRule("USER", "VIEW_ONLY", "LED7");
+        insertRule("RESTRICTED_USER", "VIEW_ONLY", "LED7");
         System.out.println("> [" + Main.getDate() + "] Default device LED7 added to devices table");
         System.out.println("> [" + Main.getDate() + "] MODIFY permissions given to ADMIN for LED7");
         System.out.println("> [" + Main.getDate() + "] VIEW_ONLY permissions given to USER for LED7\n");
@@ -575,6 +588,7 @@ public class DBHelper
         insertDevice(8, "LED8", "LED", "AVAILABLE", "OFF");
         insertRule("ADMIN", "MODIFY", "LED8");
         insertRule("USER", "VIEW_ONLY", "LED8");
+        insertRule("RESTRICTED_USER", "NONE", "LED8");
         System.out.println("> [" + Main.getDate() + "] Default device LED8 added to devices table");
         System.out.println("> [" + Main.getDate() + "] MODIFY permissions given to ADMIN for LED8");
         System.out.println("> [" + Main.getDate() + "] VIEW_ONLY permissions given to USER for LED8\n");

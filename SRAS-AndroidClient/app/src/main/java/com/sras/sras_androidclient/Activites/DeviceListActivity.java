@@ -1,5 +1,6 @@
 package com.sras.sras_androidclient.Activites;
 
+import android.bluetooth.BluetoothClass;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +32,8 @@ public class DeviceListActivity extends AppCompatActivity implements AdapterView
     private List<Device> mDeviceList;
     private ListView mListView;
 
+    private User mUser;
+
     ServerConnectionService mService;
     boolean mBound = false;
 
@@ -40,6 +43,8 @@ public class DeviceListActivity extends AppCompatActivity implements AdapterView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device_list);
         setTitle("Available Devices");
+
+        mUser = (User) getIntent().getSerializableExtra("user");
 
         mListView = (ListView) findViewById(R.id.listview);
         mListView.setOnItemClickListener(this);
@@ -92,6 +97,7 @@ public class DeviceListActivity extends AppCompatActivity implements AdapterView
                 mService.initiateController(device);
                 Intent intent = new Intent(getApplicationContext(), LEDControllerActivity.class);
                 intent.putExtra("device", (Led)device);
+                intent.putExtra("user", mUser);
                 startActivity(intent);
 
             }
@@ -115,6 +121,22 @@ public class DeviceListActivity extends AppCompatActivity implements AdapterView
             {
                 Devices devices = mService.fetchDevices();
                 mDeviceList = devices.getDevices();
+
+                // Check to ensure user has appropriate privileges to view device
+                for(int i = 0; i < mDeviceList.size(); i++)
+                {
+                    Device device = mDeviceList.get(i);
+
+                    if(mUser.getRules().containsKey(device.getDeviceName()))
+                    {
+                        String permission = mUser.getRules().get(device.getDeviceName());
+
+                        if(permission.equals("NONE"))
+                        {
+                            mDeviceList.remove(i);
+                        }
+                    }
+                }
             }
             catch (IOException | ClassNotFoundException | InterruptedException e)
             {

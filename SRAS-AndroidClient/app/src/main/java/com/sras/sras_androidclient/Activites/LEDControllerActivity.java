@@ -20,6 +20,7 @@ import java.io.IOException;
 import CommModels.Command;
 import CommModels.Device;
 import CommModels.LedState;
+import CommModels.User;
 
 //TODO: 1) Device state should be persisted through screen rotation
 //TODO: 2) UI should be updated to properly display all content after rotation
@@ -30,6 +31,8 @@ public class LEDControllerActivity extends AppCompatActivity implements View.OnC
     boolean mBound = false;
     private ImageView mLEDView;
 
+    private User mUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -38,6 +41,8 @@ public class LEDControllerActivity extends AppCompatActivity implements View.OnC
 
         Intent intent = getIntent();
         Device device = (Device) intent.getSerializableExtra("device");
+        mUser = (User) intent.getSerializableExtra("user");
+
         setTitle(device.getDeviceName() + " (pin " + device.getDevicePin() +")");
 
         mLEDView = (ImageView) findViewById(R.id.image_led);
@@ -48,6 +53,20 @@ public class LEDControllerActivity extends AppCompatActivity implements View.OnC
 
         Button blinkButton = (Button) findViewById(R.id.button_blink);
         blinkButton.setOnClickListener(this);
+
+        String permission = "";
+
+        // Check whether user has appropriate privileges to modify device state.
+        if(mUser.getRules().containsKey(device.getDeviceName()))
+        {
+            permission = mUser.getRules().get(device.getDeviceName());
+        }
+
+        if(permission.equals("VIEW_ONLY"))
+        {
+            toggleButton.setEnabled(false);
+            blinkButton.setEnabled(false);
+        }
     }
 
     @Override

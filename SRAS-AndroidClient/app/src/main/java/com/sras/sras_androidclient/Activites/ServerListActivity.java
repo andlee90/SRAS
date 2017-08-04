@@ -180,7 +180,9 @@ public class ServerListActivity extends AppCompatActivity implements LoaderManag
             ViewHolder holder = (ViewHolder) convertView.getTag();
             holder.serverName.setText(server.getName());
 
-            TestConnectionTask testConnectionTask = new TestConnectionTask(server.getAddress(), server.getPort(), result ->
+            //TODO: Make this bs work better.
+
+           /* TestConnectionTask testConnectionTask = new TestConnectionTask(server.getAddress(), server.getPort(), result ->
             {
                 if(result)
                 {
@@ -192,10 +194,12 @@ public class ServerListActivity extends AppCompatActivity implements LoaderManag
                     holder.serverConnect.setImageDrawable(getDrawable(R.drawable.ic_server_dne));
                     holder.serverConnect.setEnabled(false);
                 }
-            });
+            });*/
 
-            testConnectionTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
+            //testConnectionTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
 
+            holder.serverConnect.setImageDrawable(getDrawable(R.drawable.ic_server_connect));
+            holder.serverConnect.setEnabled(true);
 
             holder.serverConnect.setOnClickListener(view ->
             {
@@ -214,6 +218,7 @@ public class ServerListActivity extends AppCompatActivity implements LoaderManag
                             {
                                 Toast.makeText(this.getContext(), "Logged in as " + user.getUserName(), Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(getApplicationContext(), DeviceListActivity.class);
+                                intent.putExtra("user", user);
                                 startActivity(intent);
                             }
                             else
