@@ -14,7 +14,7 @@ import com.sras.sras_androidclient.Database.ServerDBHelper;
 import com.sras.sras_androidclient.R;
 
 public class AddServerActivity extends AppCompatActivity implements TextView.OnEditorActionListener,
-        View.OnClickListener
+        View.OnClickListener, TextView.OnFocusChangeListener
 {
     private String mServerName;
     private String mServerAddress;
@@ -33,12 +33,15 @@ public class AddServerActivity extends AppCompatActivity implements TextView.OnE
 
         mNameField = (EditText) findViewById(R.id.edit_server_name);
         mNameField.setOnEditorActionListener(this);
+        mNameField.setOnFocusChangeListener(this);
 
         mAddressField = (EditText) findViewById(R.id.edit_server_address);
         mAddressField.setOnEditorActionListener(this);
+        mAddressField.setOnFocusChangeListener(this);
 
         mPortField = (EditText) findViewById(R.id.edit_server_port);
         mPortField.setOnEditorActionListener(this);
+        mPortField.setOnFocusChangeListener(this);
 
         Button acceptButton = (Button) findViewById(R.id.button_accept);
         acceptButton.setOnClickListener(this);
@@ -50,23 +53,24 @@ public class AddServerActivity extends AppCompatActivity implements TextView.OnE
     @Override
     public void onClick(View view)
     {
-        switch (view.getId())
+        if (view.getId()== R.id.button_accept)
         {
-            case R.id.button_accept:
-                if(mServerName != null && mServerAddress != null && mServerPort != -1)
-                {
-                    ServerDBHelper serverDBHelper = new ServerDBHelper(this);
-                    serverDBHelper.insertServer(mServerName, mServerAddress, mServerPort, null, null);
-                    finish();
-                }
-                else
-                {
-                    String toastContent = "Please fill out all fields and try again";
-                    Toast toast = Toast.makeText(getApplicationContext(), toastContent, Toast.LENGTH_LONG);
-                    toast.show();
-                }
-            case R.id.button_cancel:
+            if(mServerName != null && mServerAddress != null && mServerPort != -1)
+            {
+                ServerDBHelper serverDBHelper = new ServerDBHelper(this);
+                serverDBHelper.insertServer(mServerName, mServerAddress, mServerPort, null, null);
                 finish();
+            }
+            else
+            {
+                String toastContent = "Please fill out all fields and try again";
+                Toast toast = Toast.makeText(getApplicationContext(), toastContent, Toast.LENGTH_LONG);
+                toast.show();
+            }
+        }
+        else if (view.getId()== R.id.button_cancel)
+        {
+            finish();
         }
     }
 
@@ -97,5 +101,27 @@ public class AddServerActivity extends AppCompatActivity implements TextView.OnE
                 break;
         }
         return false;
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean hasFocus)
+    {
+        if (!hasFocus)
+        {
+            switch(view.getId())
+            {
+                case R.id.edit_server_name:
+                    mServerName = mNameField.getText().toString();
+                    break;
+
+                case R.id.edit_server_address:
+                    mServerAddress = mAddressField.getText().toString();
+                    break;
+
+                case R.id.edit_server_port:
+                    mServerPort = Integer.parseInt(mPortField.getText().toString());
+                    break;
+            }
+        }
     }
 }

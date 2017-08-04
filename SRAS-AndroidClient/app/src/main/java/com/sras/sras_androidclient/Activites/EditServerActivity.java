@@ -15,7 +15,7 @@ import com.sras.sras_androidclient.Database.ServerDBHelper;
 import com.sras.sras_androidclient.R;
 
 public class EditServerActivity extends AppCompatActivity implements TextView.OnEditorActionListener,
-        View.OnClickListener
+        View.OnClickListener, TextView.OnFocusChangeListener
 {
     private int mServerId;
     private String mServerName;
@@ -45,14 +45,17 @@ public class EditServerActivity extends AppCompatActivity implements TextView.On
         mNameField = (EditText) findViewById(R.id.edit_server_name);
         mNameField.setText(mServerName);
         mNameField.setOnEditorActionListener(this);
+        mNameField.setOnFocusChangeListener(this);
 
         mAddressField = (EditText) findViewById(R.id.edit_server_address);
         mAddressField.setText(mServerAddress);
         mAddressField.setOnEditorActionListener(this);
+        mAddressField.setOnFocusChangeListener(this);
 
         mPortField = (EditText) findViewById(R.id.edit_server_port);
         mPortField.setText("" + mServerPort);
         mPortField.setOnEditorActionListener(this);
+        mPortField.setOnFocusChangeListener(this);
 
         Button updateButton = (Button) findViewById(R.id.button_update);
         updateButton.setOnClickListener(this);
@@ -125,5 +128,27 @@ public class EditServerActivity extends AppCompatActivity implements TextView.On
                 break;
         }
         return false;
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean hasFocus)
+    {
+        if (!hasFocus)
+        {
+            switch(view.getId())
+            {
+                case R.id.edit_server_name:
+                    mServerName = mNameField.getText().toString();
+                    break;
+
+                case R.id.edit_server_address:
+                    mServerAddress = mAddressField.getText().toString();
+                    break;
+
+                case R.id.edit_server_port:
+                    mServerPort = Integer.parseInt(mPortField.getText().toString());
+                    break;
+            }
+        }
     }
 }

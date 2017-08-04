@@ -42,9 +42,11 @@ public class LoginActivity extends AppCompatActivity implements TextView.OnEdito
 
         mUserField = (EditText) findViewById(edit_user);
         mUserField.setOnEditorActionListener(this);
+        mUserField.setOnFocusChangeListener(this);
 
         mPassField = (EditText) findViewById(edit_pass);
         mPassField.setOnEditorActionListener(this);
+        mPassField.setOnFocusChangeListener(this);
 
         Button acceptButton = (Button) findViewById(button_accept);
         acceptButton.setOnClickListener(this);
@@ -80,20 +82,17 @@ public class LoginActivity extends AppCompatActivity implements TextView.OnEdito
     }
 
     @Override
-    public void onFocusChange(View view, boolean b)
+    public void onFocusChange(View view, boolean hasFocus)
     {
-        if (view.getId() == R.id.edit_user)
+        if (!hasFocus)
         {
-            if (mUser != null)
+            switch (view.getId())
             {
-                // TODO: Still gotta figure this one out.
-            }
-        }
-        else if (view.getId() == R.id.edit_pass)
-        {
-            if (mPass != null)
-            {
+                case R.id.edit_user:
+                    mUser = mUserField.getText().toString();
 
+                case R.id.edit_pass:
+                    mPass = mPassField.getText().toString();
             }
         }
     }
