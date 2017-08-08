@@ -175,6 +175,7 @@ public class ClientManager extends Thread
     /**
      * Authenticates the received user credentials by querying for them in the db.
      * @param u the User containing the credentials to be checked.
+     * @return true for an authenticated user, false otherwise.
      */
     private boolean authenticateUser(User u)
     {
@@ -182,11 +183,18 @@ public class ClientManager extends Thread
 
         if (user != null && user.getUserId() != 0)
         {
+            //TODO: user validity no longer needed.
+
             authenticatedUser = user;
             authenticatedUser.setValidity(true);
+
+            return authenticatedUser.getValidity();
         }
 
-        return authenticatedUser.getValidity();
+        else
+        {
+            return false;
+        }
     }
 
     /**

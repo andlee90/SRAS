@@ -219,7 +219,7 @@ public class DBHelper
         }
         catch (SQLException e)
         {
-            System.out.println("> [" + Main.getDate() + "] DB: No such user found: " + e.getMessage());
+            System.out.println("> [" + Main.getDate() + "] Failed login attempt with username: " + username + ".");
             return null;
         }
 
