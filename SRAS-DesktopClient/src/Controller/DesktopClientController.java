@@ -16,6 +16,7 @@ public class DesktopClientController {
     public static void main(String [] args)
     {
         DBHelper.createNewServerTable();
+        DBHelper.insert("custom server","192.168.1.yes",0,"tman","admin");
         devices = new Devices();
         new AuthenticationPanel();
         data[0][0] = "localhost";

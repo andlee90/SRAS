@@ -54,16 +54,16 @@ public class DBHelper {
     }
 
 
-    public void insert(int serverID, String serverName,String ip, int port,String username,String password) {
-        String sql = "INSERT INTO servers(hostName,port) VALUES(?,?)";
+    public static void insert(String serverName, String ip, int port, String username, String password) {
+        String sql = "INSERT INTO servers(server_name, server_address, server_port, server_username, server_password) VALUES(?,?,?,?,?)";
 
-        try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql))
+        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql))
         {
-            pstmt.setInt(2, serverID);
-            pstmt.setString(1, ip);
-            pstmt.setInt(2, port);
-            pstmt.setString(1, username);
-            pstmt.setString(1, password);
+            pstmt.setString(1, serverName);
+            pstmt.setString(2, ip);
+            pstmt.setInt(3, port);
+            pstmt.setString(4, username);
+            pstmt.setString(5, password);
             pstmt.executeUpdate();
         }
         catch (SQLException e)
