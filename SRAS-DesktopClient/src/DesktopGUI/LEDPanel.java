@@ -56,14 +56,17 @@ public class LEDPanel {
 
         toggleButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e)
+            {
                 Command command = new Command(Command.CommandType.TOGGLE);
-                if(isOn){
+                if(isOn)
+                {
                     imageLabel = new JLabel("", imageOff, JLabel.CENTER);
 
                     isOn=false;
                 }
-                else{
+                else
+                {
                     imageLabel = new JLabel("", imageOn, JLabel.CENTER);
                     isOn=true;
                 }
@@ -76,6 +79,7 @@ public class LEDPanel {
                 } catch (ClassNotFoundException e1) {
                     e1.printStackTrace();
                 }
+
             }
         });
 
@@ -90,6 +94,7 @@ public class LEDPanel {
                 } catch (ClassNotFoundException e1) {
                     e1.printStackTrace();
                 }
+                DesktopClientController.replacePanel(new LEDPanel(device).getLEDPanel(), "SRAS - " + device.getDeviceName());
             }
         });
 
@@ -97,6 +102,7 @@ public class LEDPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ClientManager.loseControl(device);
+                ClientManager.updateDevices();
                 DesktopClientController.replacePanel(new DeviceControlPanel().getPanel(),"SRAS - Device List");
             }
         });
