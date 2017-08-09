@@ -116,6 +116,7 @@ public class ServerListPanel
 
                 try {
                     ClientManager.createSocket(table.getSelectedRow());
+
                 } catch (Exception e1) {
                     new MainErrorMessageFrame("Please select a valid Server from the list.");
                 }

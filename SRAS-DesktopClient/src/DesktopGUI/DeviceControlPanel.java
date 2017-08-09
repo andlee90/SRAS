@@ -5,6 +5,7 @@ import CommModels.Devices;
 import CommModels.Led;
 import Controller.ClientManager;
 import Controller.DesktopClientController;
+import com.sun.deploy.util.SessionState;
 
 import javax.swing.*;
 import java.awt.*;
@@ -40,7 +41,7 @@ public class DeviceControlPanel
     {
         FlowLayout f1 = new FlowLayout(10,45,20);
         JPanel buttonPanel = new JPanel(f1);
-        JButton statusButton = new JButton("Status");
+        //JButton statusButton = new JButton("Status");
         JButton disconnectButton = new JButton("Disconnect");
         disconnectButton.addActionListener(new ActionListener() {
             @Override public void actionPerformed(ActionEvent e) {
@@ -55,7 +56,7 @@ public class DeviceControlPanel
         buttonPanel.setBackground(Color.WHITE);
         buttonPanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
         buttonPanel.add(disconnectButton);
-        buttonPanel.add(statusButton);
+        //buttonPanel.add(statusButton);
         return buttonPanel;
     }
 
@@ -63,7 +64,7 @@ public class DeviceControlPanel
     public JPanel createDevicePanel(String deviceName, Device device)
     {
 
-        FlowLayout f1 = new FlowLayout(10,70,20);
+        FlowLayout f1 = new FlowLayout(10,45,20);
         JPanel devicePanel = new JPanel(f1);
         devicePanel.setBackground(Color.WHITE);
         devicePanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
@@ -73,11 +74,13 @@ public class DeviceControlPanel
 
         JLabel deviceLabel = new JLabel(deviceName);
         devicePanel.add(deviceLabel);
+        devicePanel.add(new JLabel(device.getDeviceStatus().toString()));
         devicePanel.add(deviceButton);
         deviceButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DesktopClientController.replacePanel(new LEDPanel(device).getLEDPanel(),"SRAS - "+device.getDeviceName());
+                if(ClientManager.sendDevice(device))
+                    DesktopClientController.replacePanel(new LEDPanel(device).getLEDPanel(),"SRAS - "+device.getDeviceName());
 
             }
         });
