@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.ServiceConnection;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
@@ -27,14 +26,10 @@ import com.sras.sras_androidclient.Database.ServerDBLoader;
 import com.sras.sras_androidclient.R;
 import com.sras.sras_androidclient.Models.ServerItem;
 import com.sras.sras_androidclient.Services.ServerConnectionService;
-import com.sras.sras_androidclient.Tasks.TestConnectionTask;
 
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.util.List;
 
-import CommModels.Message;
 import CommModels.User;
 
 public class ServerListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<ServerItem>>

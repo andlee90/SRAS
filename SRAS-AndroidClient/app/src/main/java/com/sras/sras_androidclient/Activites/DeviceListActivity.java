@@ -1,6 +1,5 @@
 package com.sras.sras_androidclient.Activites;
 
-import android.bluetooth.BluetoothClass;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;

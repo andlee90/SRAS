@@ -32,7 +32,7 @@ public class DeviceControllerFactory
         return armController;
     }
 
-    public static DeviceController getDeviceController(Device device)
+    public static synchronized DeviceController getDeviceController(Device device)
     {
         DeviceController dc = null;
 

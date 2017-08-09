@@ -161,7 +161,7 @@ public class LEDControllerActivity extends AppCompatActivity implements View.OnC
         {
             mLEDView.setImageResource(R.drawable.blink);
             AnimationDrawable frameAnimation = (AnimationDrawable) mLEDView.getDrawable();
-            frameAnimation.start();
+            frameAnimation.start(); // Animate the led drawable
         }
     }
 }
