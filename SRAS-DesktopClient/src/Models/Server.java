@@ -1,3 +1,4 @@
+//for further development of server connection and storage
 public class Server
 {
     private int id;
