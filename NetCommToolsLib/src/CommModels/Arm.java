@@ -14,6 +14,7 @@ public class Arm implements Device<ArrayList<Integer>, ArmState>, Serializable
     private String deviceName;
     private DeviceStatus deviceStatus;
     private ArmState deviceState;
+    private User deviceUser;
 
     public Arm(int id, ArrayList<Integer> pin, String name, DeviceStatus status, ArmState state)
     {
@@ -23,6 +24,7 @@ public class Arm implements Device<ArrayList<Integer>, ArmState>, Serializable
         this.deviceName = name;
         this.deviceStatus = status;
         this.deviceState = state;
+        this.deviceUser = null;
     }
 
     @Override
@@ -62,6 +64,12 @@ public class Arm implements Device<ArrayList<Integer>, ArmState>, Serializable
     }
 
     @Override
+    public User getDeviceUser()
+    {
+        return deviceUser;
+    }
+
+    @Override
     public void setDeviceListId(int id)
     {
         deviceListId = id;
@@ -89,5 +97,11 @@ public class Arm implements Device<ArrayList<Integer>, ArmState>, Serializable
     public void setDeviceState(ArmState as)
     {
         this.deviceState = as;
+    }
+
+    @Override
+    public void setDeviceUser(User deviceUser)
+    {
+        this.deviceUser = deviceUser;
     }
 }

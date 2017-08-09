@@ -13,6 +13,7 @@ public class Led implements Device<Integer, LedState>, Serializable
     private String deviceName;
     private DeviceStatus deviceStatus;
     private LedState deviceState;
+    private User deviceUser;
 
     public Led(int id, int pin, String name, DeviceStatus status, LedState state)
     {
@@ -22,6 +23,7 @@ public class Led implements Device<Integer, LedState>, Serializable
         this.deviceName = name;
         this.deviceStatus = status;
         this.deviceState = state;
+        this.deviceUser = null;
     }
 
     @Override
@@ -61,6 +63,12 @@ public class Led implements Device<Integer, LedState>, Serializable
     }
 
     @Override
+    public User getDeviceUser()
+    {
+        return deviceUser;
+    }
+
+    @Override
     public void setDeviceListId(int id)
     {
         this.deviceListId = id;
@@ -88,5 +96,11 @@ public class Led implements Device<Integer, LedState>, Serializable
     public void setDeviceState(LedState ls)
     {
         this.deviceState = ls;
+    }
+
+    @Override
+    public void setDeviceUser(User deviceUser)
+    {
+        this.deviceUser = deviceUser;
     }
 }

@@ -19,6 +19,7 @@ import java.io.IOException;
 
 import CommModels.Command;
 import CommModels.Device;
+import CommModels.DeviceStatus;
 import CommModels.LedState;
 import CommModels.User;
 
@@ -32,6 +33,7 @@ public class LEDControllerActivity extends AppCompatActivity implements View.OnC
     private ImageView mLEDView;
 
     private User mUser;
+    private Device mDevice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -40,13 +42,13 @@ public class LEDControllerActivity extends AppCompatActivity implements View.OnC
         setContentView(R.layout.activity_led_controller);
 
         Intent intent = getIntent();
-        Device device = (Device) intent.getSerializableExtra("device");
+        mDevice = (Device) intent.getSerializableExtra("device");
         mUser = (User) intent.getSerializableExtra("user");
 
-        setTitle(device.getDeviceName() + " (pin " + device.getDevicePin() +")");
+        setTitle(mDevice.getDeviceName() + " (pin " + mDevice.getDevicePin() +")");
 
         mLEDView = (ImageView) findViewById(R.id.image_led);
-        setImageState((LedState) device.getDeviceState());
+        setImageState((LedState) mDevice.getDeviceState());
 
         Button toggleButton = (Button) findViewById(R.id.button_toggle);
         toggleButton.setOnClickListener(this);
@@ -57,9 +59,9 @@ public class LEDControllerActivity extends AppCompatActivity implements View.OnC
         String permission = "";
 
         // Check whether user has appropriate privileges to modify device state.
-        if(mUser.getRules().containsKey(device.getDeviceName()))
+        if(mUser.getRules().containsKey(mDevice.getDeviceName()))
         {
-            permission = mUser.getRules().get(device.getDeviceName());
+            permission = mUser.getRules().get(mDevice.getDeviceName());
         }
 
         if(permission.equals("VIEW_ONLY"))
@@ -109,9 +111,28 @@ public class LEDControllerActivity extends AppCompatActivity implements View.OnC
     };
 
     @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+
+        mDevice.setDeviceStatus(DeviceStatus.AVAILABLE);
+
+        if(mBound)
+        {
+            try
+            {
+                mService.initiateController(mDevice);
+
+            } catch (IOException | ClassNotFoundException | InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
     public void onClick(View view)
     {
-        Device device;
         if (view.getId() == R.id.button_toggle)
         {
             if(mBound)
@@ -119,8 +140,8 @@ public class LEDControllerActivity extends AppCompatActivity implements View.OnC
                 try
                 {
                     Command command = new Command(Command.CommandType.TOGGLE);
-                    device = mService.issueCommand(command);
-                    setImageState((LedState) device.getDeviceState());
+                    mDevice = mService.issueCommand(command);
+                    setImageState((LedState) mDevice.getDeviceState());
 
                 } catch (IOException | ClassNotFoundException | InterruptedException e)
                 {
@@ -136,8 +157,8 @@ public class LEDControllerActivity extends AppCompatActivity implements View.OnC
                 try
                 {
                     Command command = new Command(Command.CommandType.BLINK);
-                    device = mService.issueCommand(command);
-                    setImageState((LedState) device.getDeviceState());
+                    mDevice = mService.issueCommand(command);
+                    setImageState((LedState) mDevice.getDeviceState());
 
                 } catch (IOException | ClassNotFoundException | InterruptedException e)
                 {

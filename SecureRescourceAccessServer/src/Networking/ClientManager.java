@@ -105,6 +105,8 @@ public class ClientManager extends Thread
                             else if (object instanceof Device)
                             {
                                 device = (Device) object;
+                                DBHelper.updateDevice(device.getDeviceId(), (int)device.getDevicePin(), device.getDeviceName(),
+                                        "LED", device.getDeviceStatus().toString(), device.getDeviceState().toString());
                                 dc = DeviceControllerFactory.getDeviceController(device);
                             }
 

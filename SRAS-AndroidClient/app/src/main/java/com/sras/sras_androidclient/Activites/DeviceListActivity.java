@@ -93,12 +93,19 @@ public class DeviceListActivity extends AppCompatActivity implements AdapterView
         {
             try
             {
-                mService.initiateController(device);
-                Intent intent = new Intent(getApplicationContext(), LEDControllerActivity.class);
-                intent.putExtra("device", (Led)device);
-                intent.putExtra("user", mUser);
-                startActivity(intent);
-
+                if (device.getDeviceStatus() == DeviceStatus.AVAILABLE)
+                {
+                    device.setDeviceStatus(DeviceStatus.IN_USE);
+                    mService.initiateController(device);
+                    Intent intent = new Intent(getApplicationContext(), LEDControllerActivity.class);
+                    intent.putExtra("device", (Led)device);
+                    intent.putExtra("user", mUser);
+                    startActivity(intent);
+                }
+                else
+                {
+                    Toast.makeText(this, "Device unavailable", Toast.LENGTH_SHORT).show();
+                }
             }
             catch (IOException | ClassNotFoundException | InterruptedException e)
             {
@@ -183,6 +190,7 @@ public class DeviceListActivity extends AppCompatActivity implements AdapterView
             ViewHolder holder = (ViewHolder) convertView.getTag();
             holder.deviceName.setText(device.getDeviceName());
             holder.deviceState.setText(device.getDeviceState().toString());
+            holder.deviceStatus.setText(device.getDeviceStatus().toString());
 
             if (device.getDeviceState().toString().equals("ON") ||
                     device.getDeviceState().toString().equals("BLINKING"))
@@ -193,6 +201,15 @@ public class DeviceListActivity extends AppCompatActivity implements AdapterView
             {
                 holder.deviceState.setTextColor(Color.RED);
             }
+
+            if (device.getDeviceStatus().toString().equals("AVAILABLE"))
+            {
+                holder.deviceStatus.setTextColor(Color.GREEN);
+            }
+            else if (device.getDeviceStatus().toString().equals("IN_USE"))
+            {
+                holder.deviceStatus.setTextColor(Color.RED);
+            }
             return convertView;
         }
 
@@ -200,11 +217,13 @@ public class DeviceListActivity extends AppCompatActivity implements AdapterView
         {
             private final TextView deviceName;
             private final TextView deviceState;
+            private final TextView deviceStatus;
 
             ViewHolder(View view)
             {
                 deviceName = (TextView) view.findViewById(R.id.deviceName);
                 deviceState = (TextView) view.findViewById(R.id.deviceState);
+                deviceStatus = (TextView) view.findViewById(R.id.deviceStatus);
             }
         }
     }

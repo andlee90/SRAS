@@ -80,6 +80,7 @@ public class Main
                     if(d instanceof Led)
                     {
                         d.setDeviceState(LedState.OFF);
+                        d.setDeviceStatus(DeviceStatus.AVAILABLE);
 
                         DBHelper.updateDevice(d.getDeviceId(),
                                 (int)d.getDevicePin(),
@@ -91,6 +92,8 @@ public class Main
                     else if (d instanceof Arm)
                     {
                         d.setDeviceState(ArmState.OFF);
+                        d.setDeviceStatus(DeviceStatus.AVAILABLE);
+
                         DBHelper.updateDevice(d.getDeviceId(),
                                 (int)d.getDevicePin(),
                                 d.getDeviceName(),
