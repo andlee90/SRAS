@@ -96,6 +96,7 @@ public class LEDPanel {
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                ClientManager.loseControl(device);
                 DesktopClientController.replacePanel(new DeviceControlPanel().getPanel(),"SRAS - Device List");
             }
         });

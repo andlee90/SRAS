@@ -3,6 +3,7 @@ package DesktopGUI;
 import CommModels.*;
 import Controller.ClientManager;
 import Controller.DesktopClientController;
+import com.sun.deploy.util.SessionState;
 
 import javax.swing.*;
 import java.awt.*;
@@ -113,6 +114,7 @@ public class AuthenticationPanel
                 DesktopClientController.userIn= new User(-1,username.getText(),new String(password.getPassword()),"","","","");
                 System.out.println(new String(password.getPassword()));
                 try {
+                    //ClientManager.createSocket(ClientManager.rowConst);
                     ClientManager.connectToServer();
                 } catch (IOException e1) {
                     new MainErrorMessageFrame("Cannot connect to Server");
