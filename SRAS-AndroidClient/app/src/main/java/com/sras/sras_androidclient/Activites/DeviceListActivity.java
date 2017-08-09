@@ -10,6 +10,9 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -47,6 +50,26 @@ public class DeviceListActivity extends AppCompatActivity implements AdapterView
 
         mListView = (ListView) findViewById(R.id.listview);
         mListView.setOnItemClickListener(this);
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_device_list_activity, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        if(item.getItemId() == R.id.resfresh_device_list)
+        {
+            finish();
+            startActivity(getIntent());
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -103,26 +126,24 @@ public class DeviceListActivity extends AppCompatActivity implements AdapterView
                     intent.putExtra("user", mUser);
                     startActivity(intent);
                 }
+                else if (mUser.getRolePriority() == 0)
+                {
+                    // TODO: get the connected user's priority level
+                    
+                    Toast.makeText(this, "Commandeering control of device", Toast.LENGTH_SHORT).show();
+
+                    // TODO: push out current user.
+
+                    device.setDeviceStatus(DeviceStatus.IN_USE);
+                    mService.initiateController(device);
+                    Intent intent = new Intent(getApplicationContext(), LEDControllerActivity.class);
+                    intent.putExtra("device", (Led)device);
+                    intent.putExtra("user", mUser);
+                    startActivity(intent);
+                }
                 else
                 {
-                    if (mUser.getRolePriority() < device.getDeviceUser().getRolePriority())
-                    {
-
-                        Toast.makeText(this, "Commandeering control of device", Toast.LENGTH_SHORT).show();
-
-                        // TODO: push out current user.
-
-                        device.setDeviceStatus(DeviceStatus.IN_USE);
-                        mService.initiateController(device);
-                        Intent intent = new Intent(getApplicationContext(), LEDControllerActivity.class);
-                        intent.putExtra("device", (Led)device);
-                        intent.putExtra("user", mUser);
-                        startActivity(intent);
-                    }
-                    else
-                    {
-                        Toast.makeText(this, "Device unavailable", Toast.LENGTH_SHORT).show();
-                    }
+                    Toast.makeText(this, "Device unavailable", Toast.LENGTH_SHORT).show();
                 }
             }
             catch (IOException | ClassNotFoundException | InterruptedException e)

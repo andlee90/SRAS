@@ -262,7 +262,7 @@ public class DBHelper
         int rolePriority = 10;
 
         try (Connection conn = connect();
-             PreparedStatement pstmt = conn.prepareStatement(getSelectRoleById()))
+             PreparedStatement pstmt = conn.prepareStatement(getSelectRolePriorityById()))
         {
             pstmt.setInt(1, id);
 

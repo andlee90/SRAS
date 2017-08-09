@@ -112,6 +112,11 @@ class DBQueries
         return "SELECT role_name FROM roles WHERE role_id = ?";
     }
 
+    static String getSelectRolePriorityById()
+    {
+        return "SELECT role_priority FROM roles WHERE role_id = ?";
+    }
+
     static String getSelectRoleIdByName()
     {
         return "SELECT role_id FROM roles WHERE role_name = ?";
