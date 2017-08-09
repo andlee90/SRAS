@@ -144,7 +144,7 @@ public class ServerConnectionService extends Service
                 mOutputStream = new ObjectOutputStream(mSocket.getOutputStream());
                 mInputStream = new ObjectInputStream(mSocket.getInputStream());
 
-                User newUser = new User(0, mUsername, mPassword, "", "", "", "");
+                User newUser = new User(0, mUsername, mPassword, "", "", "", "", 10);
                 mOutputStream.writeObject(newUser);
 
                 user = (User) mInputStream.readObject();

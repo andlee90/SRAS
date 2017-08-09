@@ -16,11 +16,12 @@ public class User implements Serializable
     private String firstName;
     private String lastName;
     private String role;
+    private int rolePriority;
     private boolean isValid; // true if username and password have been validated (found in db)
 
     private Hashtable<String, String> rules = new Hashtable<>();
 
-    public User(int id, String un, String p, String e, String fn, String ln, String r)
+    public User(int id, String un, String p, String e, String fn, String ln, String r, int rp)
     {
         this.userId = id;
         this.userName = un;
@@ -29,6 +30,7 @@ public class User implements Serializable
         this.firstName = fn;
         this.lastName = ln;
         this.role = r;
+        this.rolePriority = rp;
         this.isValid = false;
     }
 
@@ -67,6 +69,11 @@ public class User implements Serializable
         return this.role;
     }
 
+    public int getRolePriority()
+    {
+        return this.rolePriority;
+    }
+
     public Hashtable<String, String> getRules()
     {
         return this.rules;
@@ -95,6 +102,11 @@ public class User implements Serializable
     public void setRole(String r)
     {
         this.role = r;
+    }
+
+    public void setRolePriority(int rp)
+    {
+        this.rolePriority = rp;
     }
 
     public void setValidity(boolean v)

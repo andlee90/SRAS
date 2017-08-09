@@ -214,8 +214,9 @@ public class DBHelper
             String lastName = rs.getString("user_last_name");
             int roleId = rs.getInt("role_id");
             String roleName = selectRoleById(roleId);
+            int rolePriority = selectRolePriorityById(roleId);
 
-            user = new User(userId, username, password, email, firstName, lastName, roleName);
+            user = new User(userId, username, password, email, firstName, lastName, roleName, rolePriority);
         }
         catch (SQLException e)
         {
@@ -249,6 +250,31 @@ public class DBHelper
         }
 
         return roleName;
+    }
+
+    /**
+     * Returns the priority level of the role for a given id.
+     * @param id the id of the role to select.
+     * @return the priority level of the selected role.
+     */
+    public static int selectRolePriorityById(int id)
+    {
+        int rolePriority = 10;
+
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(getSelectRoleById()))
+        {
+            pstmt.setInt(1, id);
+
+            ResultSet rs = pstmt.executeQuery();
+            rolePriority = rs.getInt("role_priority");
+        }
+        catch (SQLException e)
+        {
+            System.out.println("> [" + Main.getDate() + "] " + e.getMessage());
+        }
+
+        return rolePriority;
     }
 
     /**

@@ -96,6 +96,7 @@ public class DeviceListActivity extends AppCompatActivity implements AdapterView
                 if (device.getDeviceStatus() == DeviceStatus.AVAILABLE)
                 {
                     device.setDeviceStatus(DeviceStatus.IN_USE);
+                    device.setDeviceUser(mUser);
                     mService.initiateController(device);
                     Intent intent = new Intent(getApplicationContext(), LEDControllerActivity.class);
                     intent.putExtra("device", (Led)device);
@@ -104,7 +105,24 @@ public class DeviceListActivity extends AppCompatActivity implements AdapterView
                 }
                 else
                 {
-                    Toast.makeText(this, "Device unavailable", Toast.LENGTH_SHORT).show();
+                    if (mUser.getRolePriority() < device.getDeviceUser().getRolePriority())
+                    {
+
+                        Toast.makeText(this, "Commandeering control of device", Toast.LENGTH_SHORT).show();
+
+                        // TODO: push out current user.
+
+                        device.setDeviceStatus(DeviceStatus.IN_USE);
+                        mService.initiateController(device);
+                        Intent intent = new Intent(getApplicationContext(), LEDControllerActivity.class);
+                        intent.putExtra("device", (Led)device);
+                        intent.putExtra("user", mUser);
+                        startActivity(intent);
+                    }
+                    else
+                    {
+                        Toast.makeText(this, "Device unavailable", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
             catch (IOException | ClassNotFoundException | InterruptedException e)

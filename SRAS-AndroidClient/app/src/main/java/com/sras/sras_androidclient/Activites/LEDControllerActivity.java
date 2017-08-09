@@ -116,6 +116,7 @@ public class LEDControllerActivity extends AppCompatActivity implements View.OnC
         super.onBackPressed();
 
         mDevice.setDeviceStatus(DeviceStatus.AVAILABLE);
+        mDevice.setDeviceUser(null);
 
         if(mBound)
         {
