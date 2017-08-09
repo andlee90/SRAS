@@ -16,7 +16,8 @@ public class DesktopClientController {
     public static void main(String [] args)
     {
         DBHelper.createNewServerTable();
-        DBHelper.insert("custom server","192.168.1.yes",0,"tman","admin");
+        //DBHelper.insert("custom server","192.168.1.yes",0,"tman","admin");
+        DBHelper.delete(1);
         devices = new Devices();
         new AuthenticationPanel();
         data[0][0] = "localhost";
@@ -34,6 +35,14 @@ public class DesktopClientController {
         frame1.replacePanel(panelInput,title);
     }
 
+   /* public static void populateMatrix()
+    {
+        for(int i =1;i<=maxServers;i++)
+        {
+            try(){data[0][0]=DBHelper.;}
+            catch(exception e){}
+        }
+    }*/
 
 
 

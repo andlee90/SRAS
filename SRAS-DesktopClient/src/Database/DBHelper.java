@@ -52,7 +52,21 @@ public class DBHelper {
             System.out.println(e.getMessage());
         }
     }
+    public static void delete(int id) {
+        String sql = "DELETE FROM servers WHERE id = ?";
 
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            // set the corresponding param
+            pstmt.setInt(1, id);
+            // execute the delete statement
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
     public static void insert(String serverName, String ip, int port, String username, String password) {
         String sql = "INSERT INTO servers(server_name, server_address, server_port, server_username, server_password) VALUES(?,?,?,?,?)";
