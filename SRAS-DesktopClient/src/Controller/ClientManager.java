@@ -61,12 +61,10 @@ public class ClientManager {
     public static void loseControl(Device device)
     {
         try {
+            device.setDeviceUser(null);
             device.setDeviceStatus(DeviceStatus.AVAILABLE);
-            clientOutputStream.writeObject((Device)device);
-            device = (Device)clientInputStream.readObject();
+            clientOutputStream.writeObject(device);
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -81,24 +79,38 @@ public class ClientManager {
             if(device.getDeviceStatus()==DeviceStatus.AVAILABLE)
             {
                 device.setDeviceStatus(DeviceStatus.IN_USE);
+                device.setDeviceUser(DesktopClientController.userIn);
+                System.out.println(DesktopClientController.userIn.getRolePriority());
+                clientOutputStream.writeObject(device);
+                return true;
+            }
+            else if(device.getDeviceUser().getRolePriority()>DesktopClientController.userIn.getRolePriority()){
+                device.setDeviceStatus(DeviceStatus.IN_USE);
+                device.setDeviceUser(DesktopClientController.userIn);
                 clientOutputStream.writeObject(device);
                 return true;
             }
             else
+                clientOutputStream.writeObject((Devices)DesktopClientController.devices);
                 new MainErrorMessageFrame(device.getDeviceName()+" is not available.");
                 DesktopClientController.devices = (Devices)clientInputStream.readObject();
                 device = DesktopClientController.devices.getDeviceById(device.getDeviceId());
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e){}
         return false;
     }
+    public static void updateDevices(){
+        try {
+            clientOutputStream.writeObject(DesktopClientController.devices);
+            DesktopClientController.devices = (Devices) clientInputStream.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            new MainErrorMessageFrame(e.getLocalizedMessage());
+        }
 
+    }
     public static void sendCommand(Device device, Command command) throws IOException, ClassNotFoundException {
         clientOutputStream.writeObject((Led)device);
         clientOutputStream.writeObject(command);
+        device = (Device) clientInputStream.readObject();
     }
 }

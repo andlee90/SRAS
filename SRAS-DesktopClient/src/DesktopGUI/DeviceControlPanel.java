@@ -1,8 +1,5 @@
 package DesktopGUI;
-import CommModels.Command;
-import CommModels.Device;
-import CommModels.Devices;
-import CommModels.Led;
+import CommModels.*;
 import Controller.ClientManager;
 import Controller.DesktopClientController;
 import com.sun.deploy.util.SessionState;
@@ -41,7 +38,7 @@ public class DeviceControlPanel
     {
         FlowLayout f1 = new FlowLayout(10,45,20);
         JPanel buttonPanel = new JPanel(f1);
-        //JButton statusButton = new JButton("Status");
+        JButton statusButton = new JButton("Update Status");
         JButton disconnectButton = new JButton("Disconnect");
         disconnectButton.addActionListener(new ActionListener() {
             @Override public void actionPerformed(ActionEvent e) {
@@ -52,11 +49,17 @@ public class DeviceControlPanel
                     new MainErrorMessageFrame(e1.getLocalizedMessage());
                 }
             }});
-
+        statusButton.addActionListener(new ActionListener() {
+            @Override public void actionPerformed(ActionEvent e) {
+                ClientManager.updateDevices();
+                DesktopClientController.replacePanel(new DeviceControlPanel().getPanel(),"SRAS - Device List");
+            }
+        });
         buttonPanel.setBackground(Color.WHITE);
         buttonPanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
+        buttonPanel.add(statusButton);
         buttonPanel.add(disconnectButton);
-        //buttonPanel.add(statusButton);
+
         return buttonPanel;
     }
 
@@ -74,14 +77,22 @@ public class DeviceControlPanel
 
         JLabel deviceLabel = new JLabel(deviceName);
         devicePanel.add(deviceLabel);
-        devicePanel.add(new JLabel(device.getDeviceStatus().toString()));
+        if(device.getDeviceStatus()== DeviceStatus.IN_USE)
+            devicePanel.add(new JLabel(device.getDeviceStatus().toString()+"       "));
+        else
+            devicePanel.add(new JLabel(device.getDeviceStatus().toString()));
         devicePanel.add(deviceButton);
         deviceButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(ClientManager.sendDevice(device))
-                    DesktopClientController.replacePanel(new LEDPanel(device).getLEDPanel(),"SRAS - "+device.getDeviceName());
-
+                if (ClientManager.sendDevice(device)) {
+                    ClientManager.sendDevice(device);
+                    DesktopClientController.replacePanel(new LEDPanel(device).getLEDPanel(), "SRAS - " + device.getDeviceName());
+                }
+                else
+                {
+                    new MainErrorMessageFrame(device.getDeviceName()+" is not available.");
+                }
             }
         });
         return devicePanel;
