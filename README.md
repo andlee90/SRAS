@@ -1,4 +1,4 @@
-# SRAS - Secure Resource Access Server
+# Java-based Home Automation Server for Raspberry Pi
 
 Planned and written by Andrew Smith & Timothy Kelly
 as part of a Summer internship with Dr. Haklin Kimm
