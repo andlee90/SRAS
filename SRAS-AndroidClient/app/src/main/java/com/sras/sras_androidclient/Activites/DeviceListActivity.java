@@ -129,7 +129,7 @@ public class DeviceListActivity extends AppCompatActivity implements AdapterView
                 else if (mUser.getRolePriority() == 0)
                 {
                     // TODO: get the connected user's priority level
-                    
+
                     Toast.makeText(this, "Commandeering control of device", Toast.LENGTH_SHORT).show();
 
                     // TODO: push out current user.

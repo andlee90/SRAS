@@ -11,7 +11,7 @@ import static Database.DBQueries.*;
 
 public class DBHelper
 {
-    private static String dbUrl = "jdbc:sqlite:sqlite/db/resources.db";
+    private static final String dbUrl = "jdbc:sqlite:sqlite/db/resources.db";
 
     /**
      * Connects to the existing resources.db or creates it from scratch using default settings.
@@ -552,8 +552,8 @@ public class DBHelper
         insertUser("andlee", "password", "andlee@andlee.com", "Andrew", "Smith", 2);
         System.out.println("> [" + Main.getDate() + "] User andlee added to users table");
 
-        insertUser("mymeggie", "password", "mymeggie@megs.com", "Megan", "La Penta", 3);
-        System.out.println("> [" + Main.getDate() + "] User mymeggie added to users table\n");
+        insertUser("timzeh", "password", "timzeh@timzeh.com", "Tim", "Kelly", 3);
+        System.out.println("> [" + Main.getDate() + "] User timzeh added to users table\n");
 
         insertDevice(1, "LED1", "LED", "AVAILABLE", "OFF");
         insertRule("ADMIN", "MODIFY", "LED1");
