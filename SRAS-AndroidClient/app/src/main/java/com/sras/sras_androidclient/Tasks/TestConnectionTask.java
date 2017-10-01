@@ -6,7 +6,8 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-import CommModels.Message;
+import CommModels.Message.Message;
+
 
 public class TestConnectionTask extends AsyncTask<Void, Void, Boolean>
 {

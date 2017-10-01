@@ -27,7 +27,11 @@ import com.sras.sras_androidclient.Services.ServerConnectionService;
 import java.io.IOException;
 import java.util.List;
 
-import CommModels.*;
+import CommModels.Device.Device;
+import CommModels.Device.DeviceStatus;
+import CommModels.Device.Devices;
+import CommModels.Device.Led;
+import CommModels.User.User;
 
 public class DeviceListActivity extends AppCompatActivity implements AdapterView.OnItemClickListener
 {
@@ -121,7 +125,7 @@ public class DeviceListActivity extends AppCompatActivity implements AdapterView
                     device.setDeviceStatus(DeviceStatus.IN_USE);
                     device.setDeviceUser(mUser);
                     mService.initiateController(device);
-                    Intent intent = new Intent(getApplicationContext(), LEDControllerActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), LedControllerActivity.class);
                     intent.putExtra("device", (Led)device);
                     intent.putExtra("user", mUser);
                     startActivity(intent);
@@ -136,7 +140,7 @@ public class DeviceListActivity extends AppCompatActivity implements AdapterView
 
                     device.setDeviceStatus(DeviceStatus.IN_USE);
                     mService.initiateController(device);
-                    Intent intent = new Intent(getApplicationContext(), LEDControllerActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), LedControllerActivity.class);
                     intent.putExtra("device", (Led)device);
                     intent.putExtra("user", mUser);
                     startActivity(intent);

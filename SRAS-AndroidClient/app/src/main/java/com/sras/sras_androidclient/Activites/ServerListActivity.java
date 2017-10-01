@@ -30,7 +30,7 @@ import com.sras.sras_androidclient.Services.ServerConnectionService;
 import java.io.IOException;
 import java.util.List;
 
-import CommModels.User;
+import CommModels.User.User;
 
 public class ServerListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<ServerItem>>
 {

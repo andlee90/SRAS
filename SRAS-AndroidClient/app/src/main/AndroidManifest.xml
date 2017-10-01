@@ -31,7 +31,7 @@
 
         <!-- Preventing screen rotation for controller activities until I figure out how to properly
         persist the device state -->
-        <activity android:name=".Activites.LEDControllerActivity"
+        <activity android:name=".Activites.LedControllerActivity"
             android:screenOrientation="portrait">
         </activity>
         <service android:name=".Services.ServerConnectionService" >

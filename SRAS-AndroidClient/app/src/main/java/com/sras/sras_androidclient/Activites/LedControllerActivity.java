@@ -17,16 +17,17 @@ import com.sras.sras_androidclient.Services.ServerConnectionService;
 
 import java.io.IOException;
 
-import CommModels.Command;
-import CommModels.Device;
-import CommModels.DeviceStatus;
-import CommModels.LedState;
-import CommModels.User;
+import CommModels.Command.LedCommand;
+import CommModels.Command.LedCommandType;
+import CommModels.Device.Device;
+import CommModels.Device.DeviceStatus;
+import CommModels.Device.LedState;
+import CommModels.User.User;
 
 //TODO: 1) Device state should be persisted through screen rotation
 //TODO: 2) UI should be updated to properly display all content after rotation
 //TODO: 3) Finally, remove this line from the manifest: android:screenOrientation="portrait"
-public class LEDControllerActivity extends AppCompatActivity implements View.OnClickListener
+public class LedControllerActivity extends AppCompatActivity implements View.OnClickListener
 {
     ServerConnectionService mService;
     boolean mBound = false;
@@ -140,7 +141,7 @@ public class LEDControllerActivity extends AppCompatActivity implements View.OnC
             {
                 try
                 {
-                    Command command = new Command(Command.CommandType.TOGGLE);
+                    LedCommand command = new LedCommand(LedCommandType.TOGGLE);
                     mDevice = mService.issueCommand(command);
                     setImageState((LedState) mDevice.getDeviceState());
 
@@ -157,7 +158,7 @@ public class LEDControllerActivity extends AppCompatActivity implements View.OnC
             {
                 try
                 {
-                    Command command = new Command(Command.CommandType.BLINK);
+                    LedCommand command = new LedCommand(LedCommandType.BLINK);
                     mDevice = mService.issueCommand(command);
                     setImageState((LedState) mDevice.getDeviceState());
 

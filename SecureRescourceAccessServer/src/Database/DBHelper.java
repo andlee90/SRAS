@@ -1,6 +1,7 @@
 package Database;
 
-import CommModels.*;
+import CommModels.User.User;
+import CommModels.Device.*;
 import Main.Main;
 
 import java.sql.*;
@@ -450,7 +451,7 @@ public class DBHelper
         {
             while (rs.next())
             {
-                if (rs.getString("device_type").equals("LED"))
+                if (rs.getString("device_type").equals(DeviceType.LED.toString()))
                 {
                     Led led = new Led(rs.getInt("device_id"),
                             rs.getInt("device_pin"),
@@ -459,14 +460,14 @@ public class DBHelper
                             getLedStateFromString(rs.getString("device_state")));
                     devices.addDevice(led);
                 }
-                else if (rs.getString("device_type").equals("ARM"))
+                else if (rs.getString("device_type").equals(DeviceType.RGB_LED.toString()))
                 {
-                    Arm arm = new Arm(rs.getInt("device_id"),
+                    RgbLed rgbLed = new RgbLed(rs.getInt("device_id"),
                             new ArrayList<Integer>(rs.getInt("device_pin")),
                             rs.getString("device_name"),
                             getDeviceStatusFromString(rs.getString("device_status")),
-                            getArmStateFromString(rs.getString("device_state")));
-                    devices.addDevice(arm);
+                            getRgbLedStateFromString(rs.getString("device_state")));
+                    devices.addDevice(rgbLed);
                 }
             }
         }
@@ -669,18 +670,45 @@ public class DBHelper
      * @param s the string from the db.
      * @return the corresponding DeviceType.
      */
-    private static ArmState getArmStateFromString(String s)
+    private static RgbLedState getRgbLedStateFromString(String s)
     {
-        ArmState as = null;
+        RgbLedState rs = null;
 
-        if (s.equals("ON"))
-        {
-            as = ArmState.ON;
+        switch (s) {
+            case "ON_RED":
+                return RgbLedState.ON_RED;
+            case "ON_BLUE":
+                return RgbLedState.ON_BLUE;
+            case "ON_GREEN":
+                return RgbLedState.ON_GREEN;
+            case "ON_MAGENTA":
+                return RgbLedState.ON_MAGENTA;
+            case "ON_CYAN":
+                return RgbLedState.ON_CYAN;
+            case "ON_YELLOW":
+                return RgbLedState.ON_YELLOW;
+            case "ON_WHITE":
+                return RgbLedState.ON_WHITE;
+            case "BLINKING_RED":
+                return RgbLedState.BLINKING_RED;
+            case "BLINKING_BLUE":
+                return RgbLedState.BLINKING_BLUE;
+            case "BLINKING_GREEN":
+                return RgbLedState.BLINKING_GREEN;
+            case "BLINKING_MAGENTA":
+                return RgbLedState.BLINKING_MAGENTA;
+            case "BLINKING_CYAN":
+                return RgbLedState.BLINKING_CYAN;
+            case "BLINKING_YELLOW":
+                return RgbLedState.BLINKING_YELLOW;
+            case "BLINKING_WHITE":
+                return RgbLedState.BLINKING_WHITE;
+            case "SPECTRUM_CYCLING":
+                return RgbLedState.SPECTRUM_CYCLING;
+            case "OFF":
+                return RgbLedState.OFF;
+            default:
+                return RgbLedState.OFF;
         }
-        else if (s.equals("OFF"))
-        {
-            as = ArmState.OFF;
-        }
-        return as;
     }
 }

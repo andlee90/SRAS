@@ -1,6 +1,6 @@
 package Devices;
 
-import CommModels.*;
+import CommModels.Device.*;
 import Database.DBHelper;
 import Main.Main;
 import com.pi4j.io.gpio.GpioController;
@@ -11,13 +11,13 @@ import com.pi4j.io.gpio.PinState;
 /**
  * Controller implementation for a single channel on a standard relay.
  */
-public class RelayChannelController implements DeviceController
+public class RelayModuleController implements DeviceController
 {
     private volatile RelayChannel device;       // The device being controlled.
     private GpioController gpio;                // The controller for the device.
     private GpioPinDigitalOutput pin;           // The pin to which the device in connected.
 
-    RelayChannelController(Device d)
+    RelayModuleController(Device d)
     {
         this.device = (RelayChannel) d;
 
@@ -36,7 +36,7 @@ public class RelayChannelController implements DeviceController
     }
 
     @Override
-    public RelayChannelState issueCommand(Command.CommandType ct) throws InterruptedException
+    public Enum issueCommand(Enum ct) throws InterruptedException
     {
         if (device.getDeviceState() == RelayChannelState.ON)
         {
@@ -58,7 +58,7 @@ public class RelayChannelController implements DeviceController
         DBHelper.updateDevice(device.getDeviceId(),
                 device.getDevicePin(),
                 device.getDeviceName(),
-                "RelayChannel",
+                DeviceType.RELAY_MOD.toString(),
                 device.getDeviceStatus().toString(),
                 device.getDeviceState().toString());
 

@@ -1,4 +1,6 @@
-package CommModels;
+package CommModels.Device;
+
+import CommModels.Device.Device;
 
 import java.io.Serializable;
 import java.util.ArrayList;

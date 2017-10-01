@@ -1,9 +1,9 @@
-package CommModels;
+package CommModels.Command;
 
 import java.io.Serializable;
 
 /**
- * Command implementation, holds commands for an LED.
+ * Command implementation, holds commands for single relay module.
  */
 public class LedCommand implements Command<LedCommandType>, Serializable
 {

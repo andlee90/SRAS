@@ -1,4 +1,6 @@
-package CommModels;
+package CommModels.Device;
+
+import CommModels.User.User;
 
 public interface Device<T, E extends Enum<E>>
 {

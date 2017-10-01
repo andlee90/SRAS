@@ -1,19 +1,20 @@
 package Networking;
 
-import CommModels.*;
+import CommModels.Message.*;
+import CommModels.User.*;
+import CommModels.Device.*;
+import CommModels.Command.*;
 import Database.DBHelper;
 import Main.Main;
-import Resources.DeviceController;
-import Resources.DeviceControllerFactory;
+import Devices.DeviceController;
+import Devices.DeviceControllerFactory;
 
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.Hashtable;
-import java.util.Map;
 
 /**
  * Manages a single client connection by first comparing the incoming user object attributes against those in the

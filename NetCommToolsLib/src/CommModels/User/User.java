@@ -1,4 +1,4 @@
-package CommModels;
+package CommModels.User;
 
 import java.io.Serializable;
 import java.util.Hashtable;

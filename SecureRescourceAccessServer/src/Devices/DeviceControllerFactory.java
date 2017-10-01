@@ -1,8 +1,9 @@
-package Resources;
+package Devices;
 
-import CommModels.Arm;
-import CommModels.Device;
-import CommModels.Led;
+import CommModels.Device.Device;
+import CommModels.Device.Led;
+import CommModels.Device.RelayChannel;
+import CommModels.Device.RgbLed;
 
 import java.util.Hashtable;
 import java.util.Map;
@@ -16,20 +17,28 @@ public class DeviceControllerFactory
 {
     private volatile static Hashtable<DeviceController, Integer> controllerTable = new Hashtable<>();
 
-    private static DeviceController createLEDController(Device device)
+    private static DeviceController createLedController(Device device)
     {
-        LEDController ledController = new LEDController(device);
+        LedController ledController = new LedController(device);
         controllerTable.put(ledController, device.getDeviceId());
 
         return ledController;
     }
 
-    private static DeviceController createARMController(Device device)
+    private static DeviceController createRgbLedController(Device device)
     {
-        ARMController armController = new ARMController(device);
-        controllerTable.put(armController, device.getDeviceId());
+        RgbLedController rgbLedController = new RgbLedController(device);
+        controllerTable.put(rgbLedController, device.getDeviceId());
 
-        return armController;
+        return rgbLedController;
+    }
+
+    private static DeviceController createRelayModuleController(Device device)
+    {
+        RelayModuleController relayModuleController = new RelayModuleController(device);
+        controllerTable.put(relayModuleController, device.getDeviceId());
+
+        return relayModuleController;
     }
 
     public static synchronized DeviceController getDeviceController(Device device)
@@ -50,11 +59,15 @@ public class DeviceControllerFactory
 
         else if(device instanceof Led)
         {
-            return createLEDController(device);
+            return createLedController(device);
         }
-        else if(device instanceof Arm)
+        else if(device instanceof RgbLed)
         {
-            return createARMController(device);
+            return createRgbLedController(device);
+        }
+        else if(device instanceof RelayChannel)
+        {
+            return createRelayModuleController(device);
         }
         else
         {

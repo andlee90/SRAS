@@ -1,6 +1,6 @@
 package Main;
 
-import CommModels.*;
+import CommModels.Device.*;
 import Database.DBHelper;
 import Networking.ClientManager;
 import Networking.ServerManager;
@@ -85,19 +85,19 @@ public class Main
                         DBHelper.updateDevice(d.getDeviceId(),
                                 (int)d.getDevicePin(),
                                 d.getDeviceName(),
-                                "LED",
+                                DeviceType.LED.toString(),
                                 d.getDeviceStatus().toString(),
                                 d.getDeviceState().toString());
                     }
-                    else if (d instanceof Arm)
+                    else if (d instanceof RgbLed)
                     {
-                        d.setDeviceState(ArmState.OFF);
+                        d.setDeviceState(RgbLedState.OFF);
                         d.setDeviceStatus(DeviceStatus.AVAILABLE);
 
                         DBHelper.updateDevice(d.getDeviceId(),
                                 (int)d.getDevicePin(),
                                 d.getDeviceName(),
-                                "ARM",
+                                DeviceType.RGB_LED.toString(),
                                 d.getDeviceStatus().toString(),
                                 d.getDeviceState().toString());
                     }

@@ -1,6 +1,4 @@
-package Resources;
-
-import CommModels.Command;
+package Devices;
 
 /**
  * An interface for all controller classes.
@@ -8,5 +6,5 @@ import CommModels.Command;
 public interface DeviceController<E extends Enum<E>>
 {
     boolean isAvailable();
-    E issueCommand(Command.CommandType ct) throws InterruptedException;
+    E issueCommand(Enum<E> commandType) throws InterruptedException;
 }

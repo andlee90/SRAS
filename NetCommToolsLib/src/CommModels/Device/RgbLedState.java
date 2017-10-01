@@ -1,4 +1,4 @@
-package CommModels;
+package CommModels.Device;
 
 public enum RgbLedState
 {

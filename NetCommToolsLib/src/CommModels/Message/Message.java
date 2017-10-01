@@ -1,4 +1,4 @@
-package CommModels;
+package CommModels.Message;
 
 import java.io.Serializable;
 

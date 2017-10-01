@@ -11,7 +11,10 @@ import java.io.ObjectOutputStream;
 
 import java.net.Socket;
 
-import CommModels.*;
+import CommModels.Command.Command;
+import CommModels.Device.Device;
+import CommModels.Device.Devices;
+import CommModels.User.User;
 
 public class ServerConnectionService extends Service
 {
