@@ -1,4 +1,4 @@
-package Resources;
+package Devices;
 
 import CommModels.ArmState;
 import CommModels.Command;

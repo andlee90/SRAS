@@ -1,22 +1,21 @@
 package CommModels;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 /**
- * Data model for holding info about each device including it's name, type and pins
+ * Data model for holding info about each relay channel device including it's name, type and pins
  */
-public class Arm implements Device<ArrayList<Integer>, ArmState>, Serializable
+public class RelayChannel implements Device<Integer, RelayChannelState>, Serializable
 {
     private int deviceId;
     private int deviceListId;
-    private ArrayList<Integer> devicePin;
+    private int devicePin;
     private String deviceName;
     private DeviceStatus deviceStatus;
-    private ArmState deviceState;
+    private RelayChannelState deviceState;
     private User deviceUser;
 
-    public Arm(int id, ArrayList<Integer> pin, String name, DeviceStatus status, ArmState state)
+    public RelayChannel(int id, int pin, String name, DeviceStatus status, RelayChannelState state)
     {
         this.deviceId = id;
         this.deviceListId = -1;
@@ -40,7 +39,7 @@ public class Arm implements Device<ArrayList<Integer>, ArmState>, Serializable
     }
 
     @Override
-    public ArrayList<Integer> getDevicePin()
+    public Integer getDevicePin()
     {
         return devicePin;
     }
@@ -58,7 +57,7 @@ public class Arm implements Device<ArrayList<Integer>, ArmState>, Serializable
     }
 
     @Override
-    public ArmState getDeviceState()
+    public RelayChannelState getDeviceState()
     {
         return deviceState;
     }
@@ -72,11 +71,11 @@ public class Arm implements Device<ArrayList<Integer>, ArmState>, Serializable
     @Override
     public void setDeviceListId(int id)
     {
-        deviceListId = id;
+        this.deviceListId = id;
     }
 
     @Override
-    public void setDevicePin(ArrayList<Integer> p)
+    public void setDevicePin(Integer p)
     {
         this.devicePin = p;
     }
@@ -94,9 +93,9 @@ public class Arm implements Device<ArrayList<Integer>, ArmState>, Serializable
     }
 
     @Override
-    public void setDeviceState(ArmState as)
+    public void setDeviceState(RelayChannelState ls)
     {
-        this.deviceState = as;
+        this.deviceState = ls;
     }
 
     @Override

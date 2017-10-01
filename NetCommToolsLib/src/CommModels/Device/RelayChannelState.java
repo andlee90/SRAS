@@ -1,6 +1,6 @@
 package CommModels;
 
-public enum ArmState
+public enum RelayChannelState
 {
     ON, OFF
 }
